@@ -8,36 +8,36 @@
     <fragment
         android:id="@+id/nav_home"
         android:name="com.example.a368.ui.home.HomeFragment"
-        android:label="@string/menu_home"
+        android:label="Today"
         tools:layout="@layout/fragment_home" />
 
     <fragment
         android:id="@+id/nav_gallery"
         android:name="com.example.a368.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
+        android:label="Weekly"
         tools:layout="@layout/fragment_gallery" />
 
     <fragment
         android:id="@+id/nav_slideshow"
         android:name="com.example.a368.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
+        android:label="Monthly"
         tools:layout="@layout/fragment_slideshow" />
 
     <fragment
         android:id="@+id/nav_tools"
         android:name="com.example.a368.ui.tools.ToolsFragment"
-        android:label="@string/menu_tools"
+        android:label="Appointment/Meeting"
         tools:layout="@layout/fragment_tools" />
 
     <fragment
         android:id="@+id/nav_share"
         android:name="com.example.a368.ui.share.ShareFragment"
-        android:label="@string/menu_share"
+        android:label="Friends"
         tools:layout="@layout/fragment_share" />
 
-    <fragment
-        android:id="@+id/nav_send"
-        android:name="com.example.a368.ui.send.SendFragment"
-        android:label="@string/menu_send"
-        tools:layout="@layout/fragment_send" />
+<!--    <fragment-->
+<!--        android:id="@+id/nav_send"-->
+<!--        android:name="com.example.a368.ui.send.SendFragment"-->
+<!--        android:label="@string/menu_send"-->
+<!--        tools:layout="@layout/fragment_send" />-->
 </navigation>
