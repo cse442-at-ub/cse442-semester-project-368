@@ -22,14 +22,8 @@ public class TodayFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         todayViewModel =
                 ViewModelProviders.of(this).get(TodayViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_home, container, false);
-        final TextView textView = root.findViewById(R.id.text_home);
-        todayViewModel.getText().observe(this, new Observer<String>() {
-            @Override
-            public void onChanged(@Nullable String s) {
-                textView.setText(s);
-            }
-        });
+        View root = inflater.inflate(R.layout.today_schedule, container, false);
+
         return root;
     }
 }
