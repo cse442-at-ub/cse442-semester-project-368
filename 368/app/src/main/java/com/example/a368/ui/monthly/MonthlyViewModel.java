@@ -10,7 +10,7 @@ public class MonthlyViewModel extends ViewModel {
 
     public MonthlyViewModel() {
         mText = new MutableLiveData<>();
-        mText.setValue("This is monthly fragment \nPlease add monthly calendar API UI here.");
+        mText.setValue("This is Calendar fragment \nPlease add monthly calendar API UI here.");
     }
 
     public LiveData<String> getText() {
