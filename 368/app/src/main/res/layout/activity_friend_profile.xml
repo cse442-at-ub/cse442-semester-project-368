@@ -46,11 +46,20 @@
             android:layout_below="@+id/profileName"
             android:text="TextView" />
 
+        <TextView
+            android:id="@+id/instruction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/profileEmail"
+            android:layout_marginTop="10dp"
+            android:text="Select time to add appointment:"
+            android:textStyle="bold" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/availableTimes"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_below="@+id/profileEmail"
+            android:layout_below="@+id/instruction"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="55dp">
 
