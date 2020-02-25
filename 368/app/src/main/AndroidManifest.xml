@@ -10,9 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:name=".ui.appointment_meeting.createAppointment"
+            android:label="@string/title_activity_create_appointment"
+            android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
             android:name=".ui.friends.FriendProfileActivity"
             android:label="@string/title_activity_friend_profile"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".ui.friends.AddFriendActivity"
             android:label="@string/title_activity_add_friend"

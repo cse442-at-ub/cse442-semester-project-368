@@ -46,15 +46,13 @@ public class FriendProfileActivity extends AppCompatActivity {
         name.setText(getIntent().getStringExtra("name"));
         email.setText(getIntent().getStringExtra("email"));
 
-        list.add("8:00am-9:00am");
-        list.add("9:00am-10:00am");
-        list.add("11:00am-12:00pm");
-        list.add("12:00pm-1:00pm");
-        list.add("1:00pm-2:00pm");
-        list.add("2:00pm-3:00pm");
-        list.add("3:00pm-4:00pm");
-        list.add("4:00pm-5:00pm");
-        list.add("6:00pm-7:00pm");
+
+        list.add("1:00pm-2:00pm\nAndroid Programming Tutorials");
+
+        list.add("3:00pm-4:00pm\n442 Lecture");
+        list.add("5:00pm-6:00pm\nHangout with girlfriend during the day");
+        list.add("7:00pm-8:00pm\nHangout with 2nd girlfriend");
+
         mAdapter = new AvailableTimesAdapter(list, FriendProfileActivity.this);
         layoutManager = new LinearLayoutManager(FriendProfileActivity.this);
 

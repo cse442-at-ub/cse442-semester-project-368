@@ -97,5 +97,6 @@
         "when a user tries to pick up one of cards.\n\n"
     </string>
     <string name="title_activity_friend_profile">FriendProfileActivity</string>
+    <string name="title_activity_create_appointment">createAppointment</string>
 
 </resources>
