@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/fab_margin"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/calendar_month"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="MONTH"
+        android:textColor="@color/colorPrimary"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/calendar_view"
+        android:layout_width="fill_parent"
+        android:layout_height="250dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
+        app:compactCalendarCurrentDayTextColor="#FFFFFF"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimary"
+        app:compactCalendarCurrentSelectedDayTextColor="#FFFFFF"
+        app:compactCalendarMultiEventIndicatorColor="#3d3d3d"
+        app:compactCalendarTargetHeight="250dp"
+        app:compactCalendarTextColor="#3d3d3d"
+        app:compactCalendarTextSize="12sp" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <ListView
+            android:id="@+id/event_list"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
+
+</LinearLayout>

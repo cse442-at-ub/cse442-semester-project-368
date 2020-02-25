@@ -21,7 +21,7 @@
         android:id="@+id/nav_monthly"
         android:name="com.example.a368.ui.monthly.MonthlyFragment"
         android:label="Monthly"
-        tools:layout="@layout/fragment_slideshow" />
+        tools:layout="@layout/fragment_calendar" />
 
     <fragment
         android:id="@+id/nav_appointment_meeting"
