@@ -34,5 +34,5 @@
         android:src="@drawable/ic_add_friend"
         android:elevation="0dp"/>
 <!--        android:layout_margin="16dp" -->
-    
+
 </FrameLayout>
