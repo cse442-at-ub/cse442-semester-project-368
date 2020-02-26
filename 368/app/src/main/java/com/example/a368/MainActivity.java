@@ -20,10 +20,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
 import android.view.Menu;
+import android.app.Dialog;
+import android.widget.Button;
+import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
+    //pop
+    Dialog today_schedule_pop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +48,10 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
+
+        //pop
+        today_schedule_pop = new Dialog(this);
+
     }
 
     @Override
@@ -57,5 +66,39 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
+    }
+
+    //my schedule pop up function
+    public void showpop(View v){
+        Button cancel;
+        Button EditSchedule;
+        Button RemoveSchedule;
+        today_schedule_pop.setContentView(R.layout.today_schedule_pop_up);
+
+        //function to close the pop-up
+        cancel = today_schedule_pop.findViewById(R.id.X);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                today_schedule_pop.dismiss();
+            }
+        });
+        //function to edit schedule
+        EditSchedule=today_schedule_pop.findViewById(R.id.editbutton);
+        EditSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        //function to remove schedule
+        RemoveSchedule=today_schedule_pop.findViewById(R.id.Removebutton);
+        RemoveSchedule.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
+        today_schedule_pop.show();
     }
 }

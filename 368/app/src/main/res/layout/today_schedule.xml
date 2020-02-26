@@ -37,36 +37,42 @@
             android:background="?android:attr/listDivider" />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView2"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="10:00am-11:30am\nMeet with CSE442 Group" />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView11"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="12:00pm-1:00pm\nFeed the Geese to build an army" />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView12"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="2:00pm-3:00pm\nShop for Hawaiian shirts" />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView13"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="3:00pm-3:50pm\nCSE442 Lecture" />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView14"
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="5:00pm-9:30pm\nWork hard for low pay " />
 
         <TextView
+            android:onClick="showpop"
             android:id="@+id/textView15"
             android:layout_width="match_parent"
             android:layout_height="60dp"
