@@ -1,60 +1,77 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <TextView
-        android:id="@+id/remaining_time_textview"
-        android:layout_width="match_parent"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddAppointment"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="24sp"
-        android:textStyle="bold" />
-<!--        android:text="TextView" />-->
+        android:layout_gravity="bottom|right"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_monthly" />
 
-    <View
-        android:id="@+id/divider"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="?android:attr/listDivider" />
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-    <TextView
-        android:id="@+id/textView2"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="10:00am-11:30am\nMeet with CSE442 Group" />
+        <TextView
+            android:id="@+id/remaining_time_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:textStyle="bold" />
+        <!--        android:text="TextView" />-->
 
-    <TextView
-        android:id="@+id/textView11"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="12:00pm-1:00pm\nFeed the Geese to build an army" />
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="?android:attr/listDivider" />
 
-    <TextView
-        android:id="@+id/textView12"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="2:00pm-3:00pm\nShop for Hawaiian shirts" />
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="10:00am-11:30am\nMeet with CSE442 Group" />
 
-    <TextView
-        android:id="@+id/textView13"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="3:00pm-3:50pm\nCSE442 Lecture" />
+        <TextView
+            android:id="@+id/textView11"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="12:00pm-1:00pm\nFeed the Geese to build an army" />
 
-    <TextView
-        android:id="@+id/textView14"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="5:00pm-9:30pm\nWork hard for low pay " />
+        <TextView
+            android:id="@+id/textView12"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="2:00pm-3:00pm\nShop for Hawaiian shirts" />
 
-    <TextView
-        android:id="@+id/textView15"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:text="2:00am-2:30am\nTry not to cry myself to sleep, but cry a lot" />
+        <TextView
+            android:id="@+id/textView13"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="3:00pm-3:50pm\nCSE442 Lecture" />
 
-</LinearLayout>
+        <TextView
+            android:id="@+id/textView14"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="5:00pm-9:30pm\nWork hard for low pay " />
+
+        <TextView
+            android:id="@+id/textView15"
+            android:layout_width="match_parent"
+            android:layout_height="60dp"
+            android:text="2:00am-2:30am\nTry not to cry myself to sleep, but cry a lot" />
+
+    </LinearLayout>
+
+</FrameLayout>
