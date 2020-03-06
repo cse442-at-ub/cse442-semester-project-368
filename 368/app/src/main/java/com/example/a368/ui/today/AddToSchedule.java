@@ -16,15 +16,15 @@ public class AddToSchedule extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_to_schedule);
 
-        Button btCreate = findViewById(R.id.btCreateAppointment);
-
-        btCreate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(AddToSchedule.this, "Appointment Created", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+//        Button btCreate = findViewById(R.id.btCreateAppointment);
+//
+//        btCreate.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Toast.makeText(AddToSchedule.this, "Appointment Created", Toast.LENGTH_SHORT).show();
+//                finish();
+//            }
+//        });
 
     }
 }
