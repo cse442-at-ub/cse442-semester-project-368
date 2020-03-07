@@ -50,7 +50,9 @@ public class LoginActivity extends AppCompatActivity {
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                signIn(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                if(usernameEditText.getText().toString().length()>0 &&  passwordEditText.getText().toString().length() > 0) {
+                    signIn(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                }
             }
         });
 
@@ -58,7 +60,9 @@ public class LoginActivity extends AppCompatActivity {
         registerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                createAccount(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                if(usernameEditText.getText().toString().length()>0 &&  passwordEditText.getText().toString().length() > 0) {
+                    createAccount(usernameEditText.getText().toString(), passwordEditText.getText().toString());
+                }
             }
         });
         final ProgressBar loadingProgressBar = findViewById(R.id.loading);
