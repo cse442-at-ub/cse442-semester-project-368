@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -24,7 +25,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
@@ -174,7 +177,7 @@ public class AddToSchedule extends AppCompatActivity {
         title = (EditText) findViewById(R.id.event_title);
         description = (EditText) findViewById(R.id.event_description);
 
-        // Creating Volley newRequestQueue .
+        // Creating Volley newRequestQueue
         requestQueue = Volley.newRequestQueue(AddToSchedule.this);
         progressDialog = new ProgressDialog(AddToSchedule.this);
 
@@ -191,11 +194,21 @@ public class AddToSchedule extends AppCompatActivity {
          * Flag attribute since they are reusing the Date || Time picker dialog.
          */
         startDate = (TextView) findViewById(R.id.event_start_date);
+
+        // Set up Start Date field (should be fixed for add daily schedule)
+        Date today = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        startDate.setText(dateFormat.format(today));
+
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hide_keyboard(v);
                 startDateClicked = true;
-                new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
+                Toast.makeText(AddToSchedule.this,
+                        "You can only add the schedule with the start date of today", Toast.LENGTH_LONG).show();
+                // Disable for Add Daily Schedule
+//                new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
             }
         });
 
@@ -304,4 +317,10 @@ public class AddToSchedule extends AppCompatActivity {
         }
 
     };
+
+    // Disable keyboard pop-up
+    private void hide_keyboard(View v) {
+        InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
+    }
 }
