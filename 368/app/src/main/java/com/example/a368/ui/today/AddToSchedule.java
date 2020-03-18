@@ -225,6 +225,7 @@ public class AddToSchedule extends AppCompatActivity {
         endDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                hide_keyboard(v);
                 endDateClicked = true;
                 new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
             }
