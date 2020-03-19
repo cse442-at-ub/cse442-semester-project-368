@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:clickable="true"
-        app:srcCompat="@drawable/ic_monthly" />
+        app:srcCompat="@drawable/ic_add_daily" />
 
     <LinearLayout
         android:layout_width="match_parent"
