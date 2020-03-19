@@ -1,41 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_margin="@dimen/fab_margin"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/calendar_month"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddAppointment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:clickable="true"
+        app:srcCompat="@drawable/ic_monthly" />
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAlignment="center"
-        android:text="MONTH"
-        android:textColor="@color/colorPrimary"
-        android:textAppearance="?android:attr/textAppearanceLarge" />
-
-    <com.github.sundeepk.compactcalendarview.CompactCalendarView
+        android:layout_height="match_parent"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/calendar_view"
-        android:layout_width="fill_parent"
-        android:layout_height="250dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
-        app:compactCalendarCurrentDayTextColor="#FFFFFF"
-        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimary"
-        app:compactCalendarCurrentSelectedDayTextColor="#FFFFFF"
-        app:compactCalendarMultiEventIndicatorColor="#3d3d3d"
-        app:compactCalendarTargetHeight="250dp"
-        app:compactCalendarTextColor="#3d3d3d"
-        app:compactCalendarTextSize="12sp" />
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:layout_weight="1"
+        android:layout_margin="@dimen/fab_margin"
         android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/calendar_month"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="MONTH"
+            android:textColor="@color/colorPrimary"
+            android:textAppearance="?android:attr/textAppearanceLarge" />
+
+        <com.github.sundeepk.compactcalendarview.CompactCalendarView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/calendar_view"
+            android:layout_width="fill_parent"
+            android:layout_height="250dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
+            app:compactCalendarCurrentDayTextColor="#FFFFFF"
+            app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimary"
+            app:compactCalendarCurrentSelectedDayTextColor="#FFFFFF"
+            app:compactCalendarMultiEventIndicatorColor="#3d3d3d"
+            app:compactCalendarTargetHeight="250dp"
+            app:compactCalendarTextColor="#3d3d3d"
+            app:compactCalendarTextSize="12sp" />
 
         <TextView
             android:onClick="showpop"
@@ -57,6 +66,7 @@
             android:layout_width="match_parent"
             android:layout_height="60dp"
             android:text="2:00am-2:30am\nTry not to cry myself to sleep, but cry a lot" />
+
     </LinearLayout>
 
-</LinearLayout>
+</FrameLayout>
