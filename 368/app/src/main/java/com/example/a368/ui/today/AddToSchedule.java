@@ -100,10 +100,6 @@ public class AddToSchedule extends AppCompatActivity {
                     strEndTime = endTime.getText().toString();
                     strDescription = description.getText().toString();
 
-                    // Showing progress dialog at user registration time.
-                    progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-                    progressDialog.show();
-
                     // Creating string request with post method.
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
                             new Response.Listener<String>() {
