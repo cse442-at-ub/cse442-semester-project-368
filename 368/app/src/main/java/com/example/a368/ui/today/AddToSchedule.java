@@ -39,14 +39,14 @@ Activity that allows users to add their daily schedule.
  */
 
 public class AddToSchedule extends AppCompatActivity {
-    private static String HttpUrl = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/insert_record.php";
+    private static String HttpUrl = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/insert_schedule.php";
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
 
     private TextView startDate, startTime, endDate, endTime;
     private int year, month, day, hour, minute;
     private Boolean startDateClicked = false, startTimeClicked = false, endDateClicked = false, endTimeClicked = false;
-    private EditText title, location, description;
+    private EditText title, description;
     private String strTitle, strStartDate, strStartTime, strEndDate, strEndTime, strDescription;
 
     // Add customized menu bar
@@ -99,10 +99,6 @@ public class AddToSchedule extends AppCompatActivity {
                     strEndDate = endDate.getText().toString();
                     strEndTime = endTime.getText().toString();
                     strDescription = description.getText().toString();
-
-                    // Showing progress dialog at user registration time.
-                    progressDialog.setMessage("Please Wait, We are Inserting Your Data on Server");
-                    progressDialog.show();
 
                     // Creating string request with post method.
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
