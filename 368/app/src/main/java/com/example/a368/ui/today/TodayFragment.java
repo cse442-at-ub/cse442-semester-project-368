@@ -29,7 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -94,16 +96,27 @@ public class TodayFragment extends Fragment {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
-                        Schedule schedule = new Schedule();
+                        Date today = Calendar.getInstance().getTime();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                        String formatted_today = dateFormat.format(today);
 
-                        schedule.setName(jsonObject.getString("title"));
-                        schedule.setStart_date(jsonObject.getString("start_date"));
-                        schedule.setStart_time(jsonObject.getString("start_time"));
-                        schedule.setEnd_date(jsonObject.getString("end_date"));
-                        schedule.setEnd_time(jsonObject.getString("end_time"));
-                        schedule.setDescription(jsonObject.getString("description"));
+                        if (jsonObject.getString("start_date").equals(formatted_today)) {
+                            Schedule schedule = new Schedule();
 
-                        scheduleList.add(schedule);
+                            schedule.setName(jsonObject.getString("title"));
+                            schedule.setStart_date(jsonObject.getString("start_date"));
+                            schedule.setStart_time(jsonObject.getString("start_time"));
+                            schedule.setEnd_date(jsonObject.getString("end_date"));
+                            schedule.setEnd_time(jsonObject.getString("end_time"));
+                            schedule.setDescription(jsonObject.getString("description"));
+
+                            // empty description disregarded
+                            if (schedule.getDescription().equals("Exception: No Text Applied")) {
+                                schedule.setDescription("");
+                            }
+
+                            scheduleList.add(schedule);
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
