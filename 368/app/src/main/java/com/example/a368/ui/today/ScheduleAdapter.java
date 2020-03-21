@@ -19,16 +19,18 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
 
     private Context context;
     private List<Schedule> list;
+    private onClickListener sOnClickListener;
 
-    public ScheduleAdapter(Context context, List<Schedule> list) {
+    public ScheduleAdapter(Context context, List<Schedule> list, onClickListener onClickListener) {
         this.context = context;
         this.list = list;
+        this.sOnClickListener = onClickListener;
     }
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context).inflate(R.layout.schedule_list_item, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(v, sOnClickListener);
     }
 
     @Override
@@ -48,11 +50,12 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         public TextView text_name, text_start_date, text_start_time, text_end_date, text_end_time, text_description;
+        onClickListener onClickListener;
 
-        public ViewHolder(View itemView) {
+        public ViewHolder(View itemView, onClickListener onClickListener) {
             super(itemView);
 
             text_name = itemView.findViewById(R.id.text_name);
@@ -61,7 +64,19 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
             text_end_date = itemView.findViewById(R.id.text_end_date);
             text_end_time = itemView.findViewById(R.id.text_end_time);
             text_description = itemView.findViewById(R.id.text_description);
+
+            this.onClickListener = onClickListener;
+            itemView.setOnClickListener(this);
         }
+
+        @Override
+        public void onClick(View v) {
+            onClickListener.onClickSchedule(getAdapterPosition());
+        }
+    }
+
+    public interface onClickListener {
+        void onClickSchedule (int position);
     }
 
 }
