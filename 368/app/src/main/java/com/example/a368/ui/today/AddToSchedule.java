@@ -24,6 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
+import com.example.a368.User;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -131,7 +132,7 @@ public class AddToSchedule extends AppCompatActivity {
                             Map<String, String> params = new HashMap<String, String>();
 
                             // Adding All values to Params.
-                            params.put("email", "cjwon531@gmail.com");
+                            params.put("email", User.getInstance().getEmail());
                             params.put("title", strTitle);
                             params.put("start_date", strStartDate);
                             params.put("start_time", strStartTime);
