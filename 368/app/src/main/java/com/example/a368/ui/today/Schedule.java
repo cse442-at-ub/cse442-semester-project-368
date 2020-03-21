@@ -7,6 +7,7 @@ It is integrating with Firebase, and saved as the object itself.
  */
 public class Schedule {
     // Attributes for a single schedule
+    private int id;
     private String name;
     private String start_time;
     private String start_date;
@@ -20,7 +21,8 @@ public class Schedule {
     }
 
     // Constructor
-    public Schedule(String name, String start_time, String start_date, String end_time, String end_date, String description) {
+    public Schedule(int id, String name, String start_time, String start_date, String end_time, String end_date, String description) {
+        this.id = id;
         this.name = name;
         this.start_time = start_time;
         this.start_date = start_date;
@@ -31,6 +33,14 @@ public class Schedule {
     // end of constructor
 
     // Getters & Setters
+    public int getID() {
+        return id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
