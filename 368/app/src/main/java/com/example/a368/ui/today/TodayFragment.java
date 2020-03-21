@@ -89,11 +89,6 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         return root;
     }
 
-<<<<<<< HEAD
-    // Fetching data from the web DB
-=======
-    // Fetch JSON data to display schedule
->>>>>>> view_my_schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
