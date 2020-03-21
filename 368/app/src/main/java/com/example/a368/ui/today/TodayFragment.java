@@ -83,11 +83,14 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         sList.addItemDecoration(dividerItemDecoration);
         sList.setAdapter(adapter);
 
-        getData();
-
         return root;
     }
+    @Override
+    public void onResume() {
 
+        super.onResume();
+        getData();
+    }
     // Fetch JSON data to display schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -97,6 +100,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                scheduleList.clear();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
