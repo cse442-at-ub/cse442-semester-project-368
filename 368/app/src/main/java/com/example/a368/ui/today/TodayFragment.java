@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
+import com.example.a368.User;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -84,6 +85,7 @@ public class TodayFragment extends Fragment {
         return root;
     }
 
+    // Fetching data from the web DB
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
@@ -100,7 +102,9 @@ public class TodayFragment extends Fragment {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                         String formatted_today = dateFormat.format(today);
 
-                        if (jsonObject.getString("start_date").equals(formatted_today)) {
+                        // check to display the logged-in user's schedule only && display today's schedule only
+                        if (jsonObject.getString("email").equals(User.getInstance().getEmail()) &&
+                                jsonObject.getString("start_date").equals(formatted_today)) {
                             Schedule schedule = new Schedule();
 
                             schedule.setName(jsonObject.getString("title"));
