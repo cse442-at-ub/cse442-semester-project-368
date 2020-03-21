@@ -12,13 +12,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|right"
         android:clickable="true"
-        app:srcCompat="@drawable/ic_monthly" />
+        app:srcCompat="@drawable/ic_add_daily" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="20dp">
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/remaining_time_textview"
@@ -26,57 +25,11 @@
             android:layout_height="wrap_content"
             android:textSize="24sp"
             android:textStyle="bold" />
-        <!--        android:text="TextView" />-->
 
-        <View
-            android:id="@+id/divider"
-            android:layout_width="match_parent"
-            android:layout_height="2dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:background="?android:attr/listDivider" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView2"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="10:00am-11:30am\nMeet with CSE442 Group" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView11"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="12:00pm-1:00pm\nFeed the Geese to build an army" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView12"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="2:00pm-3:00pm\nShop for Hawaiian shirts" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView13"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="3:00pm-3:50pm\nCSE442 Lecture" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView14"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="5:00pm-9:30pm\nWork hard for low pay " />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView15"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="2:00am-2:30am\nTry not to cry myself to sleep, but cry a lot" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/schedule_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
 
     </LinearLayout>
 
