@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.a368.R;
+import com.example.a368.Schedule;
 
 import java.util.List;
 

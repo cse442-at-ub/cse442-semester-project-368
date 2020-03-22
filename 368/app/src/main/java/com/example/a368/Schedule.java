@@ -1,4 +1,4 @@
-package com.example.a368.ui.today;
+package com.example.a368;
 
 /*
 Created by: Jiwon Choi

@@ -290,7 +290,9 @@ public class AddToSchedule extends AppCompatActivity {
             if (hourOfDay < 10 || minute < 10) {
                 String hour = "", min = "";
 
-                if (hourOfDay < 10) {
+                if (hourOfDay == 0) {
+                    hour = String.valueOf(12);
+                } else if (hourOfDay < 10 ) {
                     hour = "0" + String.valueOf(hourOfDay);
                 } else {
                     hour = String.valueOf(hourOfDay);
