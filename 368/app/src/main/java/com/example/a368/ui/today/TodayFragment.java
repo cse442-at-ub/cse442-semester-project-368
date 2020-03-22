@@ -21,10 +21,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.Window;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.User;
@@ -38,7 +40,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /*
 Created by: Jiwon Choi
@@ -173,6 +177,62 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                 // Temporary Printing for now
                 Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
                         " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
+                switch (menuID) {
+                    case 0:
+                        //code for edit goes here
+                        break;
+                    case 1:
+                        //code for delete
+                        final String[] confirm = {"Yes", "No"};
+                        AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                        confirmBuilder.setTitle("Delete Schedule");
+                        confirmBuilder.setMessage("Are you sure you want to delete?");
+                        confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/delete-schedule.php",
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String ServerResponse) {
+                                                getData();
+                                                // Showing response message coming from server.
+                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError volleyError) {
+                                                // Showing error message if something goes wrong.
+                                                Toast.makeText(getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }) {
+                                    @Override
+                                    protected Map<String, String> getParams() {
+                                        // Creating Map String Params.
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        // Adding All values to Params.
+                                        params.put("id", ""+scheduleList.get(pos).getID());
+                                        return params;
+                                    }
+
+                                };
+                                // Creating RequestQueue.
+                                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+                                // Adding the StringRequest object into requestQueue.
+                                requestQueue.add(stringRequest);
+                            }
+                        });
+                        confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        confirmBuilder.show();
+                    break;
+                }
             }
         });
         builder.show();
