@@ -290,7 +290,9 @@ public class AddToSchedule extends AppCompatActivity {
             if (hourOfDay < 10 || minute < 10) {
                 String hour = "", min = "";
 
-                if (hourOfDay < 10) {
+                if (hourOfDay == 0) {
+                    hour = String.valueOf(12);
+                } else if (hourOfDay < 10 ) {
                     hour = "0" + String.valueOf(hourOfDay);
                 } else {
                     hour = String.valueOf(hourOfDay);
@@ -306,9 +308,15 @@ public class AddToSchedule extends AppCompatActivity {
             }
 
             if (startTimeClicked) {
+                if (msg.indexOf("0") == 0) {
+                    msg = msg.replaceFirst("0", "");
+                }
                 startTime.setText(msg);
                 startTimeClicked = false;
             } else if (endTimeClicked) {
+                if (msg.indexOf("0") == 0) {
+                    msg = msg.replaceFirst("0", "");
+                }
                 endTime.setText(msg);
                 endTimeClicked = false;
             }
