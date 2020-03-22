@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -36,10 +38,15 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Function;
 
 /*
 Created by: Jiwon Choi
@@ -118,6 +125,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         progressDialog.show();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(JSONArray response) {
                 scheduleList.clear();
@@ -166,6 +174,9 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                         progressDialog.dismiss();
                     }
                 }
+
+                sortArray(scheduleList);
+
                 adapter.notifyDataSetChanged();
                 progressDialog.dismiss();
             }
@@ -218,5 +229,15 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
             e.printStackTrace();
         }
         return str;
+    }
+
+    private void sortArray(List<Schedule> arrayList) {
+        if (arrayList != null) {
+            Collections.sort(arrayList, new Comparator<Schedule>() {
+                @Override
+                public int compare(Schedule o1, Schedule o2) {
+                    return o2.getStart_time().compareTo(o1.getStart_time()); }
+            });
+        }
     }
 }
