@@ -81,8 +81,8 @@
                     android:id="@+id/event_start_time"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="08:00 AM"
+                    android:text="8:00 AM"
+                    android:textAlignment="viewEnd"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorText" />
 
@@ -107,8 +107,8 @@
                     android:id="@+id/event_end_time"
                     android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:text="09:00 AM"
+                    android:text="12:00 PM"
+                    android:textAlignment="viewEnd"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorText" />
 

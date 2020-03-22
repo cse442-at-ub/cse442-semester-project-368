@@ -72,6 +72,10 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
             }
         });
 
+        Date today = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        String formatted_today = dateFormat.format(today);
+
         String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
         remaining_time.setText(currentDateTimeString);
 
@@ -126,10 +130,19 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                             schedule.setName(jsonObject.getString("title"));
                             schedule.setStart_date(jsonObject.getString("start_date"));
                             schedule.setStart_date(schedule.getStart_date().substring(0, 5));
+
                             schedule.setStart_time(jsonObject.getString("start_time"));
+                            if (schedule.getStart_time().indexOf("0") == 0) {
+                                schedule.setStart_time(schedule.getStart_time().replaceFirst("0", " "));
+                            }
+
                             schedule.setEnd_date(jsonObject.getString("end_date"));
                             schedule.setEnd_date(schedule.getEnd_date().substring(0, 5));
+
                             schedule.setEnd_time(jsonObject.getString("end_time"));
+                            if (schedule.getEnd_time().indexOf("0") == 0) {
+                                schedule.setEnd_time(schedule.getEnd_time().replaceFirst("0", " "));
+                            }
                             schedule.setDescription(jsonObject.getString("description"));
 
                             // empty description disregarded

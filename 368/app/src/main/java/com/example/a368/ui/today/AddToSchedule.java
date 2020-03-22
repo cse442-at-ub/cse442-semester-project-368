@@ -308,9 +308,15 @@ public class AddToSchedule extends AppCompatActivity {
             }
 
             if (startTimeClicked) {
+                if (msg.indexOf("0") == 0) {
+                    msg = msg.replaceFirst("0", "");
+                }
                 startTime.setText(msg);
                 startTimeClicked = false;
             } else if (endTimeClicked) {
+                if (msg.indexOf("0") == 0) {
+                    msg = msg.replaceFirst("0", "");
+                }
                 endTime.setText(msg);
                 endTimeClicked = false;
             }
