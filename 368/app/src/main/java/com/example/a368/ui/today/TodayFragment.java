@@ -40,6 +40,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+/*
+Created by: Jiwon Choi
+Modified by: Dave Rodrigues
+This has a daily schedule adding floating action button and displays schedule with their relevant remaining time.
+ */
 public class TodayFragment extends Fragment implements ScheduleAdapter.onClickListener {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
@@ -84,11 +89,17 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         sList.addItemDecoration(dividerItemDecoration);
         sList.setAdapter(adapter);
 
-        getData();
-
         return root;
     }
 
+    // Updates view schedule list
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
+    // Fetch JSON data to display schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
@@ -97,6 +108,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
+                scheduleList.clear();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -145,6 +157,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         requestQueue.add(jsonArrayRequest);
     }
 
+    // On click schedule item
     @Override
     public void onClickSchedule(int position) {
         final int pos = position;
