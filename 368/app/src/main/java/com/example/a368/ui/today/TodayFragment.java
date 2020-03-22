@@ -125,8 +125,10 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                             schedule.setID((jsonObject.getInt("id")));
                             schedule.setName(jsonObject.getString("title"));
                             schedule.setStart_date(jsonObject.getString("start_date"));
+                            schedule.setStart_date(schedule.getStart_date().substring(0, 5));
                             schedule.setStart_time(jsonObject.getString("start_time"));
                             schedule.setEnd_date(jsonObject.getString("end_date"));
+                            schedule.setEnd_date(schedule.getEnd_date().substring(0, 5));
                             schedule.setEnd_time(jsonObject.getString("end_time"));
                             schedule.setDescription(jsonObject.getString("description"));
 

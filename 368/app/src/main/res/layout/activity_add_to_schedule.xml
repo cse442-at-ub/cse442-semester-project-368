@@ -71,7 +71,7 @@
 
                 <TextView
                     android:id="@+id/event_start_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="MM/DD/YYYY"
                     android:textAppearance="?android:attr/textAppearanceMedium"
@@ -79,9 +79,9 @@
 
                 <TextView
                     android:id="@+id/event_start_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="20dp"
                     android:text="08:00 AM"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorText" />
@@ -97,7 +97,7 @@
 
                 <TextView
                     android:id="@+id/event_end_date"
-                    android:layout_width="wrap_content"
+                    android:layout_width="130dp"
                     android:layout_height="wrap_content"
                     android:text="MM/DD/YYYY"
                     android:textAppearance="?android:attr/textAppearanceMedium"
@@ -105,9 +105,9 @@
 
                 <TextView
                     android:id="@+id/event_end_time"
-                    android:layout_width="wrap_content"
+                    android:layout_width="100dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="30dp"
+                    android:layout_marginLeft="20dp"
                     android:text="09:00 AM"
                     android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@color/colorText" />
