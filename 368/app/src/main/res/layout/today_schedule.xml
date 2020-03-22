@@ -23,12 +23,19 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/remaining_time_textview"
+            android:id="@+id/current_time_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textAlignment="center"
             android:textColor="@color/colorAccent"
-            android:textSize="24sp"
+            android:textSize="24dp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/today_textview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorAccent"
+            android:textSize="20dp"
             android:textStyle="bold" />
 
         <View

@@ -34,6 +34,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -62,7 +63,8 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                 ViewModelProviders.of(this).get(TodayViewModel.class);
         View root = inflater.inflate(R.layout.today_schedule, container, false);
 
-        TextView remaining_time = (TextView)root.findViewById(R.id.remaining_time_textview);
+        TextView textView_current_time = (TextView)root.findViewById(R.id.current_time_textview);
+        TextView textView_today = (TextView)root.findViewById(R.id.today_textview);
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fabAddAppointment);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -72,12 +74,18 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
             }
         });
 
-        Date today = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        String formatted_today = dateFormat.format(today);
+        Date curr_time = Calendar.getInstance().getTime();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
+        String formatted_time = timeFormat.format(curr_time);
+        if (formatted_time.indexOf("0") == 0) {
+            formatted_time = formatted_time.replaceFirst("0", "");
+        }
+        textView_current_time.setText(formatted_time);
 
-        String currentDateTimeString = java.text.DateFormat.getDateTimeInstance().format(new Date());
-        remaining_time.setText(currentDateTimeString);
+        Date today = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formatted_today = dateFormat.format(today);
+        textView_today.setText(formatted_today);
 
         sList = (RecyclerView)root.findViewById(R.id.schedule_list);
 
@@ -129,7 +137,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                             schedule.setID((jsonObject.getInt("id")));
                             schedule.setName(jsonObject.getString("title"));
                             schedule.setStart_date(jsonObject.getString("start_date"));
-                            schedule.setStart_date(schedule.getStart_date().substring(0, 5));
+                            schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5)));
 
                             schedule.setStart_time(jsonObject.getString("start_time"));
                             if (schedule.getStart_time().indexOf("0") == 0) {
@@ -137,7 +145,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                             }
 
                             schedule.setEnd_date(jsonObject.getString("end_date"));
-                            schedule.setEnd_date(schedule.getEnd_date().substring(0, 5));
+                            schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5)));
 
                             schedule.setEnd_time(jsonObject.getString("end_time"));
                             if (schedule.getEnd_time().indexOf("0") == 0) {
@@ -191,5 +199,24 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
             }
         });
         builder.show();
+    }
+
+    // Converts date format from MM/dd into MMM d
+    public String date_parsing (String old_date) {
+        String inputPattern = "MM/dd";
+        String outputPattern = "MMM d";
+        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(old_date);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 }
