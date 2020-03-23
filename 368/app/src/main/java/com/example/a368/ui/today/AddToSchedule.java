@@ -79,7 +79,24 @@ public class AddToSchedule extends AppCompatActivity {
                 if (title.getText().length() == 0 ||
                         startDate.getText().toString().equals("MM/DD/YYYY") ||
                         endDate.getText().toString().equals("MM/DD/YYYY")) {
-                    Toast.makeText(AddToSchedule.this, "Invalid input: Check your input field.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(AddToSchedule.this, "Missing Information: You can only skip 'Description' field.", Toast.LENGTH_LONG).show();
+                }
+
+                /**
+                 * Check whether the user inputted start date later than the end date (Invalid Schedule)
+                 */
+                else if (!(startDate.getText().toString().equals(endDate.getText().toString()))
+                        && !(check_date(startDate.getText().toString(), endDate.getText().toString(), "MM/DD/YYYY"))) {
+                    Toast.makeText(AddToSchedule.this, "Your end date cannot be earlier than the start date.", Toast.LENGTH_LONG).show();
+                }
+
+                /**
+                 * Check whether the user inputted end time earlier than the start time,
+                 * when it occurs in the same day (Invalid Schedule)
+                 */
+                else if (startDate.getText().toString().equals(endDate.getText().toString()) &&
+                        (!(check_date(startTime.getText().toString(), endTime.getText().toString(), "HH:mm")))) {
+                    Toast.makeText(AddToSchedule.this, "Your end time cannot be earlier than the start time.", Toast.LENGTH_LONG).show();
                 }
 
                 /**
@@ -397,5 +414,48 @@ public class AddToSchedule extends AppCompatActivity {
     private void hide_keyboard(View v) {
         InputMethodManager inputMethodManager = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(v.getApplicationWindowToken(),0);
+    }
+
+    // Check for passed date
+    private boolean check_date(String start_date, String end_date, String pattern) {
+        if (pattern.equals("HH:mm")) {
+            start_date = date_parsing(start_date, "hh:mm aaa", "HH:mm");
+            end_date = date_parsing(end_date, "hh:mm aaa", "HH:mm");
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+
+        try {
+            Date date1 = sdf.parse(start_date);
+            Date date2 = sdf.parse(end_date);
+
+            if(date1.before(date2)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    // Converts date format
+    public String date_parsing (String old_date, String input_format, String output_format) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat(input_format);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(output_format);
+
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(old_date);
+            str = outputFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 }

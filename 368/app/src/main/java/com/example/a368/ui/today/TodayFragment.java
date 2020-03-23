@@ -232,9 +232,15 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                 // Edit / Delete Action goes here (menuID)
                 // DB ID = scheduleID param
 
-                // Temporary Printing for now
+                /**
+                 * Toast msg prints out option ID and SQL column id
+                 */
+                /*
                 Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
                         " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
+
+                */
+
                 switch (menuID) {
                     case 0:
                         Intent intent = new Intent(getContext(), AddToSchedule.class);
@@ -305,7 +311,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         builder.show();
     }
 
-    // Converts date format from MM/dd into MMM d
+    // Converts date format
     public String date_parsing (String old_date, String input_format, String output_format) {
         SimpleDateFormat inputFormat = new SimpleDateFormat(input_format);
         SimpleDateFormat outputFormat = new SimpleDateFormat(output_format);
