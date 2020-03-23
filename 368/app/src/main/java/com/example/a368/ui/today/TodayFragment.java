@@ -137,13 +137,21 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
+                        // Get today
                         Date today = Calendar.getInstance().getTime();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                         String formatted_today = dateFormat.format(today);
 
+                        // Get current time
+                        Date now = Calendar.getInstance().getTime();
+                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
+                        String formatted_time = timeFormat.format(now);
+                        formatted_time = "23:50";
+
                         // check to display the logged-in user's schedule only && display today's schedule only
                         if (jsonObject.getString("email").equals(User.getInstance().getEmail()) &&
-                                jsonObject.getString("start_date").equals(formatted_today)) {
+                                jsonObject.getString("start_date").equals(formatted_today) &&
+                                check_timings(formatted_time, jsonObject.getString("start_time"))) {
                             Schedule schedule = new Schedule();
 
                             schedule.setID((jsonObject.getInt("id")));
@@ -308,5 +316,37 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                     return o1.getStart_time().compareTo(o2.getStart_time()); }
             });
         }
+    }
+
+    // Check for passed time
+    private boolean check_timings(String time, String endtime) {
+        String pattern = "HH:mm";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+        SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm aaa");
+        Date date = null;
+        String str = null;
+
+        try {
+            date = inputFormat.parse(endtime);
+            str = sdf.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            Date date1 = sdf.parse(time);
+            Date date2 = sdf.parse(str);
+
+            if(date1.before(date2)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
