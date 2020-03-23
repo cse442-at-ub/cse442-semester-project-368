@@ -7,6 +7,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.User;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -102,6 +104,39 @@ public class AddToSchedule extends AppCompatActivity {
                     strDescription = description.getText().toString();
 
                     // Creating string request with post method.
+                    if(getIntent().hasExtra("id")) {
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/delete-schedule.php",
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String ServerResponse) {
+                                        // Showing response message coming from server.
+
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
+                                        // Showing error message if something goes wrong.
+
+                                    }
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() {
+                                // Creating Map String Params.
+                                Map<String, String> params = new HashMap<String, String>();
+                                // Adding All values to Params.
+
+                                params.put("id", ""+getIntent().getStringExtra("id"));
+                                return params;
+                            }
+
+                        };
+                        // Creating RequestQueue.
+                        RequestQueue requestQueue = Volley.newRequestQueue(AddToSchedule.this);
+
+                        // Adding the StringRequest object into requestQueue.
+                        requestQueue.add(stringRequest);
+                    }
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
                             new Response.Listener<String>() {
                                 @Override
@@ -224,8 +259,25 @@ public class AddToSchedule extends AppCompatActivity {
             public void onClick(View v) {
                 hide_keyboard(v);
                 endDateClicked = true;
-                new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
-            }
+//                if(getIntent().hasExtra("end_date")) {
+//                    SimpleDateFormat format = new SimpleDateFormat("mmm dd yyyy");
+//                    SimpleDateFormat outForm = new SimpleDateFormat("MM/dd/yyyy");
+//
+//                    try {
+//                        Date date = new SimpleDateFormat("MMM").parse(getIntent().getStringExtra("end_date")+" "+Calendar.getInstance().get(Calendar.YEAR));
+//                        Calendar cal = Calendar.getInstance();
+//                        cal.setTime(date);
+////                        date = outForm.parse(date.toString());
+//                        Log.d("mdate", ""+cal.getInstance().get(Calendar.MONTH));
+//                        new DatePickerDialog(AddToSchedule.this, dateSetListener, cal.getInstance().get(Calendar.YEAR), cal.getInstance().get(Calendar.MONTH), cal.getInstance().get(Calendar.DATE)).show();
+//                    } catch (ParseException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//                else {
+                    new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
+                }
+
         });
 
         endTime = (TextView) findViewById(R.id.event_end_time);
@@ -236,7 +288,30 @@ public class AddToSchedule extends AppCompatActivity {
                 new TimePickerDialog(AddToSchedule.this, timeSetListener, hour, minute, false).show();
             }
         });
+        if(getIntent().hasExtra("id")) {
+            title.setText(getIntent().getStringExtra("name"));
+            startTime.setText(getIntent().getStringExtra("start_time"));
+            startDate.setText(getIntent().getStringExtra("start_date"));
+            endTime.setText(getIntent().getStringExtra("end_time"));
+            Date eDate = null;
+            Date sDate = null;
+            try {
+                eDate = new SimpleDateFormat("MMM dd yyyy").parse(getIntent().getStringExtra("end_date")+" "+ Calendar.getInstance().get(Calendar.YEAR));
+                sDate = new SimpleDateFormat("MMM dd yyyy").parse(getIntent().getStringExtra("start_date")+" "+ Calendar.getInstance().get(Calendar.YEAR));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            Calendar eCal = Calendar.getInstance();
+            Calendar sCal = Calendar.getInstance();
+            eCal.setTime(eDate);
+            sCal.setTime(sDate);
+            String strEDate = String.format("%02d/%02d/%04d", eCal.get(eCal.MONTH)+1, eCal.get(eCal.DATE), eCal.get(eCal.YEAR));
+            String strSDate = String.format("%02d/%02d/%04d", sCal.get(sCal.MONTH)+1, sCal.get(sCal.DATE), sCal.get(sCal.YEAR));
+            endDate.setText(strEDate);
+            startDate.setText(strSDate);
 
+            description.setText(getIntent().getStringExtra("description"));
+        }
     }
 
     // Date Picker Dialog

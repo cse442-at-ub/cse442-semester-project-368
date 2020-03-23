@@ -213,7 +213,16 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                         " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
                 switch (menuID) {
                     case 0:
-                        //code for edit goes here
+                        Intent intent = new Intent(getContext(), AddToSchedule.class);
+                        intent.putExtra("id", ""+scheduleList.get(pos).getID());
+                        intent.putExtra("name", scheduleList.get(pos).getName());
+                        intent.putExtra("start_time", scheduleList.get(pos).getStart_time());
+                        intent.putExtra("start_date", scheduleList.get(pos).getStart_date());
+                        intent.putExtra("end_time", scheduleList.get(pos).getEnd_time());
+                        intent.putExtra("end_date", scheduleList.get(pos).getEnd_date());
+                        intent.putExtra("description", scheduleList.get(pos).getDescription());
+                        startActivity(intent);
+
                         break;
                     case 1:
                         //code for delete
