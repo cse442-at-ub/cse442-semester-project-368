@@ -72,7 +72,9 @@ public class LoginActivity extends AppCompatActivity {
                 if(editPassword.getText().toString().length() < 6) {
                     Toast.makeText(LoginActivity.this, "Password is not long enough", Toast.LENGTH_LONG).show();
                 }
-                signIn(editEmail.getText().toString(), editPassword.getText().toString(), 1);
+                else {
+                    signIn(editEmail.getText().toString(), editPassword.getText().toString(), 1);
+                }
             }
         });
         btnSignIn.setOnClickListener(new View.OnClickListener() {
