@@ -146,40 +146,43 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                         Date now = Calendar.getInstance().getTime();
                         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
                         String formatted_time = timeFormat.format(now);
-                        formatted_time = "23:50";
 
                         // check to display the logged-in user's schedule only && display today's schedule only
                         if (jsonObject.getString("email").equals(User.getInstance().getEmail()) &&
-                                jsonObject.getString("start_date").equals(formatted_today) &&
-                                check_timings(formatted_time, jsonObject.getString("start_time"))) {
-                            Schedule schedule = new Schedule();
+                                jsonObject.getString("start_date").equals(formatted_today)) {
 
-                            schedule.setID((jsonObject.getInt("id")));
-                            schedule.setName(jsonObject.getString("title"));
-                            schedule.setStart_date(jsonObject.getString("start_date"));
-                            schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5)));
+                            if ((jsonObject.getString("end_date").equals(formatted_today) &&
+                                    check_timings(formatted_time, jsonObject.getString("end_time"))) ||
+                                (!(jsonObject.getString("end_date").equals(formatted_today)))) {
 
-                            schedule.setStart_time(jsonObject.getString("start_time"));
-//                            if (schedule.getStart_time().indexOf("0") == 0) {
-//                                schedule.setStart_time(schedule.getStart_time().replaceFirst("0", " "));
-//                            }
+                                Schedule schedule = new Schedule();
 
-                            schedule.setEnd_date(jsonObject.getString("end_date"));
-                            schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5)));
+                                schedule.setID((jsonObject.getInt("id")));
+                                schedule.setName(jsonObject.getString("title"));
+                                schedule.setStart_date(jsonObject.getString("start_date"));
+                                schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5),
+                                        "MM/dd", "MMM d"));
 
-                            schedule.setEnd_time(jsonObject.getString("end_time"));
-                            if (schedule.getEnd_time().indexOf("0") == 0) {
-                                schedule.setEnd_time(schedule.getEnd_time().replaceFirst("0", " "));
+                                schedule.setStart_time(jsonObject.getString("start_time"));
+                                schedule.setStart_time(date_parsing(schedule.getStart_time(),
+                                        "hh:mm aaa", "HH:mm"));
+
+                                schedule.setEnd_date(jsonObject.getString("end_date"));
+                                schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5),
+                                        "MM/dd", "MMM d"));
+
+                                schedule.setEnd_time(jsonObject.getString("end_time"));
+                                schedule.setEnd_time(date_parsing(schedule.getEnd_time(),
+                                        "hh:mm aaa", "HH:mm"));
+
+                                schedule.setDescription(jsonObject.getString("description"));
+
+                                // empty description disregarded
+                                if (schedule.getDescription().equals("Exception: No Text Applied")) {
+                                    schedule.setDescription("");
+                                }
+                                scheduleList.add(schedule);
                             }
-                            schedule.setDescription(jsonObject.getString("description"));
-
-                            // empty description disregarded
-                            if (schedule.getDescription().equals("Exception: No Text Applied")) {
-                                schedule.setDescription("");
-                            }
-                            sortArray(scheduleList);
-                            scheduleList.add(schedule);
-                            sortArray(scheduleList);
                         }
 
                     } catch (JSONException e) {
@@ -187,7 +190,20 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                         progressDialog.dismiss();
                     }
                 }
+
+                // Sort by start time
                 sortArray(scheduleList);
+
+                // Re-format time
+                for (int i = 0; i < scheduleList.size(); i++) {
+                    // start time
+                    scheduleList.get(i).setStart_time(date_parsing(scheduleList.get(i).getStart_time(),
+                            "HH:mm", "hh:mm aaa"));
+
+                    // end time
+                    scheduleList.get(i).setEnd_time(date_parsing(scheduleList.get(i).getEnd_time(),
+                            "HH:mm", "hh:mm aaa"));
+                }
 
                 adapter.notifyDataSetChanged();
                 progressDialog.dismiss();
@@ -290,11 +306,9 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
     }
 
     // Converts date format from MM/dd into MMM d
-    public String date_parsing (String old_date) {
-        String inputPattern = "MM/dd";
-        String outputPattern = "MMM d";
-        SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern);
-        SimpleDateFormat outputFormat = new SimpleDateFormat(outputPattern);
+    public String date_parsing (String old_date, String input_format, String output_format) {
+        SimpleDateFormat inputFormat = new SimpleDateFormat(input_format);
+        SimpleDateFormat outputFormat = new SimpleDateFormat(output_format);
 
         Date date = null;
         String str = null;
@@ -322,20 +336,11 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
     private boolean check_timings(String time, String endtime) {
         String pattern = "HH:mm";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        SimpleDateFormat inputFormat = new SimpleDateFormat("hh:mm aaa");
-        Date date = null;
-        String str = null;
-
-        try {
-            date = inputFormat.parse(endtime);
-            str = sdf.format(date);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        String time2 = date_parsing(endtime, "hh:mm aaa", "HH:mm");
 
         try {
             Date date1 = sdf.parse(time);
-            Date date2 = sdf.parse(str);
+            Date date2 = sdf.parse(time2);
 
             if(date1.before(date2)) {
                 return true;

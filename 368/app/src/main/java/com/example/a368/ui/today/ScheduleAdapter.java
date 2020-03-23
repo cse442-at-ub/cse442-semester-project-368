@@ -76,8 +76,29 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.ViewHo
         remaining = remaining % minutesInMilli;
 
         long elapsedSeconds = remaining / secondsInMilli;
+
+        String HR_str = String.format("%d", elapsedHours);
+        String MIN_str = String.format("%02d", elapsedMinutes);
+        String SEC_str = String.format("%02d", elapsedSeconds);
         String formatted = String.format("%d:%02d:%02d", elapsedHours, elapsedMinutes, elapsedSeconds);
-        holder.text_time_remaining.setText("Remains\n"+formatted);
+
+        if (formatted.indexOf("-") != -1) {
+            formatted = "\nOngoing Now";
+        } else {
+            String msg = "";
+            if (!(HR_str.equals("00")) && !(HR_str.equals("0"))) {
+                msg += HR_str + " Hr\n";
+                msg += MIN_str + " Min\n";
+                msg += SEC_str + " Sec";
+            } else if (!(MIN_str.equals("00")) && !(MIN_str.equals("0"))) {
+                msg += "\n" + MIN_str + " Min\n";
+                msg += SEC_str + " Sec";
+            } else if (!(SEC_str.equals("00")) && !(SEC_str.equals("0"))) {
+                msg += "\n" + SEC_str + " Sec";
+            }
+            formatted = "Remains\n" + msg;
+        }
+        holder.text_time_remaining.setText(formatted);
 
     }
 
