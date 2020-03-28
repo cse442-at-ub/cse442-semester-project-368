@@ -32,6 +32,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.Schedule;
 import com.example.a368.User;
+import com.example.a368.ScheduleAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -40,8 +41,6 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -50,7 +49,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 
 /*
 Created by: Jiwon Choi
