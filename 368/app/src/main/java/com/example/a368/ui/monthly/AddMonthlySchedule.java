@@ -277,6 +277,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
             }
         });
         if(getIntent().hasExtra("id")) {
+            actionBar.setTitle("Edit Schedule");
             title.setText(getIntent().getStringExtra("name"));
             startTime.setText(getIntent().getStringExtra("start_time"));
             startDate.setText(getIntent().getStringExtra("start_date"));
