@@ -37,6 +37,7 @@
             android:layout_height="250dp"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
+            app:compactCalendarBackgroundColor="#F9F9F9"
             app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
             app:compactCalendarCurrentDayTextColor="#FFFFFF"
             app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimary"
@@ -46,26 +47,11 @@
             app:compactCalendarTextColor="#3d3d3d"
             app:compactCalendarTextSize="12sp" />
 
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView13"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="3:00pm-3:50pm\nCSE442 Lecture" />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView14"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="5:00pm-9:30pm\nWork hard for low pay " />
-
-        <TextView
-            android:onClick="showpop"
-            android:id="@+id/textView15"
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:text="2:00am-2:30am\nTry not to cry myself to sleep, but cry a lot" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/monthly_schedule_list"
+            android:layout_marginTop="@dimen/fab_margin"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
 
     </LinearLayout>
 
