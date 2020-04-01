@@ -50,11 +50,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/*
-Created by: Jiwon Choi
-Modified by: Dave Rodrigues
-This has a daily schedule adding floating action button and displays schedule with their relevant remaining time.
- */
+/**
+* Created by: Jiwon Choi
+* Modified by: Dave Rodrigues
+* This has a daily schedule adding floating action button and displays schedule with their relevant remaining time.
+*/
 public class TodayFragment extends Fragment implements ScheduleAdapter.onClickListener {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
