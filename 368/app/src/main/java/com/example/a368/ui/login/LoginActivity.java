@@ -2,6 +2,7 @@ package com.example.a368.ui.login;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
@@ -38,7 +39,8 @@ Activity that allows users to log-in.
 
 public class LoginActivity extends AppCompatActivity {
     private static String HttpUrl = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/login/login.php";
-
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
     private LoginViewModel loginViewModel;
     private EditText editEmail;
     private EditText editPassword;
@@ -46,16 +48,22 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     public void onStart() {
         super.onStart();
-
+        pref = getApplicationContext().getSharedPreferences("MyPref", 0); // 0 - for private mode
+        editor = pref.edit();
+        if(pref.getString("User", null) != null) {
+            User user = User.getInstance();
+            user.setEmail(pref.getString("User", null));
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+        }
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
                 .get(LoginViewModel.class);
-
         editEmail = findViewById(R.id.editEmail);
         editPassword = findViewById(R.id.editPassword);
 
@@ -104,6 +112,8 @@ public class LoginActivity extends AppCompatActivity {
                         }
 
                         if(response == 1) {
+                            editor.putString("User", email.toString());
+                            editor.commit();
                             User user = User.getInstance();
                             user.setEmail(email);
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
