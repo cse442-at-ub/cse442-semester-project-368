@@ -10,10 +10,6 @@ import android.widget.TextView;
 import com.example.a368.R;
 import com.example.a368.Schedule;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 
 /*
