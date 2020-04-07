@@ -1,4 +1,4 @@
-package com.example.a368;
+package com.example.a368.ui.today;
 
 import androidx.recyclerview.widget.RecyclerView;
 import android.content.Context;
@@ -6,6 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+
+import com.example.a368.R;
+import com.example.a368.Schedule;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;

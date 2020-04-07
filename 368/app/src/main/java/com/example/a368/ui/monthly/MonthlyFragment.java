@@ -1,8 +1,6 @@
 package com.example.a368.ui.monthly;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -10,34 +8,26 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.Schedule;
-import com.example.a368.ScheduleAdapter;
+import com.example.a368.ui.monthly.MonthlyAdapter;
 import com.example.a368.User;
-import com.example.a368.ui.today.AddToSchedule;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
-import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -51,10 +41,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -62,7 +50,7 @@ import java.util.TimeZone;
  * This has the calendar and monthly schedule.
  */
 
-public class MonthlyFragment extends Fragment implements ScheduleAdapter.onClickListener {
+public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickListener {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
     private MonthlyViewModel monthlyViewModel;
@@ -108,7 +96,7 @@ public class MonthlyFragment extends Fragment implements ScheduleAdapter.onClick
 
         sList = (RecyclerView)root.findViewById(R.id.monthly_schedule_list);
         scheduleList = new ArrayList<>();
-        adapter = new ScheduleAdapter(getContext(), scheduleList, this);
+        adapter = new MonthlyAdapter(getContext(), scheduleList, this);
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
