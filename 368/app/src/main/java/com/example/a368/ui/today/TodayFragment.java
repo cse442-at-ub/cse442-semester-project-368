@@ -32,7 +32,6 @@ import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.Schedule;
 import com.example.a368.User;
-import com.example.a368.ScheduleAdapter;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
