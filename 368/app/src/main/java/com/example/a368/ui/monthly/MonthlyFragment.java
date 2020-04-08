@@ -223,6 +223,9 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     @Override
     public void onResume() {
         super.onResume();
+        refresh();
+    }
+    private void refresh() {
         getData();
 
         calendarList.clear();
@@ -301,7 +304,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
-
     // Fetch JSON data to display schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -465,6 +467,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
                                 // Adding the StringRequest object into requestQueue.
                                 requestQueue.add(stringRequest);
+                                refresh();
                             }
                         });
                         confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
