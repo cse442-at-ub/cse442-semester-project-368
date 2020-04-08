@@ -34,10 +34,5 @@
         android:name="com.example.a368.ui.friends.FriendsFragment"
         android:label="Friends"
         tools:layout="@layout/monthly_schedule_list" />
-
-<!--    <fragment-->
-<!--        android:id="@+id/nav_send"-->
-<!--        android:name="com.example.a368.ui.send.SendFragment"-->
-<!--        android:label="@string/menu_send"-->
-<!--        appointment_meeting:layout="@layout/fragment_send" />-->
+    
 </navigation>
