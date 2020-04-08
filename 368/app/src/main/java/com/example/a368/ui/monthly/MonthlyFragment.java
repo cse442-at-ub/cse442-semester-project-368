@@ -219,30 +219,51 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         super.onResume();
         getData();
 
-        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
-        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
-
         calendarList.clear();
         compactCalendar.removeAllEvents();
+        List<Date> dates = new ArrayList<Date>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(JSONArray response) {
                 scheduleList.clear();
+                SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
                         if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
-                            String startDate = jsonObject.getString("start_date");
-                            String startTime = jsonObject.getString("start_time");
+                            String str_date = jsonObject.getString("start_date");
+                            String end_date = jsonObject.getString("end_date");
 
-                            String mTime = startDate + ", " + startTime;
+                            if (str_date.equals(end_date)) {
+                                Date date = null;
+                                try {
+                                    date = formatter.parse(str_date);
+                                    long milliTime = date.getTime();
+                                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                                } catch (ParseException e) {
+                                    e.printStackTrace();
+                                }
+
+                                continue;
+                            }
+
                             Date date = null;
                             try {
-                                date = format.parse(mTime);
-                                long milliTime = date.getTime();
-                                calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                                Date  startDate = (Date)formatter.parse(str_date);
+                                Date  endDate = (Date)formatter.parse(end_date);
+
+                                long interval = 24*1000 * 60 * 60; // 1 hour in millis
+                                long endTime = endDate.getTime() ;
+                                long curTime = startDate.getTime();
+
+                                while (curTime <= endTime) {
+                                    dates.add(new Date(curTime));
+                                    curTime += interval;
+                                }
+
                             } catch (ParseException e) {
                                 e.printStackTrace();
                             }
@@ -253,6 +274,13 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                         e.printStackTrace();
                     }
                 }
+
+                for(int j = 0; j < dates.size(); j++) {
+                    Date lDate = (Date) dates.get(j);
+                    long milliTime = lDate.getTime();
+                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                }
+
                 for (int i = 0; i < calendarList.size(); i++) {
                     compactCalendar.addEvent(calendarList.get(i));
                 }
