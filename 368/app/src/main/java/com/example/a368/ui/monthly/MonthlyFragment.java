@@ -199,7 +199,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 });
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                 requestQueue.add(jsonArrayRequest);
-
             }
 
             @Override
@@ -231,8 +230,51 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 scheduleList.clear();
                 for (int i = 0; i < response.length(); i++) {
                     try {
+                        JSONObject jsonObject = response.getJSONObject(i);
 
-                    } catch (Exception e) {
+                        // Get today
+                        Date today = Calendar.getInstance().getTime();
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                        String formatted_today = dateFormat.format(today);
+
+                        // check to display the logged-in user's schedule only && display today's schedule only
+                        if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
+                            if (((jsonObject.getString("start_date").equals(formatted_today)) ||
+                                    (jsonObject.getString("end_date").equals(formatted_today))) ||
+                                    (check_timings(formatted_today, jsonObject.getString("end_date")) &&
+                                            check_timings(jsonObject.getString("start_date"), formatted_today))) {
+
+                                Schedule schedule = new Schedule();
+
+                                schedule.setID((jsonObject.getInt("id")));
+                                schedule.setName(jsonObject.getString("title"));
+                                schedule.setStart_date(jsonObject.getString("start_date"));
+                                schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5),
+                                        "MM/dd", "MMM d"));
+
+                                schedule.setStart_time(jsonObject.getString("start_time"));
+                                schedule.setStart_time(date_parsing(schedule.getStart_time(),
+                                        "hh:mm aaa", "HH:mm"));
+
+                                schedule.setEnd_date(jsonObject.getString("end_date"));
+                                schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5),
+                                        "MM/dd", "MMM d"));
+
+                                schedule.setEnd_time(jsonObject.getString("end_time"));
+                                schedule.setEnd_time(date_parsing(schedule.getEnd_time(),
+                                        "hh:mm aaa", "HH:mm"));
+
+                                schedule.setDescription(jsonObject.getString("description"));
+
+                                // empty description disregarded
+                                if (schedule.getDescription().equals("Exception: No Text Applied")) {
+                                    schedule.setDescription("");
+                                }
+                                scheduleList.add(schedule);
+                            }
+                        }
+
+                    } catch (JSONException e) {
                         e.printStackTrace();
                         progressDialog.dismiss();
                     }
