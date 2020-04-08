@@ -58,7 +58,12 @@ public class MainActivity extends AppCompatActivity {
 
         //pop
         today_schedule_pop = new Dialog(this);
+        View headerView = navigationView.getHeaderView(0);
+        TextView navName = headerView.findViewById(R.id.navName);
+        TextView navEmail = headerView.findViewById(R.id.navEmail);
 
+        navName.setText(User.getInstance().getName());
+        navEmail.setText(User.getInstance().getEmail());
     }
 
     @Override

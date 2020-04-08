@@ -38,6 +38,27 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true" />
 
+            <TextView
+                android:id="@+id/userWarning"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Name can not be changed later."
+                android:paddingLeft="3dp"
+                android:visibility="gone"/>
+
+            <EditText
+                android:id="@+id/editUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="#FF192133"
+                android:textColorHint="#A0192133"
+                android:fontFamily="sans-serif-light"
+                android:ems="10"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:visibility="gone"
+                android:hint="Name" />
+
             <Button
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -52,6 +73,14 @@
                 android:id="@+id/btnRegister"
                 android:text="REGISTER"
                 android:textStyle="bold"
+                />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/btnCancel"
+                android:text="Cancel"
+                android:textStyle="bold"
+                android:visibility="gone"
                 />
 
         </LinearLayout>
