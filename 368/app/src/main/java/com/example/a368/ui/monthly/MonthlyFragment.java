@@ -1,6 +1,8 @@
 package com.example.a368.ui.monthly;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -20,10 +22,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.Schedule;
@@ -44,8 +48,10 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 /**
@@ -217,6 +223,9 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     @Override
     public void onResume() {
         super.onResume();
+        refresh();
+    }
+    private void refresh() {
         getData();
 
         calendarList.clear();
@@ -295,7 +304,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
-
     // Fetch JSON data to display schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -390,7 +398,91 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     // TODO
     @Override
     public void onClickSchedule(int position) {
+        final int pos = position;
+        String[] colors = {"Edit", "Delete"};
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setItems(colors, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int menuID) {
+                // Edit / Delete Action goes here (menuID)
+                // DB ID = scheduleID param
+
+                /**
+                 * Toast msg prints out option ID and SQL column id:
+                Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
+                        " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
+                */
+
+                switch (menuID) {
+                    case 0:
+                        Intent intent = new Intent(getContext(), AddMonthlySchedule.class);
+                        intent.putExtra("id", ""+scheduleList.get(pos).getID());
+                        intent.putExtra("name", scheduleList.get(pos).getName());
+                        intent.putExtra("start_time", scheduleList.get(pos).getStart_time());
+                        intent.putExtra("start_date", scheduleList.get(pos).getStart_date());
+                        intent.putExtra("end_time", scheduleList.get(pos).getEnd_time());
+                        intent.putExtra("end_date", scheduleList.get(pos).getEnd_date());
+                        intent.putExtra("description", scheduleList.get(pos).getDescription());
+                        startActivity(intent);
+
+                        break;
+                    case 1:
+                        //code for delete
+                        final String[] confirm = {"Yes", "No"};
+                        AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                        confirmBuilder.setTitle("Delete Schedule");
+                        confirmBuilder.setMessage("Are you sure you want to delete?");
+                        confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                StringRequest stringRequest = new StringRequest(Request.Method.POST, "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/delete-schedule.php",
+                                        new Response.Listener<String>() {
+                                            @Override
+                                            public void onResponse(String ServerResponse) {
+                                                getData();
+                                                // Showing response message coming from server.
+                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError volleyError) {
+                                                // Showing error message if something goes wrong.
+                                                Toast.makeText(getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                            }
+                                        }) {
+                                    @Override
+                                    protected Map<String, String> getParams() {
+                                        // Creating Map String Params.
+                                        Map<String, String> params = new HashMap<String, String>();
+                                        // Adding All values to Params.
+                                        params.put("id", ""+scheduleList.get(pos).getID());
+                                        return params;
+                                    }
+
+                                };
+                                // Creating RequestQueue.
+                                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+
+                                // Adding the StringRequest object into requestQueue.
+                                requestQueue.add(stringRequest);
+                                refresh();
+                            }
+                        });
+                        confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        });
+
+                        confirmBuilder.show();
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
     // Check for passed time
