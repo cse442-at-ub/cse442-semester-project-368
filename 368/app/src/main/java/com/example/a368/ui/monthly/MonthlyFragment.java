@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +34,7 @@ import com.example.a368.Schedule;
 import com.example.a368.ui.monthly.MonthlyAdapter;
 import com.example.a368.User;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -73,6 +75,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
     // Calendar Library
     private static CompactCalendarView compactCalendar;
+    protected static List<Event> calendarList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -117,7 +120,94 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+                final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
 
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        passDate = dateClicked;
+                        scheduleList.clear();
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                // Get today
+                                Date today = Calendar.getInstance().getTime();
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+                                String formatted_today = dateFormat.format(dateClicked);
+
+                                // check to display the logged-in user's schedule only && display today's schedule only
+                                if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
+                                    if (((jsonObject.getString("start_date").equals(formatted_today)) ||
+                                            (jsonObject.getString("end_date").equals(formatted_today))) ||
+                                            (check_timings(formatted_today, jsonObject.getString("end_date")) &&
+                                            check_timings(jsonObject.getString("start_date"), formatted_today))) {
+
+                                        Schedule schedule = new Schedule();
+
+                                        schedule.setID((jsonObject.getInt("id")));
+                                        schedule.setName(jsonObject.getString("title"));
+                                        schedule.setStart_date(jsonObject.getString("start_date"));
+                                        schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5),
+                                                "MM/dd", "MMM d"));
+
+                                        schedule.setStart_time(jsonObject.getString("start_time"));
+                                        schedule.setStart_time(date_parsing(schedule.getStart_time(),
+                                                "hh:mm aaa", "HH:mm"));
+
+                                        schedule.setEnd_date(jsonObject.getString("end_date"));
+                                        schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5),
+                                                "MM/dd", "MMM d"));
+
+                                        schedule.setEnd_time(jsonObject.getString("end_time"));
+                                        schedule.setEnd_time(date_parsing(schedule.getEnd_time(),
+                                                "hh:mm aaa", "HH:mm"));
+
+                                        schedule.setDescription(jsonObject.getString("description"));
+
+                                        // empty description disregarded
+                                        if (schedule.getDescription().equals("Exception: No Text Applied")) {
+                                            schedule.setDescription("");
+                                        }
+                                        scheduleList.add(schedule);
+                                    }
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                                progressDialog.dismiss();
+                            }
+                        }
+
+                        // Sort by start time
+                        sortArray(scheduleList);
+
+                        // Re-format time
+                        for (int i = 0; i < scheduleList.size(); i++) {
+                            // start time
+                            scheduleList.get(i).setStart_time(date_parsing(scheduleList.get(i).getStart_time(),
+                                    "HH:mm", "hh:mm aaa"));
+
+                            // end time
+                            scheduleList.get(i).setEnd_time(date_parsing(scheduleList.get(i).getEnd_time(),
+                                    "HH:mm", "hh:mm aaa"));
+                        }
+
+                        adapter.notifyDataSetChanged();
+                        progressDialog.dismiss();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                        progressDialog.dismiss();
+                    }
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                requestQueue.add(jsonArrayRequest);
             }
 
             @Override
@@ -134,6 +224,54 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     public void onResume() {
         super.onResume();
         getData();
+
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+        calendarList.clear();
+        compactCalendar.removeAllEvents();
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                scheduleList.clear();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
+                            String startDate = jsonObject.getString("start_date");
+                            String startTime = jsonObject.getString("start_time");
+
+                            String mTime = startDate + ", " + startTime;
+                            Date date = null;
+                            try {
+                                date = format.parse(mTime);
+                                long milliTime = date.getTime();
+                                calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (int i = 0; i < calendarList.size(); i++) {
+                    compactCalendar.addEvent(calendarList.get(i));
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
     }
 
     // Fetch JSON data to display schedule
@@ -156,18 +294,12 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                         String formatted_today = dateFormat.format(today);
 
-                        // Get current time
-                        Date now = Calendar.getInstance().getTime();
-                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                        String formatted_time = timeFormat.format(now);
-
                         // check to display the logged-in user's schedule only && display today's schedule only
                         if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
-//                                jsonObject.getString("start_date").equals(formatted_today)) {
-//
-//                            if ((jsonObject.getString("end_date").equals(formatted_today) &&
-//                                    check_timings(formatted_time, jsonObject.getString("end_time"))) ||
-//                                    (!(jsonObject.getString("end_date").equals(formatted_today)))) {
+                            if (((jsonObject.getString("start_date").equals(formatted_today)) ||
+                                    (jsonObject.getString("end_date").equals(formatted_today))) ||
+                                    (check_timings(formatted_today, jsonObject.getString("end_date")) &&
+                                            check_timings(jsonObject.getString("start_date"), formatted_today))) {
 
                                 Schedule schedule = new Schedule();
 
@@ -196,7 +328,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                     schedule.setDescription("");
                                 }
                                 scheduleList.add(schedule);
-//                            }
+                            }
                         }
 
                     } catch (JSONException e) {
@@ -324,13 +456,12 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
     // Check for passed time
     private boolean check_timings(String time, String endtime) {
-        String pattern = "HH:mm";
+        String pattern = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        String time2 = date_parsing(endtime, "hh:mm aaa", "HH:mm");
 
         try {
             Date date1 = sdf.parse(time);
-            Date date2 = sdf.parse(time2);
+            Date date2 = sdf.parse(endtime);
 
             if(date1.before(date2)) {
                 return true;
