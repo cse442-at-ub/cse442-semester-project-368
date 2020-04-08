@@ -14,7 +14,7 @@ import java.util.List;
 
 /*
 Created by: Jiwon Choi
-This is a schedule adapter to deal with the Schedule list view
+This is a Monthly adapter to deal with the Schedule list view
  */
 public class MonthlyAdapter extends RecyclerView.Adapter<MonthlyAdapter.ViewHolder> {
 
