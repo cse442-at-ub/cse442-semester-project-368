@@ -2,6 +2,7 @@ package com.example.a368.ui.monthly;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -29,6 +30,7 @@ import com.example.a368.Schedule;
 import com.example.a368.ui.monthly.MonthlyAdapter;
 import com.example.a368.User;
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
+import com.github.sundeepk.compactcalendarview.domain.Event;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
@@ -67,6 +69,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
     // Calendar Library
     private static CompactCalendarView compactCalendar;
+    protected static List<Event> calendarList = new ArrayList<>();
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -215,6 +218,54 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     public void onResume() {
         super.onResume();
         getData();
+
+        SimpleDateFormat format = new SimpleDateFormat("MM/dd/yyyy, HH:mm");
+        SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
+
+        calendarList.clear();
+        compactCalendar.removeAllEvents();
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                scheduleList.clear();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+                        if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
+                            String startDate = jsonObject.getString("start_date");
+                            String startTime = jsonObject.getString("start_time");
+
+                            String mTime = startDate + ", " + startTime;
+                            Date date = null;
+                            try {
+                                date = format.parse(mTime);
+                                long milliTime = date.getTime();
+                                calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+                for (int i = 0; i < calendarList.size(); i++) {
+                    compactCalendar.addEvent(calendarList.get(i));
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
     }
 
     // Fetch JSON data to display schedule
