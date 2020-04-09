@@ -120,6 +120,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+                refresh();
                 final ProgressDialog progressDialog = new ProgressDialog(getContext());
                 progressDialog.setMessage("Loading...");
                 progressDialog.show();
@@ -225,6 +226,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         super.onResume();
         refresh();
     }
+
     private void refresh() {
         getData();
 
@@ -304,6 +306,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
+
     // Fetch JSON data to display schedule
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
@@ -322,7 +325,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                         // Get today
                         Date today = Calendar.getInstance().getTime();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                        String formatted_today = dateFormat.format(today);
+                        String formatted_today = dateFormat.format(passDate);
 
                         // check to display the logged-in user's schedule only && display today's schedule only
                         if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
