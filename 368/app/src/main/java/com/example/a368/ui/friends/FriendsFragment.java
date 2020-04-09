@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,16 +17,18 @@ import com.example.a368.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
+import java.util.List;
 
-public class FriendsFragment extends Fragment {
+public class FriendsFragment extends Fragment implements FriendsListAdapter.onClickListener {
 
+    private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_friend.php";
     private FriendsViewModel friendsViewModel;
-    RecyclerView.LayoutManager layoutManager;
-    FriendsListAdapter mAdapter;
-    ArrayList<Friend> list = new ArrayList<Friend>();
+    private RecyclerView fList;
 
-
-
+    private LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+    private List<Friend> friendList;
+    private RecyclerView.Adapter adapter;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -50,23 +53,25 @@ public class FriendsFragment extends Fragment {
         Friend f7 = new Friend("Paige Turner", "paige@turner.com");
         Friend f8 = new Friend("Walter Melon", "walter@melon.com");
 
-        list.add(f1);
-        list.add(f2);
-        list.add(f3);
-        list.add(f4);
-        list.add(f5);
-        list.add(f6);
-        list.add(f7);
-        list.add(f8);
+        fList = (RecyclerView)root.findViewById(R.id.friendListRecycler);
+        friendList = new ArrayList<>();
+        adapter = new FriendsListAdapter(getContext(), friendList, this);
 
-        RecyclerView recyclerView = root.findViewById(R.id.friendListRecycler);
-        layoutManager = new LinearLayoutManager(this.getContext());
-        recyclerView.setLayoutManager(layoutManager);
+        linearLayoutManager = new LinearLayoutManager(this.getContext());
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        dividerItemDecoration = new DividerItemDecoration(fList.getContext(), linearLayoutManager.getOrientation());
 
-        mAdapter = new FriendsListAdapter(list, this.getContext());
-        recyclerView.setAdapter(mAdapter);
-
+        fList.setHasFixedSize(true);
+        fList.setLayoutManager(linearLayoutManager);
+        fList.addItemDecoration(dividerItemDecoration);
+        fList.setAdapter(adapter);
 
         return root;
+    }
+
+    // On click schedule item
+    @Override
+    public void onClickFriend(int position) {
+
     }
 }
