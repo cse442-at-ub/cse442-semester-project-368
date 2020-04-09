@@ -40,6 +40,8 @@ import org.json.JSONObject;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -48,12 +50,13 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
-/**
-* Created by: Jiwon Choi
-* Modified by: Dave Rodrigues
-* This has a daily schedule adding floating action button and displays schedule with their relevant remaining time.
-*/
+/*
+Created by: Jiwon Choi
+Modified by: Dave Rodrigues
+This has a daily schedule adding floating action button and displays schedule with their relevant remaining time.
+ */
 public class TodayFragment extends Fragment implements ScheduleAdapter.onClickListener {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
@@ -81,6 +84,19 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                 startActivity(new Intent(v.getContext(), AddToSchedule.class));
             }
         });
+
+        Date curr_time = Calendar.getInstance().getTime();
+        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
+        String formatted_time = timeFormat.format(curr_time);
+        if (formatted_time.indexOf("0") == 0) {
+            formatted_time = formatted_time.replaceFirst("0", "");
+        }
+        textView_current_time.setText(formatted_time);
+
+        Date today = Calendar.getInstance().getTime();
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy");
+        String formatted_today = dateFormat.format(today);
+        textView_today.setText(formatted_today);
 
         sList = (RecyclerView)root.findViewById(R.id.schedule_list);
 

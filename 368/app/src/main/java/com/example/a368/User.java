@@ -6,7 +6,6 @@ package com.example.a368;
 public class User {
     private static User instance;
     private String email;
-    private String name;
 
     private User(){}
 
@@ -15,10 +14,6 @@ public class User {
     }
     public String getEmail() {
         return this.email;
-    }
-    public void setName(String name) {this.name = name;}
-    public String getName() {
-        return this.name;
     }
     public static synchronized User getInstance(){
         if(instance==null){

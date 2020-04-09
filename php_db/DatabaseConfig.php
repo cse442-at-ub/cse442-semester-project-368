@@ -10,6 +10,6 @@ $HostUser = "jiwoncho";
 $HostPass = "50283501";
 
 //Define your database name here.
-$DatabaseName = "cse442_542_2020_spring_teamw_db";
+$DatabaseName = "jiwoncho_db";
 
 ?>
