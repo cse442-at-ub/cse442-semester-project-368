@@ -19,6 +19,8 @@ import java.util.ArrayList;
 
 public class FriendsFragment extends Fragment {
 
+    private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_schedule.php";
+
     private FriendsViewModel friendsViewModel;
     RecyclerView.LayoutManager layoutManager;
     FriendsListAdapter mAdapter;
