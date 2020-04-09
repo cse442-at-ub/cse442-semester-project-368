@@ -82,19 +82,6 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
             }
         });
 
-        Date curr_time = Calendar.getInstance().getTime();
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm aaa");
-        String formatted_time = timeFormat.format(curr_time);
-        if (formatted_time.indexOf("0") == 0) {
-            formatted_time = formatted_time.replaceFirst("0", "");
-        }
-        textView_current_time.setText(formatted_time);
-
-        Date today = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE, MMMM d, yyyy");
-        String formatted_today = dateFormat.format(today);
-        textView_today.setText(formatted_today);
-
         sList = (RecyclerView)root.findViewById(R.id.schedule_list);
 
         scheduleList = new ArrayList<>();

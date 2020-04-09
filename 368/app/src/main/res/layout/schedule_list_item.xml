@@ -103,7 +103,6 @@
             android:id="@+id/time_remaining"
             android:layout_width="70dp"
             android:layout_height="match_parent"
-            android:text="Time Remain goes here"
             android:textAlignment="center"
             android:textColor="@color/colorAccent"
             android:textSize="18sp" />
