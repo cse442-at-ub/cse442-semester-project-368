@@ -14,33 +14,39 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.a368.R;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.ViewHolder> {
 
-    private List<Friend> list;
-    Context context;
-    private onClickListener sOnClickListener;
-
-    public FriendsListAdapter(Context context, List<Friend> friends, onClickListener onClickListener) {
-        this.list = friends;
-        this.context = context;
-        this.sOnClickListener = onClickListener;
-        notifyDataSetChanged();
+    ArrayList<Friend> list;
+    Context mContext;
+    public FriendsListAdapter(ArrayList<Friend> friends, Context context) {
+        list = friends;
+        mContext = context;
     }
 
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.friends_list_item, parent, false);
-        return new ViewHolder(v, sOnClickListener);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.friends_list_item, parent, false);
+        ViewHolder holder = new ViewHolder(view);
+
+        return holder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        Friend friend = list.get(position);
-
         holder.tvName.setText(list.get(position).getName());
         holder.tvEmail.setText(list.get(position).getEmail());
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(new Intent(mContext, FriendProfileActivity.class));
+                intent.putExtra("name", list.get(position).getName());
+                intent.putExtra("email", list.get(position).getEmail());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -48,29 +54,17 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
         return list.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
         TextView tvName;
         TextView tvEmail;
         LinearLayout layout;
-        onClickListener onClickListener;
 
-        public ViewHolder(@NonNull View itemView, onClickListener onClickListener) {
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvName = itemView.findViewById(R.id.friend_name);
-            tvEmail = itemView.findViewById(R.id.friend_email);
+            tvName = itemView.findViewById(R.id.friendsName);
+            tvEmail = itemView.findViewById(R.id.friendsEmail);
             layout = itemView.findViewById(R.id.friendsLayout);
-            this.onClickListener = onClickListener;
-            itemView.setOnClickListener(this);
         }
-
-        @Override
-        public void onClick(View v) {
-            onClickListener.onClickFriend(getAdapterPosition());
-        }
-    }
-
-    public interface onClickListener {
-        void onClickFriend (int position);
     }
 }

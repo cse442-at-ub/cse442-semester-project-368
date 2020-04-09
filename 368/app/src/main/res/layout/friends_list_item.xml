@@ -2,21 +2,19 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/friendsLayout"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="80dp"
     android:orientation="vertical"
-    android:layout_margin="5dp">
+    android:padding="30dp">
 
     <TextView
-        android:id="@+id/friend_name"
+        android:id="@+id/friendsName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Name"
-        android:textSize="20dp"/>
+        android:text="TextView" />
 
     <TextView
-        android:id="@+id/friend_email"
+        android:id="@+id/friendsEmail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Email"
-        android:textSize="16dp"/>
+        android:text="TextView" />
 </LinearLayout>

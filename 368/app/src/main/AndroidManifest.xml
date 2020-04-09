@@ -18,7 +18,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".ui.today.AddToSchedule"></activity>
-        <activity android:name=".ui.monthly.AddMonthlySchedule"></activity>
         <activity
             android:name=".ui.appointment_meeting.createAppointment"
             android:label="@string/title_activity_create_appointment"

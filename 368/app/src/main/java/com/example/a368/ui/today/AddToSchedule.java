@@ -86,7 +86,7 @@ public class AddToSchedule extends AppCompatActivity {
                  * Check whether the user inputted start date later than the end date (Invalid Schedule)
                  */
                 else if (!(startDate.getText().toString().equals(endDate.getText().toString()))
-                        && !(check_date(startDate.getText().toString(), endDate.getText().toString(), "MM/dd/yyyy"))) {
+                        && !(check_date(startDate.getText().toString(), endDate.getText().toString(), "MM/DD/YYYY"))) {
                     Toast.makeText(AddToSchedule.this, "Your end date cannot be earlier than the start date.", Toast.LENGTH_LONG).show();
                 }
 
@@ -306,7 +306,6 @@ public class AddToSchedule extends AppCompatActivity {
             }
         });
         if(getIntent().hasExtra("id")) {
-            actionBar.setTitle("Edit Daily Schedule");
             title.setText(getIntent().getStringExtra("name"));
             startTime.setText(getIntent().getStringExtra("start_time"));
             startDate.setText(getIntent().getStringExtra("start_date"));
