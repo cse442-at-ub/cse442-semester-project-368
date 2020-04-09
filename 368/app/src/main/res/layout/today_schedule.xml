@@ -22,18 +22,21 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <TextView
+        <TextClock
             android:id="@+id/current_time_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:format12Hour="hh:mm a"
             android:textColor="@color/colorPrimary"
             android:textSize="24dp"
             android:textStyle="bold" />
 
-        <TextView
+
+        <TextClock
             android:id="@+id/today_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:format12Hour="EEEE, MMMM d, yyyy"
             android:textColor="@color/colorPrimary"
             android:textSize="20dp"
             android:textStyle="bold" />

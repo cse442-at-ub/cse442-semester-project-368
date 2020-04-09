@@ -1,13 +1,9 @@
-package com.example.a368.ui.today;
-
-import androidx.appcompat.app.ActionBar;
-import androidx.appcompat.app.AppCompatActivity;
+package com.example.a368.ui.monthly;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +14,9 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -26,6 +25,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.User;
+import com.example.a368.ui.today.AddToSchedule;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -35,13 +35,7 @@ import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Map;
 
-/*
-Created by: Dave Rodrigues
-Modified by: Jiwon Choi
-Activity that allows users to add their daily schedule.
- */
-
-public class AddToSchedule extends AppCompatActivity {
+public class AddMonthlySchedule extends AppCompatActivity {
     private static String HttpUrl = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/insert_schedule.php";
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
@@ -79,7 +73,7 @@ public class AddToSchedule extends AppCompatActivity {
                 if (title.getText().length() == 0 ||
                         startDate.getText().toString().equals("MM/DD/YYYY") ||
                         endDate.getText().toString().equals("MM/DD/YYYY")) {
-                    Toast.makeText(AddToSchedule.this, "Missing Information: You can only skip 'Description' field.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddMonthlySchedule.this, "Missing Information: You can only skip 'Description' field.", Toast.LENGTH_LONG).show();
                 }
 
                 /**
@@ -87,7 +81,7 @@ public class AddToSchedule extends AppCompatActivity {
                  */
                 else if (!(startDate.getText().toString().equals(endDate.getText().toString()))
                         && !(check_date(startDate.getText().toString(), endDate.getText().toString(), "MM/dd/yyyy"))) {
-                    Toast.makeText(AddToSchedule.this, "Your end date cannot be earlier than the start date.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddMonthlySchedule.this, "Your end date cannot be earlier than the start date.", Toast.LENGTH_LONG).show();
                 }
 
                 /**
@@ -96,7 +90,7 @@ public class AddToSchedule extends AppCompatActivity {
                  */
                 else if (startDate.getText().toString().equals(endDate.getText().toString()) &&
                         (!(check_date(startTime.getText().toString(), endTime.getText().toString(), "HH:mm")))) {
-                    Toast.makeText(AddToSchedule.this, "Your end time cannot be earlier than the start time.", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddMonthlySchedule.this, "Your end time cannot be earlier than the start time.", Toast.LENGTH_LONG).show();
                 }
 
                 /**
@@ -149,7 +143,7 @@ public class AddToSchedule extends AppCompatActivity {
 
                         };
                         // Creating RequestQueue.
-                        RequestQueue requestQueue = Volley.newRequestQueue(AddToSchedule.this);
+                        RequestQueue requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
 
                         // Adding the StringRequest object into requestQueue.
                         requestQueue.add(stringRequest);
@@ -163,7 +157,7 @@ public class AddToSchedule extends AppCompatActivity {
                                     progressDialog.dismiss();
 
                                     // Showing response message coming from server.
-                                    Toast.makeText(AddToSchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
                                 }
                             },
                             new Response.ErrorListener() {
@@ -174,7 +168,7 @@ public class AddToSchedule extends AppCompatActivity {
                                     progressDialog.dismiss();
 
                                     // Showing error message if something goes wrong.
-                                    Toast.makeText(AddToSchedule.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                    Toast.makeText(AddMonthlySchedule.this, volleyError.toString(), Toast.LENGTH_LONG).show();
                                 }
                             }) {
                         @Override
@@ -198,7 +192,7 @@ public class AddToSchedule extends AppCompatActivity {
                     };
 
                     // Creating RequestQueue.
-                    RequestQueue requestQueue = Volley.newRequestQueue(AddToSchedule.this);
+                    RequestQueue requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
 
                     // Adding the StringRequest object into requestQueue.
                     requestQueue.add(stringRequest);
@@ -219,7 +213,7 @@ public class AddToSchedule extends AppCompatActivity {
 
         // Customize action bar
         ActionBar actionBar = getSupportActionBar();
-        actionBar.setTitle("Add Daily Schedule");
+        actionBar.setTitle("Add Schedule");
         actionBar.setDisplayHomeAsUpEnabled(false);
 
         // Attributes setup
@@ -227,8 +221,8 @@ public class AddToSchedule extends AppCompatActivity {
         description = (EditText) findViewById(R.id.event_description);
 
         // Creating Volley newRequestQueue
-        requestQueue = Volley.newRequestQueue(AddToSchedule.this);
-        progressDialog = new ProgressDialog(AddToSchedule.this);
+        requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
+        progressDialog = new ProgressDialog(AddMonthlySchedule.this);
 
         // set up Date & Time Picker Dialog
         GregorianCalendar calendar = new GregorianCalendar();
@@ -245,19 +239,12 @@ public class AddToSchedule extends AppCompatActivity {
         startDate = (TextView) findViewById(R.id.event_start_date);
 
         // Set up Start Date field (should be fixed for add daily schedule)
-        Date today = Calendar.getInstance().getTime();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-        startDate.setText(dateFormat.format(today));
-
         startDate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 hide_keyboard(v);
                 startDateClicked = true;
-                Toast.makeText(AddToSchedule.this,
-                        "You can only add the schedule with the start date of today", Toast.LENGTH_LONG).show();
-                // Disable for Add Daily Schedule
-//                new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
+                new DatePickerDialog(AddMonthlySchedule.this, dateSetListener, year, month, day).show();
             }
         });
 
@@ -266,7 +253,7 @@ public class AddToSchedule extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startTimeClicked = true;
-                new TimePickerDialog(AddToSchedule.this, timeSetListener, hour, minute, false).show();
+                new TimePickerDialog(AddMonthlySchedule.this, timeSetListener, hour, minute, false).show();
             }
         });
 
@@ -276,24 +263,8 @@ public class AddToSchedule extends AppCompatActivity {
             public void onClick(View v) {
                 hide_keyboard(v);
                 endDateClicked = true;
-//                if(getIntent().hasExtra("end_date")) {
-//                    SimpleDateFormat format = new SimpleDateFormat("mmm dd yyyy");
-//                    SimpleDateFormat outForm = new SimpleDateFormat("MM/dd/yyyy");
-//
-//                    try {
-//                        Date date = new SimpleDateFormat("MMM").parse(getIntent().getStringExtra("end_date")+" "+Calendar.getInstance().get(Calendar.YEAR));
-//                        Calendar cal = Calendar.getInstance();
-//                        cal.setTime(date);
-////                        date = outForm.parse(date.toString());
-//                        Log.d("mdate", ""+cal.getInstance().get(Calendar.MONTH));
-//                        new DatePickerDialog(AddToSchedule.this, dateSetListener, cal.getInstance().get(Calendar.YEAR), cal.getInstance().get(Calendar.MONTH), cal.getInstance().get(Calendar.DATE)).show();
-//                    } catch (ParseException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//                else {
-                    new DatePickerDialog(AddToSchedule.this, dateSetListener, year, month, day).show();
-                }
+                new DatePickerDialog(AddMonthlySchedule.this, dateSetListener, year, month, day).show();
+            }
 
         });
 
@@ -302,11 +273,11 @@ public class AddToSchedule extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 endTimeClicked = true;
-                new TimePickerDialog(AddToSchedule.this, timeSetListener, hour, minute, false).show();
+                new TimePickerDialog(AddMonthlySchedule.this, timeSetListener, hour, minute, false).show();
             }
         });
         if(getIntent().hasExtra("id")) {
-            actionBar.setTitle("Edit Daily Schedule");
+            actionBar.setTitle("Edit Schedule");
             title.setText(getIntent().getStringExtra("name"));
             startTime.setText(getIntent().getStringExtra("start_time"));
             startDate.setText(getIntent().getStringExtra("start_date"));
