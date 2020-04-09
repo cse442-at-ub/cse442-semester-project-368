@@ -65,8 +65,8 @@ public class AppointmentFriendsAdapter extends RecyclerView.Adapter<AppointmentF
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            tvName = itemView.findViewById(R.id.friendsName);
-            tvEmail = itemView.findViewById(R.id.friendsEmail);
+            tvName = itemView.findViewById(R.id.friend_name);
+            tvEmail = itemView.findViewById(R.id.friend_email);
             layout = itemView.findViewById(R.id.friendsLayout);
         }
     }
