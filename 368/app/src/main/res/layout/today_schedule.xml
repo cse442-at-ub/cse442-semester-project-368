@@ -26,19 +26,19 @@
             android:id="@+id/current_time_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:format12Hour="hh:mm a"
             android:textColor="@color/colorPrimary"
             android:textSize="24dp"
-            android:textStyle="bold"
-            android:format12Hour="hh:mm a"/>
+            android:textStyle="bold" />
 
 
         <TextClock
             android:id="@+id/today_textview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:format12Hour="EEEE, MMMM d, yyyy"
             android:textColor="@color/colorPrimary"
             android:textSize="20dp"
-            android:format12Hour="EEEE, MMMM d, yyyy"
             android:textStyle="bold" />
 
         <View
