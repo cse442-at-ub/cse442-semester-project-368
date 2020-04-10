@@ -98,6 +98,13 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
     }
 
+    // Go back to Friends Fragment
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
     // On click schedule item
     @Override
     public void onClickFriend(int position) {
