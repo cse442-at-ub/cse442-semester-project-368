@@ -58,15 +58,6 @@ public class FriendsFragment extends Fragment implements FriendsListAdapter.onCl
             }
         });
 
-//        Friend f1 = new Friend("Mario Speedwagon", "mario@speedwagon.com");
-//        Friend f2 = new Friend("Petey Cruiser", "petey@cruiser.com");
-//        Friend f3 = new Friend("Anna Sthesia", "anna@sthesia.com");
-//        Friend f4 = new Friend("Paul Molive", "paul@molive.com");
-//        Friend f5 = new Friend("Anna Mull", "anna@mull.com");
-//        Friend f6 = new Friend("Gail Forcewind", "gail@forewind.com");
-//        Friend f7 = new Friend("Paige Turner", "paige@turner.com");
-//        Friend f8 = new Friend("Walter Melon", "walter@melon.com");
-
         fList = (RecyclerView)root.findViewById(R.id.friendListRecycler);
         friendList = new ArrayList<>();
         adapter = new FriendsListAdapter(getContext(), friendList, this);
@@ -86,7 +77,10 @@ public class FriendsFragment extends Fragment implements FriendsListAdapter.onCl
     // On click schedule item
     @Override
     public void onClickFriend(int position) {
-
+        Intent intent = new Intent(getContext(), FriendProfileActivity.class);
+        intent.putExtra("name", friendList.get(position).getName());
+        intent.putExtra("email", friendList.get(position).getEmail());
+        startActivity(intent);
     }
 
     // Updates view friends list
