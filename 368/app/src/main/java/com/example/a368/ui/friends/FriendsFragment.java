@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -33,7 +34,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FriendsFragment extends Fragment implements FriendsListAdapter.onClickListener {
+public class FriendsFragment extends Fragment implements FriendSearchAdapter.onClickListener, FriendsListAdapter.onClickListener {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_friend.php";
     private FriendsViewModel friendsViewModel;
@@ -41,8 +42,16 @@ public class FriendsFragment extends Fragment implements FriendsListAdapter.onCl
 
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
-    private List<Friend> friendList;
-    private RecyclerView.Adapter adapter;
+    private ArrayList<Friend> friendList;
+
+    private FriendSearchAdapter mAdapter;
+    private SearchView searchView;
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -58,28 +67,42 @@ public class FriendsFragment extends Fragment implements FriendsListAdapter.onCl
             }
         });
 
-//        Friend f1 = new Friend("Mario Speedwagon", "mario@speedwagon.com");
-//        Friend f2 = new Friend("Petey Cruiser", "petey@cruiser.com");
-//        Friend f3 = new Friend("Anna Sthesia", "anna@sthesia.com");
-//        Friend f4 = new Friend("Paul Molive", "paul@molive.com");
-//        Friend f5 = new Friend("Anna Mull", "anna@mull.com");
-//        Friend f6 = new Friend("Gail Forcewind", "gail@forewind.com");
-//        Friend f7 = new Friend("Paige Turner", "paige@turner.com");
-//        Friend f8 = new Friend("Walter Melon", "walter@melon.com");
-
         fList = (RecyclerView)root.findViewById(R.id.friendListRecycler);
         friendList = new ArrayList<>();
-        adapter = new FriendsListAdapter(getContext(), friendList, this);
+
 
         linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         dividerItemDecoration = new DividerItemDecoration(fList.getContext(), linearLayoutManager.getOrientation());
 
+
+
+
+        searchView = (SearchView) root.findViewById(R.id.friendSearch);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.filter(newText);
+                return true;
+            }
+        });
+
+        mAdapter = new FriendSearchAdapter(getContext(), friendList, new FriendSearchAdapter.onClickListener() {
+            @Override
+            public void onClickFriend(int position) {
+
+            }
+        });
         fList.setHasFixedSize(true);
         fList.setLayoutManager(linearLayoutManager);
         fList.addItemDecoration(dividerItemDecoration);
-        fList.setAdapter(adapter);
-
+        fList.setAdapter(mAdapter);
         return root;
     }
 
@@ -132,7 +155,7 @@ public class FriendsFragment extends Fragment implements FriendsListAdapter.onCl
                 // Sort by alphabetical order
                 // TODO
 
-                adapter.notifyDataSetChanged();
+                mAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
             }
         }, new Response.ErrorListener() {
