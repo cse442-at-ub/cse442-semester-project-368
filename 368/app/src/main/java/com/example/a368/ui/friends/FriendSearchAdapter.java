@@ -35,14 +35,12 @@ public class FriendSearchAdapter extends RecyclerView.Adapter<FriendSearchAdapte
 
     public void filter(String text) {
         List<Friend> temp_list = new ArrayList<>();
-        Log.d("Filter", text);
         if(text.isEmpty()) {
             temp_list.addAll(listCopy);
         } else {
             text = text.toLowerCase();
             for(Friend f : listCopy) {
                 if(f.getName().toLowerCase().contains(text) || f.getEmail().toLowerCase().contains(text)) {
-                    Log.d("Found", text);
                     temp_list.add(f);
                 }
             }
