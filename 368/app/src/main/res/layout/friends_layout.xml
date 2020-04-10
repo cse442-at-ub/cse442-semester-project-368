@@ -13,6 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
+        android:clickable="true"
         android:src="@drawable/ic_add_friend"
         android:elevation="0dp"
         app:maxImageSize="35dp"/>
