@@ -41,7 +41,6 @@ public class FriendsListAdapter extends RecyclerView.Adapter<FriendsListAdapter.
 
         holder.tvName.setText(list.get(position).getName());
         holder.tvEmail.setText(list.get(position).getEmail());
-        notifyDataSetChanged();
     }
 
     @Override
