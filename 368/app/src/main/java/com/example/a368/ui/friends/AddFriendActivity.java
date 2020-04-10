@@ -173,6 +173,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 // update adapter list
                                 getFriend();
                                 getData();
+                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
                             }
                         },
                         new Response.ErrorListener() {
@@ -313,5 +314,56 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         });
         RequestQueue requestQueue = Volley.newRequestQueue(this);
         requestQueue.add(jsonArrayRequest);
+    }
+
+    public void add_both(String email_a, String name_b, String email_b) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Showing response message coming from server.
+                        Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+
+                        // update adapter list
+                        getFriend();
+                        getData();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+
+                        // Hiding the progress dialog after all task complete.
+                        progressDialog.dismiss();
+
+                        // Showing error message if something goes wrong.
+                        Toast.makeText(AddFriendActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+
+                // Adding All values to Params.
+                params.put("email_a", email_a);
+                params.put("name_b", name_b);
+                params.put("email_b", email_b);
+
+                return params;
+            }
+
+        };
+
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(AddFriendActivity.this);
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
     }
 }
