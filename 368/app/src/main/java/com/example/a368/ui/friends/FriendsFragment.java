@@ -109,7 +109,10 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     // On click schedule item
     @Override
     public void onClickFriend(int position) {
-
+        Intent intent = new Intent(getContext(), FriendProfileActivity.class);
+        intent.putExtra("name", friendList.get(position).getName());
+        intent.putExtra("email", friendList.get(position).getEmail());
+        startActivity(intent);
     }
 
     // Updates view friends list
