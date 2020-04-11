@@ -57,6 +57,7 @@ public class LoginActivity extends AppCompatActivity {
         if(pref.getString("User", null) != null) {
             User user = User.getInstance();
             user.setEmail(pref.getString("User", null));
+            user.setName(pref.getString("Name", null));
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
         }
     }
@@ -129,7 +130,6 @@ public class LoginActivity extends AppCompatActivity {
     public void signIn(final String email, final String password, final String name, final int register) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
                 new Response.Listener<String>() {
-                    User user = User.getInstance();
                     @Override
                     public void onResponse(String ServerResponse) {
                         int response = -1;
@@ -146,11 +146,12 @@ public class LoginActivity extends AppCompatActivity {
                             e.printStackTrace();
                         }
                         if(response == 1) {
-                            user.setName(name);
                             Log.d("Name", name);
                             editor.putString("User", email.toString());
+                            editor.putString("Name", name);
                             editor.commit();
                             User user = User.getInstance();
+                            user.setName(name);
                             user.setEmail(email);
                             startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         }

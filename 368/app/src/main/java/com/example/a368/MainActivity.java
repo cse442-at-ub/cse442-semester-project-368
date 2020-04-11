@@ -83,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                 editor.commit();
                 User user = User.getInstance();
                 user.setEmail("");
+                user.setName("");
                 startActivity(new Intent(MainActivity.this, LoginActivity.class));
                 return true;
             default:
