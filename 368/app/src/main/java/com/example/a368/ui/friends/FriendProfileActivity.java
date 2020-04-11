@@ -12,12 +12,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.Schedule;
 import com.example.a368.User;
-import com.example.a368.ui.today.FriendsProfileAdapter;
-import com.example.a368.ui.today.ScheduleAdapter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.example.a368.ui.friends.FriendsProfileAdapter;
 
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -63,8 +61,11 @@ public class FriendProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_profile);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
+        // Customize action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("View Friend's Profile");
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         name = findViewById(R.id.profileName);
         email = findViewById(R.id.profileEmail);
@@ -93,11 +94,19 @@ public class FriendProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Go back to Friends Fragment
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         getData();
     }
+    
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
