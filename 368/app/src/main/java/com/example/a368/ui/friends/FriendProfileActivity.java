@@ -47,8 +47,7 @@ import java.util.List;
 
 public class FriendProfileActivity extends AppCompatActivity {
 
-    private TextView name;
-    private TextView email;
+    private TextView name, email, instruction;
     private RecyclerView availableTimes;
     private LinearLayoutManager layoutManager;
     private FriendsProfileAdapter adapter;
@@ -69,12 +68,14 @@ public class FriendProfileActivity extends AppCompatActivity {
 
         name = findViewById(R.id.profileName);
         email = findViewById(R.id.profileEmail);
+        instruction = findViewById(R.id.instruction);
         availableTimes = findViewById(R.id.availableTimes);
         removeFriend = findViewById(R.id.btRemoveFriend);
 
 
         name.setText(getIntent().getStringExtra("name"));
         email.setText(getIntent().getStringExtra("email"));
+        instruction.setText(getIntent().getStringExtra("name") + "'s Daily Schedule:");
         scheduleList = new ArrayList<>();
 
         adapter = new FriendsProfileAdapter(this, scheduleList);
@@ -106,7 +107,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         super.onResume();
         getData();
     }
-    
+
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Loading...");
@@ -126,18 +127,14 @@ public class FriendProfileActivity extends AppCompatActivity {
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
                         String formatted_today = dateFormat.format(today);
 
-                        // Get current time
-                        Date now = Calendar.getInstance().getTime();
-                        SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
-                        String formatted_time = timeFormat.format(now);
 
                         // check to display the logged-in user's schedule only && display today's schedule only
-                        if (jsonObject.getString("email").equals(getIntent().getStringExtra("email")) &&
-                                jsonObject.getString("start_date").equals(formatted_today)) {
+                        if (jsonObject.getString("email").equals(getIntent().getStringExtra("email"))) {
 
-                            if ((jsonObject.getString("end_date").equals(formatted_today) &&
-                                    check_timings(formatted_time, jsonObject.getString("end_time"))) ||
-                                    (!(jsonObject.getString("end_date").equals(formatted_today)))) {
+                            if (((jsonObject.getString("start_date").equals(formatted_today)) ||
+                                    (jsonObject.getString("end_date").equals(formatted_today))) ||
+                                    (check_timings(formatted_today, jsonObject.getString("end_date")) &&
+                                            check_timings(jsonObject.getString("start_date"), formatted_today))) {
 
                                 Schedule schedule = new Schedule();
 
@@ -207,10 +204,16 @@ public class FriendProfileActivity extends AppCompatActivity {
             Collections.sort(arrayList, new Comparator<Schedule>() {
                 @Override
                 public int compare(Schedule o1, Schedule o2) {
-                    return o1.getStart_time().compareTo(o2.getStart_time()); }
+                    if (o1.getStart_date().equals(o2.getStart_date())) {
+                        return o1.getStart_time().compareTo(o2.getStart_time());
+                    } else {
+                        return o1.getStart_date().compareTo(o2.getStart_date());
+                    }
+                }
             });
         }
     }
+
     // Converts date format
     public String date_parsing (String old_date, String input_format, String output_format) {
         SimpleDateFormat inputFormat = new SimpleDateFormat(input_format);
@@ -227,15 +230,15 @@ public class FriendProfileActivity extends AppCompatActivity {
         }
         return str;
     }
-    // Check for passed time
+
+    // Check for passed date
     private boolean check_timings(String time, String endtime) {
-        String pattern = "HH:mm";
+        String pattern = "MM/dd/yyyy";
         SimpleDateFormat sdf = new SimpleDateFormat(pattern);
-        String time2 = date_parsing(endtime, "hh:mm aaa", "HH:mm");
 
         try {
             Date date1 = sdf.parse(time);
-            Date date2 = sdf.parse(time2);
+            Date date2 = sdf.parse(endtime);
 
             if(date1.before(date2)) {
                 return true;
