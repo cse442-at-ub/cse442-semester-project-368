@@ -54,11 +54,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
     private RecyclerView uList;
     private ArrayList<String> friendList;
     private ArrayList<Friend> userList;
-    FriendSearchAdapter mAdapter;
-    SearchView searchView;
+    private FriendSearchAdapter mAdapter;
+    private SearchView searchView;
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
-    ProgressDialog progressDialog;
+    private ProgressDialog progressDialog;
 
     // Add customized menu bar
     @Override

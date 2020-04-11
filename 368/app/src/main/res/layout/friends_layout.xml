@@ -23,23 +23,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--        <com.google.android.material.appbar.AppBarLayout-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="56dp"-->
-        <!--            android:layoutDirection="rtl"-->
-        <!--            android:theme="@style/AppTheme.AppBarOverlay">-->
+        <com.google.android.material.appbar.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay">
 
-        <!--            <SearchView-->
-        <!--                android:id="@+id/searchView"-->
-        <!--                android:layout_width="match_parent"-->
-        <!--                android:layout_height="match_parent" />-->
+            <SearchView
+                android:id="@+id/friendSearch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <!--        </com.google.android.material.appbar.AppBarLayout>-->
+        </com.google.android.material.appbar.AppBarLayout>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/friendListRecycler"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:paddingTop="16dp"/>
 
     </LinearLayout>
 

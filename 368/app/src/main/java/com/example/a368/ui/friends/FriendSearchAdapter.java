@@ -1,6 +1,7 @@
 package com.example.a368.ui.friends;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +35,6 @@ public class FriendSearchAdapter extends RecyclerView.Adapter<FriendSearchAdapte
 
     public void filter(String text) {
         List<Friend> temp_list = new ArrayList<>();
-
         if(text.isEmpty()) {
             temp_list.addAll(listCopy);
         } else {
