@@ -109,6 +109,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                                         // Showing response message coming from server.
                                         Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
                                         delete_both(getIntent().getStringExtra("friend_id"));
+                                        setResult(Activity.RESULT_OK);
                                         finish();
                                     }
                                 },

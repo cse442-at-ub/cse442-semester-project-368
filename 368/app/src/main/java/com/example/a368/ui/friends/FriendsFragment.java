@@ -1,5 +1,6 @@
 package com.example.a368.ui.friends;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -12,7 +13,9 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,7 +47,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     private DividerItemDecoration dividerItemDecoration;
     private ArrayList<Friend> friendList;
 
-    private FriendSearchAdapter mAdapter;
+    public FriendSearchAdapter mAdapter;
     private SearchView searchView;
 
     private String friend_id;
@@ -97,7 +100,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
                 String friend_email = friendList.get(position).getEmail();
                 String user_email = User.getInstance().getEmail();
 
-                Intent intent = new Intent(getContext(), FriendProfileActivity.class);
+                Intent intent = new Intent(FriendsFragment.this.getContext(), FriendProfileActivity.class);
                 intent.putExtra("id", ""+friendList.get(position).getID());
                 intent.putExtra("name", friendList.get(position).getName());
                 intent.putExtra("email", friendList.get(position).getEmail());
@@ -115,7 +118,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
                                         jsonObject.getString("email_b").equals(user_email)) {
 
                                     intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
-                                    startActivity(intent);
+                                    startActivityForResult(intent, 1);
                                     break;
 
                                 }
@@ -135,7 +138,6 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
                 RequestQueue requestQueue = Volley.newRequestQueue(getContext());
                 requestQueue.add(jsonArrayRequest);
 
-                getData();
             }
         });
 
@@ -153,7 +155,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         String friend_email = friendList.get(position).getEmail();
         String user_email = User.getInstance().getEmail();
 
-        Intent intent = new Intent(getContext(), FriendProfileActivity.class);
+        Intent intent = new Intent(FriendsFragment.this.getContext(), FriendProfileActivity.class);
         intent.putExtra("id", ""+friendList.get(position).getID());
         intent.putExtra("name", friendList.get(position).getName());
         intent.putExtra("email", friendList.get(position).getEmail());
@@ -171,7 +173,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
                                 jsonObject.getString("email_b").equals(user_email)) {
 
                             intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
-                            startActivity(intent);
+                            startActivityForResult(intent, 1);
                             break;
 
                         }
@@ -191,6 +193,11 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getData();
     }
 
     // Updates view friends list
