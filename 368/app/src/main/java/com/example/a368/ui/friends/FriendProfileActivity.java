@@ -1,14 +1,18 @@
 package com.example.a368.ui.friends;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.Schedule;
 import com.example.a368.User;
@@ -43,7 +47,9 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FriendProfileActivity extends AppCompatActivity {
 
@@ -55,6 +61,7 @@ public class FriendProfileActivity extends AppCompatActivity {
     private List<Schedule> scheduleList;
     private DividerItemDecoration dividerItemDecoration;
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
+    private static String url_delete = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/delete_friend.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,7 +79,6 @@ public class FriendProfileActivity extends AppCompatActivity {
         availableTimes = findViewById(R.id.availableTimes);
         removeFriend = findViewById(R.id.btRemoveFriend);
 
-
         name.setText(getIntent().getStringExtra("name"));
         email.setText(getIntent().getStringExtra("email"));
         instruction.setText(getIntent().getStringExtra("name") + "'s Daily Schedule:");
@@ -89,10 +95,59 @@ public class FriendProfileActivity extends AppCompatActivity {
         removeFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(FriendProfileActivity.this, "Friend Removed", Toast.LENGTH_SHORT).show();
-                finish();
-            }
-        });
+                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(FriendProfileActivity.this);
+                confirmBuilder.setTitle("Remove Friend");
+                confirmBuilder.setMessage("Are you sure to delete:\n" + getIntent().getStringExtra("name") +
+                        " (" + getIntent().getStringExtra("email") + ") ?\n\nYour friend will lose access to your profile as well.");
+                confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String ServerResponse) {
+                                        // Showing response message coming from server.
+                                        Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                        delete_both(getIntent().getStringExtra("friend_id"));
+                                        setResult(Activity.RESULT_OK);
+                                        finish();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
+                                        // Showing error message if something goes wrong.
+                                        Toast.makeText(FriendProfileActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() {
+                                // Creating Map String Params.
+                                Map<String, String> params = new HashMap<String, String>();
+                                // Adding All values to Params.
+                                params.put("id", "" + getIntent().getStringExtra("id"));
+                                return params;
+                            }
+
+                        };
+                        // Creating RequestQueue.
+                        RequestQueue requestQueue = Volley.newRequestQueue(FriendProfileActivity.this);
+
+                        // Adding the StringRequest object into requestQueue.
+                        requestQueue.add(stringRequest);
+                    }
+
+                });
+                confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                });
+
+                confirmBuilder.show();
+//                finish();
+            }});
     }
 
     // Go back to Friends Fragment
@@ -251,5 +306,39 @@ public class FriendProfileActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void delete_both (String friend_id) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String ServerResponse) {
+                        // Showing response message coming from server.
+                        Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                        finish();
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError volleyError) {
+                        // Showing error message if something goes wrong.
+                        Toast.makeText(FriendProfileActivity.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                    }
+                }) {
+            @Override
+            protected Map<String, String> getParams() {
+                // Creating Map String Params.
+                Map<String, String> params = new HashMap<String, String>();
+                // Adding All values to Params.
+                params.put("id", friend_id);
+                return params;
+            }
+
+        };
+        // Creating RequestQueue.
+        RequestQueue requestQueue = Volley.newRequestQueue(FriendProfileActivity.this);
+
+        // Adding the StringRequest object into requestQueue.
+        requestQueue.add(stringRequest);
     }
 }

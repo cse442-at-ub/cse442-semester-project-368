@@ -123,7 +123,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(this);
         confirmBuilder.setTitle("Add Friend");
         confirmBuilder.setMessage("Are you sure to add:\n" + userList.get(position).getName() +
-                " (" + userList.get(position).getEmail() + ") ?");
+                " (" + userList.get(position).getEmail() + ") ?\n\nYou may be visible to your friend's list.");
         confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -168,7 +168,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 progressDialog.dismiss();
 
                                 // Showing response message coming from server.
-                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+//                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
 
                                 // update adapter list
                                 getFriend();
@@ -316,7 +316,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         requestQueue.add(jsonArrayRequest);
     }
 
-    public void add_both(String email_a, String name_b, String email_b) {
+    private void add_both(String email_a, String name_b, String email_b) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
                 new Response.Listener<String>() {
                     @Override

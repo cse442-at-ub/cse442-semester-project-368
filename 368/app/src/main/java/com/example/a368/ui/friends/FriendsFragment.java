@@ -1,5 +1,6 @@
 package com.example.a368.ui.friends;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Build;
@@ -12,7 +13,9 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -44,8 +47,10 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     private DividerItemDecoration dividerItemDecoration;
     private ArrayList<Friend> friendList;
 
-    private FriendSearchAdapter mAdapter;
+    public FriendSearchAdapter mAdapter;
     private SearchView searchView;
+
+    private String friend_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -70,13 +75,9 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         fList = (RecyclerView)root.findViewById(R.id.friendListRecycler);
         friendList = new ArrayList<>();
 
-
         linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         dividerItemDecoration = new DividerItemDecoration(fList.getContext(), linearLayoutManager.getOrientation());
-
-
-
 
         searchView = (SearchView) root.findViewById(R.id.friendSearch);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -96,23 +97,107 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         mAdapter = new FriendSearchAdapter(getContext(), friendList, new FriendSearchAdapter.onClickListener() {
             @Override
             public void onClickFriend(int position) {
+                String friend_email = friendList.get(position).getEmail();
+                String user_email = User.getInstance().getEmail();
+
+                Intent intent = new Intent(FriendsFragment.this.getContext(), FriendProfileActivity.class);
+                intent.putExtra("id", ""+friendList.get(position).getID());
+                intent.putExtra("name", friendList.get(position).getName());
+                intent.putExtra("email", friendList.get(position).getEmail());
+
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                // check to display the logged-in user's schedule only && display today's schedule only
+                                if (jsonObject.getString("email_a").equals(friend_email) &&
+                                        jsonObject.getString("email_b").equals(user_email)) {
+
+                                    intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
+                                    startActivityForResult(intent, 1);
+                                    break;
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                requestQueue.add(jsonArrayRequest);
 
             }
         });
+
         fList.setHasFixedSize(true);
         fList.setLayoutManager(linearLayoutManager);
         fList.addItemDecoration(dividerItemDecoration);
         fList.setAdapter(mAdapter);
+
         return root;
     }
 
-    // On click schedule item
+    // On click friend item
     @Override
     public void onClickFriend(int position) {
-        Intent intent = new Intent(getContext(), FriendProfileActivity.class);
+        String friend_email = friendList.get(position).getEmail();
+        String user_email = User.getInstance().getEmail();
+
+        Intent intent = new Intent(FriendsFragment.this.getContext(), FriendProfileActivity.class);
+        intent.putExtra("id", ""+friendList.get(position).getID());
         intent.putExtra("name", friendList.get(position).getName());
         intent.putExtra("email", friendList.get(position).getEmail());
-        startActivity(intent);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        // check to display the logged-in user's schedule only && display today's schedule only
+                        if (jsonObject.getString("email_a").equals(friend_email) &&
+                                jsonObject.getString("email_b").equals(user_email)) {
+
+                            intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
+                            startActivityForResult(intent, 1);
+                            break;
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getData();
     }
 
     // Updates view friends list
@@ -171,4 +256,5 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
     }
+
 }
