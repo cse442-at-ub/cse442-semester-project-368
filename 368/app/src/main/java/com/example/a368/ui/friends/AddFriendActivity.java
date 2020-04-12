@@ -168,7 +168,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 progressDialog.dismiss();
 
                                 // Showing response message coming from server.
-                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+//                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
 
                                 // update adapter list
                                 getFriend();

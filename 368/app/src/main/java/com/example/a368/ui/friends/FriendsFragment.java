@@ -47,7 +47,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     private FriendSearchAdapter mAdapter;
     private SearchView searchView;
 
-    private ArrayList<String> friend_id;
+    private String friend_id;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,7 +71,6 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
 
         fList = (RecyclerView)root.findViewById(R.id.friendListRecycler);
         friendList = new ArrayList<>();
-        friend_id = new ArrayList<>();
 
         linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -95,14 +94,48 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         mAdapter = new FriendSearchAdapter(getContext(), friendList, new FriendSearchAdapter.onClickListener() {
             @Override
             public void onClickFriend(int position) {
-                getFriendID(friendList.get(position).getEmail(), User.getInstance().getEmail());
+                String friend_email = friendList.get(position).getEmail();
+                String user_email = User.getInstance().getEmail();
 
                 Intent intent = new Intent(getContext(), FriendProfileActivity.class);
                 intent.putExtra("id", ""+friendList.get(position).getID());
                 intent.putExtra("name", friendList.get(position).getName());
                 intent.putExtra("email", friendList.get(position).getEmail());
-                intent.putExtra("friend_id", "" +friend_id.get(0));
-                startActivity(intent);
+
+                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onResponse(JSONArray response) {
+                        for (int i = 0; i < response.length(); i++) {
+                            try {
+                                JSONObject jsonObject = response.getJSONObject(i);
+
+                                // check to display the logged-in user's schedule only && display today's schedule only
+                                if (jsonObject.getString("email_a").equals(friend_email) &&
+                                        jsonObject.getString("email_b").equals(user_email)) {
+
+                                    intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
+                                    startActivity(intent);
+                                    break;
+
+                                }
+
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.e("Volley", error.toString());
+                    }
+                });
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                requestQueue.add(jsonArrayRequest);
+
+                getData();
             }
         });
 
@@ -117,14 +150,47 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     // On click friend item
     @Override
     public void onClickFriend(int position) {
-        getFriendID(friendList.get(position).getEmail(), User.getInstance().getEmail());
+        String friend_email = friendList.get(position).getEmail();
+        String user_email = User.getInstance().getEmail();
 
         Intent intent = new Intent(getContext(), FriendProfileActivity.class);
         intent.putExtra("id", ""+friendList.get(position).getID());
         intent.putExtra("name", friendList.get(position).getName());
         intent.putExtra("email", friendList.get(position).getEmail());
-        intent.putExtra("friend_id", "" +friend_id.get(0));
-        startActivity(intent);
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        // check to display the logged-in user's schedule only && display today's schedule only
+                        if (jsonObject.getString("email_a").equals(friend_email) &&
+                                jsonObject.getString("email_b").equals(user_email)) {
+
+                            intent.putExtra("friend_id", "" + String.valueOf(jsonObject.getInt("id")));
+                            startActivity(intent);
+                            break;
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+
     }
 
     // Updates view friends list
@@ -184,44 +250,4 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void getFriendID (String friend_email, String user_email) {
-        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-        progressDialog.setMessage("Loading...");
-        progressDialog.show();
-
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-            @RequiresApi(api = Build.VERSION_CODES.O)
-            @Override
-            public void onResponse(JSONArray response) {
-                friend_id.clear();
-                for (int i = 0; i < response.length(); i++) {
-                    try {
-                        JSONObject jsonObject = response.getJSONObject(i);
-
-                        // check to display the logged-in user's schedule only && display today's schedule only
-                        if (jsonObject.getString("email_a").equals(friend_email) &&
-                                jsonObject.getString("email_b").equals(user_email)) {
-
-                            friend_id.add(String.valueOf(jsonObject.getInt("id")));
-                            break;
-
-                        }
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                        progressDialog.dismiss();
-                    }
-                }
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.e("Volley", error.toString());
-                progressDialog.dismiss();
-            }
-        });
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(jsonArrayRequest);
-    }
 }

@@ -108,7 +108,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                                     public void onResponse(String ServerResponse) {
                                         // Showing response message coming from server.
                                         Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
-                                        delete_both();
+                                        delete_both(getIntent().getStringExtra("friend_id"));
                                         finish();
                                     }
                                 },
@@ -307,7 +307,7 @@ public class FriendProfileActivity extends AppCompatActivity {
         return false;
     }
 
-    private void delete_both () {
+    private void delete_both (String friend_id) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete,
                 new Response.Listener<String>() {
                     @Override
@@ -329,7 +329,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                 // Creating Map String Params.
                 Map<String, String> params = new HashMap<String, String>();
                 // Adding All values to Params.
-                params.put("id", "" + getIntent().getStringExtra("id"));
+                params.put("id", friend_id);
                 return params;
             }
 
