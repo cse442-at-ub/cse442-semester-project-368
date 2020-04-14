@@ -83,12 +83,18 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 ViewModelProviders.of(this).get(MonthlyViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
 
+        long currentTime = System.currentTimeMillis();
+        Date today = new Date(currentTime);
+        passDate = today;
+
         // Add Schedule Floating Button
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab_add_monthly);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), AddMonthlySchedule.class));
+                Intent intent = new Intent(MonthlyFragment.this.getContext(), AddMonthlySchedule.class);
+                intent.putExtra("date", passDate);
+                startActivity(intent);
             }
         });
 
@@ -99,10 +105,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         compactCalendar.shouldDrawIndicatorsBelowSelectedDays(true);
         month = (TextView) root.findViewById(R.id.calendar_month);
         month.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
-
-        long currentTime = System.currentTimeMillis();
-        Date today = new Date(currentTime);
-        passDate = today;
 
         sList = (RecyclerView)root.findViewById(R.id.monthly_schedule_list);
         scheduleList = new ArrayList<>();

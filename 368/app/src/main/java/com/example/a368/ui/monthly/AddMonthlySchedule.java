@@ -286,6 +286,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
          * Flag attribute since they are reusing the Date || Time picker dialog.
          */
         startDate = (TextView) findViewById(R.id.event_start_date);
+//        startDate.setText(getIntent().getStringExtra("date"));
 
         // Set up Start Date field (should be fixed for add daily schedule)
         startDate.setOnClickListener(new View.OnClickListener() {
