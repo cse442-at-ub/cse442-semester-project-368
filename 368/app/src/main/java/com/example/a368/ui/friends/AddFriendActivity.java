@@ -174,6 +174,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 getFriend();
                                 getData();
                                 add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
+                                finish();
                             }
                         },
                         new Response.ErrorListener() {
@@ -326,7 +327,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         progressDialog.dismiss();
 
                         // Showing response message coming from server.
-                        Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddFriendActivity.this, "Friend added Successfully", Toast.LENGTH_LONG).show();
 
                         // update adapter list
                         getFriend();
