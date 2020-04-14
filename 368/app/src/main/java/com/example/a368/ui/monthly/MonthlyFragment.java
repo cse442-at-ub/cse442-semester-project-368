@@ -127,6 +127,9 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 month.setText(dateFormatMonth.format(firstDayOfNewMonth));
+
+                passDate = firstDayOfNewMonth;
+                refresh();
             }
         });
 

@@ -128,6 +128,9 @@ public class AddMonthlySchedule extends AppCompatActivity {
                                                         // Hiding the progress dialog after all task complete.
                                                         progressDialog.dismiss();
 
+                                                        // End Activity
+                                                        finish();
+
                                                         // Showing response message coming from server.
                                                         Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
                                                     }
@@ -168,7 +171,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
 
                                         // Adding the StringRequest object into requestQueue.
                                         requestQueue.add(stringRequest);
-                                        finish();
+//                                        finish();
 
                                     }
                                 },
