@@ -120,7 +120,58 @@ public class AddMonthlySchedule extends AppCompatActivity {
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String ServerResponse) {
-                                        // Showing response message coming from server.
+                                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
+                                                new Response.Listener<String>() {
+                                                    @Override
+                                                    public void onResponse(String ServerResponse) {
+
+                                                        // Hiding the progress dialog after all task complete.
+                                                        progressDialog.dismiss();
+
+                                                        // End Activity
+                                                        finish();
+
+                                                        // Showing response message coming from server.
+                                                        Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                                    }
+                                                },
+                                                new Response.ErrorListener() {
+                                                    @Override
+                                                    public void onErrorResponse(VolleyError volleyError) {
+
+                                                        // Hiding the progress dialog after all task complete.
+                                                        progressDialog.dismiss();
+
+                                                        // Showing error message if something goes wrong.
+                                                        Toast.makeText(AddMonthlySchedule.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                                    }
+                                                }) {
+                                            @Override
+                                            protected Map<String, String> getParams() {
+
+                                                // Creating Map String Params.
+                                                Map<String, String> params = new HashMap<String, String>();
+
+                                                // Adding All values to Params.
+                                                params.put("email", User.getInstance().getEmail());
+                                                params.put("title", strTitle);
+                                                params.put("start_date", strStartDate);
+                                                params.put("start_time", strStartTime);
+                                                params.put("end_date", strEndDate);
+                                                params.put("end_time", strEndTime);
+                                                params.put("description", strDescription);
+
+                                                return params;
+                                            }
+
+                                        };
+
+                                        // Creating RequestQueue.
+                                        RequestQueue requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
+
+                                        // Adding the StringRequest object into requestQueue.
+                                        requestQueue.add(stringRequest);
+//                                        finish();
 
                                     }
                                 },
@@ -148,56 +199,54 @@ public class AddMonthlySchedule extends AppCompatActivity {
                         // Adding the StringRequest object into requestQueue.
                         requestQueue.add(stringRequest);
                     }
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String ServerResponse) {
+                    else {
+                        StringRequest stringRequest = new StringRequest(Request.Method.POST, HttpUrl,
+                                new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String ServerResponse) {
 
-                                    // Hiding the progress dialog after all task complete.
-                                    progressDialog.dismiss();
+                                        // Hiding the progress dialog after all task complete.
+                                        progressDialog.dismiss();
 
-                                    // Showing response message coming from server.
-                                    Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError volleyError) {
+                                        // Showing response message coming from server.
+                                        Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                    }
+                                },
+                                new Response.ErrorListener() {
+                                    @Override
+                                    public void onErrorResponse(VolleyError volleyError) {
 
-                                    // Hiding the progress dialog after all task complete.
-                                    progressDialog.dismiss();
+                                        // Hiding the progress dialog after all task complete.
+                                        progressDialog.dismiss();
 
-                                    // Showing error message if something goes wrong.
-                                    Toast.makeText(AddMonthlySchedule.this, volleyError.toString(), Toast.LENGTH_LONG).show();
-                                }
-                            }) {
-                        @Override
-                        protected Map<String, String> getParams() {
+                                        // Showing error message if something goes wrong.
+                                        Toast.makeText(AddMonthlySchedule.this, volleyError.toString(), Toast.LENGTH_LONG).show();
+                                    }
+                                }) {
+                            @Override
+                            protected Map<String, String> getParams() {
 
-                            // Creating Map String Params.
-                            Map<String, String> params = new HashMap<String, String>();
+                                // Creating Map String Params.
+                                Map<String, String> params = new HashMap<String, String>();
 
-                            // Adding All values to Params.
-                            params.put("email", User.getInstance().getEmail());
-                            params.put("title", strTitle);
-                            params.put("start_date", strStartDate);
-                            params.put("start_time", strStartTime);
-                            params.put("end_date", strEndDate);
-                            params.put("end_time", strEndTime);
-                            params.put("description", strDescription);
+                                // Adding All values to Params.
+                                params.put("email", User.getInstance().getEmail());
+                                params.put("title", strTitle);
+                                params.put("start_date", strStartDate);
+                                params.put("start_time", strStartTime);
+                                params.put("end_date", strEndDate);
+                                params.put("end_time", strEndTime);
+                                params.put("description", strDescription);
 
-                            return params;
-                        }
-
-                    };
-
-                    // Creating RequestQueue.
-                    RequestQueue requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
-
-                    // Adding the StringRequest object into requestQueue.
-                    requestQueue.add(stringRequest);
-
-                    finish();
+                                return params;
+                            }
+                        };
+                        // Creating RequestQueue.
+                        RequestQueue requestQueue = Volley.newRequestQueue(AddMonthlySchedule.this);
+                        // Adding the StringRequest object into requestQueue.
+                        requestQueue.add(stringRequest);
+                        finish();
+                    }
                 }
 
                 break;
@@ -237,6 +286,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
          * Flag attribute since they are reusing the Date || Time picker dialog.
          */
         startDate = (TextView) findViewById(R.id.event_start_date);
+//        startDate.setText(getIntent().getStringExtra("date"));
 
         // Set up Start Date field (should be fixed for add daily schedule)
         startDate.setOnClickListener(new View.OnClickListener() {
@@ -276,6 +326,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
                 new TimePickerDialog(AddMonthlySchedule.this, timeSetListener, hour, minute, false).show();
             }
         });
+
         if(getIntent().hasExtra("id")) {
             actionBar.setTitle("Edit Schedule");
             title.setText(getIntent().getStringExtra("name"));

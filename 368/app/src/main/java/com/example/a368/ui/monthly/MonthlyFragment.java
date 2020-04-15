@@ -83,12 +83,18 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 ViewModelProviders.of(this).get(MonthlyViewModel.class);
         View root = inflater.inflate(R.layout.fragment_calendar, container, false);
 
+        long currentTime = System.currentTimeMillis();
+        Date today = new Date(currentTime);
+        passDate = today;
+
         // Add Schedule Floating Button
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab_add_monthly);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(v.getContext(), AddMonthlySchedule.class));
+                Intent intent = new Intent(MonthlyFragment.this.getContext(), AddMonthlySchedule.class);
+                intent.putExtra("date", passDate);
+                startActivity(intent);
             }
         });
 
@@ -99,10 +105,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         compactCalendar.shouldDrawIndicatorsBelowSelectedDays(true);
         month = (TextView) root.findViewById(R.id.calendar_month);
         month.setText(dateFormatMonth.format(compactCalendar.getFirstDayOfCurrentMonth()));
-
-        long currentTime = System.currentTimeMillis();
-        Date today = new Date(currentTime);
-        passDate = today;
 
         sList = (RecyclerView)root.findViewById(R.id.monthly_schedule_list);
         scheduleList = new ArrayList<>();
@@ -120,100 +122,16 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         compactCalendar.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
+                passDate = dateClicked;
                 refresh();
-                final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                progressDialog.setMessage("Loading...");
-                progressDialog.show();
-
-                JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-                    @RequiresApi(api = Build.VERSION_CODES.O)
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        passDate = dateClicked;
-                        scheduleList.clear();
-                        for (int i = 0; i < response.length(); i++) {
-                            try {
-                                JSONObject jsonObject = response.getJSONObject(i);
-
-                                // Get today
-                                Date today = Calendar.getInstance().getTime();
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                                String formatted_today = dateFormat.format(dateClicked);
-
-                                // check to display the logged-in user's schedule only && display today's schedule only
-                                if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
-                                    if (((jsonObject.getString("start_date").equals(formatted_today)) ||
-                                            (jsonObject.getString("end_date").equals(formatted_today))) ||
-                                            (check_timings(formatted_today, jsonObject.getString("end_date")) &&
-                                            check_timings(jsonObject.getString("start_date"), formatted_today))) {
-
-                                        Schedule schedule = new Schedule();
-
-                                        schedule.setID((jsonObject.getInt("id")));
-                                        schedule.setName(jsonObject.getString("title"));
-                                        schedule.setStart_date(jsonObject.getString("start_date"));
-                                        schedule.setStart_date(date_parsing(schedule.getStart_date().substring(0, 5),
-                                                "MM/dd", "MMM d"));
-
-                                        schedule.setStart_time(jsonObject.getString("start_time"));
-                                        schedule.setStart_time(date_parsing(schedule.getStart_time(),
-                                                "hh:mm aaa", "HH:mm"));
-
-                                        schedule.setEnd_date(jsonObject.getString("end_date"));
-                                        schedule.setEnd_date(date_parsing(schedule.getEnd_date().substring(0, 5),
-                                                "MM/dd", "MMM d"));
-
-                                        schedule.setEnd_time(jsonObject.getString("end_time"));
-                                        schedule.setEnd_time(date_parsing(schedule.getEnd_time(),
-                                                "hh:mm aaa", "HH:mm"));
-
-                                        schedule.setDescription(jsonObject.getString("description"));
-
-                                        // empty description disregarded
-                                        if (schedule.getDescription().equals("Exception: No Text Applied")) {
-                                            schedule.setDescription("");
-                                        }
-                                        scheduleList.add(schedule);
-                                    }
-                                }
-
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                                progressDialog.dismiss();
-                            }
-                        }
-
-                        // Sort by start time
-                        sortArray(scheduleList);
-
-                        // Re-format time
-                        for (int i = 0; i < scheduleList.size(); i++) {
-                            // start time
-                            scheduleList.get(i).setStart_time(date_parsing(scheduleList.get(i).getStart_time(),
-                                    "HH:mm", "hh:mm aaa"));
-
-                            // end time
-                            scheduleList.get(i).setEnd_time(date_parsing(scheduleList.get(i).getEnd_time(),
-                                    "HH:mm", "hh:mm aaa"));
-                        }
-
-                        adapter.notifyDataSetChanged();
-                        progressDialog.dismiss();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.e("Volley", error.toString());
-                        progressDialog.dismiss();
-                    }
-                });
-                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                requestQueue.add(jsonArrayRequest);
             }
 
             @Override
             public void onMonthScroll(Date firstDayOfNewMonth) {
                 month.setText(dateFormatMonth.format(firstDayOfNewMonth));
+
+                passDate = firstDayOfNewMonth;
+                refresh();
             }
         });
 
@@ -228,19 +146,18 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
     }
 
     private void refresh() {
-        getData();
 
-        calendarList.clear();
-        compactCalendar.removeAllEvents();
         List<Date> dates = new ArrayList<Date>();
 
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onResponse(JSONArray response) {
-                scheduleList.clear();
+
                 SimpleDateFormat formatter = new SimpleDateFormat("MM/dd/yyyy");
 
+                calendarList.clear();
+                compactCalendar.removeAllEvents();
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
@@ -305,6 +222,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
+        getData();
     }
 
     // Fetch JSON data to display schedule
@@ -312,7 +230,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
         progressDialog.show();
-
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
@@ -428,7 +345,6 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                         intent.putExtra("end_date", scheduleList.get(pos).getEnd_date());
                         intent.putExtra("description", scheduleList.get(pos).getDescription());
                         startActivity(intent);
-
                         break;
                     case 1:
                         //code for delete
@@ -443,7 +359,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                         new Response.Listener<String>() {
                                             @Override
                                             public void onResponse(String ServerResponse) {
-                                                getData();
+                                                refresh();
                                                 // Showing response message coming from server.
                                                 Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
                                             }
