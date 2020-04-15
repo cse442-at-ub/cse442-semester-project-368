@@ -1,82 +1,71 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.friends.FriendProfileActivity">
+    android:layout_margin="@dimen/fab_margin"
+    android:orientation="vertical"
+    tools:context=".ui.friends.AddFriendActivity">
 
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
-
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include
-        android:id="@+id/include"
-        layout="@layout/content_friend_profile" />
-
-    <RelativeLayout
+    <TextView
+        android:id="@+id/profileName"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingLeft="30dp"
-        android:paddingTop="56dp"
-        android:paddingRight="30dp">
+        android:layout_height="wrap_content"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextBlack"
+        android:text="TextView" />
 
-        <TextView
-            android:id="@+id/profileName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="TextView" />
+    <TextView
+        android:id="@+id/profileEmail"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="16dp"
+        android:textColor="@color/colorTextBlack"
+        android:text="TextView" />
 
-        <TextView
-            android:id="@+id/profileEmail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:layout_below="@+id/profileName"
-            android:text="TextView" />
+    <TextView
+        android:id="@+id/instruction"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/fab_margin"
+        android:text="Friend's Daily Schedule:"
+        android:textStyle="bold"
+        android:textColor="@color/colorTextBlack"
+        android:textSize="16dp"/>
 
-        <TextView
-            android:id="@+id/instruction"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/profileEmail"
-            android:layout_marginTop="10dp"
-            android:text="Their schedule:"
-            android:textStyle="bold" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/availableTimes"
+            android:background="@drawable/border"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="@dimen/fab_margin"
             android:layout_below="@+id/instruction"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="55dp">
+            android:layout_weight="0.98">
 
         </androidx.recyclerview.widget.RecyclerView>
-
 
         <Button
             android:id="@+id/btRemoveFriend"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="0.02"
             android:text="Remove Friend"
-            android:layout_alignParentBottom="true"
-            />
+            android:layout_alignParentBottom="true" />
+    </LinearLayout>
 
-    </RelativeLayout>
-
-
-
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</LinearLayout>
