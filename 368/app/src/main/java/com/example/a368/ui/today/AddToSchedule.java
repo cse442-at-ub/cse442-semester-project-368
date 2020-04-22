@@ -51,6 +51,7 @@ public class AddToSchedule extends AppCompatActivity {
     private Boolean startDateClicked = false, startTimeClicked = false, endDateClicked = false, endTimeClicked = false;
     private EditText title, description;
     private String strTitle, strStartDate, strStartTime, strEndDate, strEndTime, strDescription;
+    private boolean edit_screen = false;
 
     // Add customized menu bar
     @Override
@@ -162,8 +163,12 @@ public class AddToSchedule extends AppCompatActivity {
                                     // Hiding the progress dialog after all task complete.
                                     progressDialog.dismiss();
 
-                                    // Showing response message coming from server.
-                                    Toast.makeText(AddToSchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                    // Showing response message:
+                                    if(edit_screen) {
+                                        Toast.makeText(AddToSchedule.this, "Your schedule is successfully edited.", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(AddToSchedule.this, "Your schedule is successfully added.", Toast.LENGTH_LONG).show();
+                                    }
                                 }
                             },
                             new Response.ErrorListener() {
@@ -306,6 +311,7 @@ public class AddToSchedule extends AppCompatActivity {
             }
         });
         if(getIntent().hasExtra("id")) {
+            edit_screen = true;
             actionBar.setTitle("Edit Daily Schedule");
             title.setText(getIntent().getStringExtra("name"));
             startTime.setText(getIntent().getStringExtra("start_time"));

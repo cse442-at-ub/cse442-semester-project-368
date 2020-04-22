@@ -253,7 +253,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                                             public void onResponse(String ServerResponse) {
                                                 getData();
                                                 // Showing response message coming from server.
-                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getContext(), "Your schedule is successfully deleted.", Toast.LENGTH_LONG).show();
                                             }
                                         },
                                         new Response.ErrorListener() {
