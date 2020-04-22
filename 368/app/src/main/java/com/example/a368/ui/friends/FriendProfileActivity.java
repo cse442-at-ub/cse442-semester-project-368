@@ -106,8 +106,9 @@ public class FriendProfileActivity extends AppCompatActivity {
                                 new Response.Listener<String>() {
                                     @Override
                                     public void onResponse(String ServerResponse) {
-                                        // Showing response message coming from server.
-                                        Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                        // Showing response message:
+                                        Toast.makeText(FriendProfileActivity.this, getIntent().getStringExtra("name") +
+                                                " is removed from your friend list.", Toast.LENGTH_LONG).show();
                                         delete_both(getIntent().getStringExtra("friend_id"));
                                         setResult(Activity.RESULT_OK);
                                         finish();
@@ -314,7 +315,7 @@ public class FriendProfileActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(String ServerResponse) {
                         // Showing response message coming from server.
-                        Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(FriendProfileActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
                         finish();
                     }
                 },
