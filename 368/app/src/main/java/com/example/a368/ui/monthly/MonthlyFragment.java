@@ -361,7 +361,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                             public void onResponse(String ServerResponse) {
                                                 refresh();
                                                 // Showing response message coming from server.
-                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getContext(), "Your schedule is successfully deleted.", Toast.LENGTH_LONG).show();
                                             }
                                         },
                                         new Response.ErrorListener() {

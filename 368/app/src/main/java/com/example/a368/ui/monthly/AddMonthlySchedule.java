@@ -45,6 +45,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
     private Boolean startDateClicked = false, startTimeClicked = false, endDateClicked = false, endTimeClicked = false;
     private EditText title, description;
     private String strTitle, strStartDate, strStartTime, strEndDate, strEndTime, strDescription;
+    private boolean edit_screen = false;
 
     // Add customized menu bar
     @Override
@@ -132,7 +133,11 @@ public class AddMonthlySchedule extends AppCompatActivity {
                                                         finish();
 
                                                         // Showing response message coming from server.
-                                                        Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                                        if(edit_screen) {
+                                                            Toast.makeText(AddMonthlySchedule.this, "Your schedule is successfully edited.", Toast.LENGTH_LONG).show();
+                                                        } else {
+                                                            Toast.makeText(AddMonthlySchedule.this, "Your schedule is successfully added.", Toast.LENGTH_LONG).show();
+                                                        }
                                                     }
                                                 },
                                                 new Response.ErrorListener() {
@@ -208,7 +213,6 @@ public class AddMonthlySchedule extends AppCompatActivity {
                                         // Hiding the progress dialog after all task complete.
                                         progressDialog.dismiss();
 
-                                        // Showing response message coming from server.
                                         Toast.makeText(AddMonthlySchedule.this, ServerResponse, Toast.LENGTH_LONG).show();
                                     }
                                 },
@@ -328,6 +332,7 @@ public class AddMonthlySchedule extends AppCompatActivity {
         });
 
         if(getIntent().hasExtra("id")) {
+            edit_screen = true;
             actionBar.setTitle("Edit Schedule");
             title.setText(getIntent().getStringExtra("name"));
             startTime.setText(getIntent().getStringExtra("start_time"));

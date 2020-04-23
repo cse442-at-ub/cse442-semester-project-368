@@ -167,8 +167,9 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 // Hiding the progress dialog after all task complete.
                                 progressDialog.dismiss();
 
-                                // Showing response message coming from server.
-//                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                // Showing response message:
+                                Toast.makeText(AddFriendActivity.this, userList.get(position).getName() +
+                                        " is added to your friend list", Toast.LENGTH_LONG).show();
 
                                 // update adapter list
                                 getFriend();
@@ -325,9 +326,6 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
-
-                        // Showing response message coming from server.
-                        Toast.makeText(AddFriendActivity.this, "Friend added Successfully", Toast.LENGTH_LONG).show();
 
                         // update adapter list
                         getFriend();
