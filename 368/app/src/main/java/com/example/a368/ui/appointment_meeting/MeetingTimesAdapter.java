@@ -15,11 +15,11 @@ import com.example.a368.R;
 
 import java.util.ArrayList;
 
-public class AppointmentTimesAdapter extends RecyclerView.Adapter<AppointmentTimesAdapter.ViewHolder> {
+public class MeetingTimesAdapter extends RecyclerView.Adapter<MeetingTimesAdapter.ViewHolder> {
     ArrayList<String> list = new ArrayList<String>();
     private Context mContext;
 
-    public AppointmentTimesAdapter(ArrayList<String> times, Context context) {
+    public MeetingTimesAdapter(ArrayList<String> times, Context context) {
         list = times;
         mContext = context;
     }

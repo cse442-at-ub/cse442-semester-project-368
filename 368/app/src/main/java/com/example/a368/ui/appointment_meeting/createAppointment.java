@@ -2,16 +2,10 @@ package com.example.a368.ui.appointment_meeting;
 
 import android.os.Bundle;
 
-import com.example.a368.ui.friends.AvailableTimesAdapter;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import android.view.View;
 
 import com.example.a368.R;
 
@@ -21,7 +15,7 @@ public class createAppointment extends AppCompatActivity {
 
     RecyclerView availableTimes;
     RecyclerView.LayoutManager layoutManager;
-    AppointmentTimesAdapter mAdapter;
+    MeetingTimesAdapter mAdapter;
     ArrayList<String> list = new ArrayList<String>();
 
     @Override
@@ -43,7 +37,7 @@ public class createAppointment extends AppCompatActivity {
         list.add("4:00pm-5:00pm");
         list.add("6:00pm-7:00pm");
 
-        mAdapter = new AppointmentTimesAdapter(list, this);
+        mAdapter = new MeetingTimesAdapter(list, this);
         layoutManager = new LinearLayoutManager(this);
 
         availableTimes.setLayoutManager(layoutManager);

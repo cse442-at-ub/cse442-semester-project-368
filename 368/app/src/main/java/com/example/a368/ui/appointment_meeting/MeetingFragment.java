@@ -4,33 +4,40 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
-import androidx.annotation.Nullable;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a368.R;
 import com.example.a368.ui.friends.Friend;
-import com.example.a368.ui.friends.FriendsListAdapter;
 
 import java.util.ArrayList;
 
-public class AppointmentMeetingFragment extends Fragment {
+public class MeetingFragment extends Fragment {
 
-    private AppointmentMeetingViewModel appointmentMeetingViewModel;
+    private MeetingViewModel meetingViewModel;
     RecyclerView.LayoutManager layoutManager;
-    AppointmentFriendsAdapter mAdapter;
+    MeetingFriendsAdapter mAdapter;
     ArrayList<Friend> list = new ArrayList<Friend>();
+
+    public static MeetingFragment newInstance(String text) {
+
+        MeetingFragment f = new MeetingFragment();
+        Bundle b = new Bundle();
+        b.putString("msg", text);
+
+        f.setArguments(b);
+
+        return f;
+    }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
-        appointmentMeetingViewModel =
-                ViewModelProviders.of(this).get(AppointmentMeetingViewModel.class);
+        meetingViewModel =
+                ViewModelProviders.of(this).get(MeetingViewModel.class);
         View root = inflater.inflate(R.layout.appointment_layout, container, false);
 
         Friend f1 = new Friend("Mario Speedwagon", "mario@speedwagon.com");
@@ -55,7 +62,7 @@ public class AppointmentMeetingFragment extends Fragment {
         layoutManager = new LinearLayoutManager(this.getContext());
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new AppointmentFriendsAdapter(list, this.getContext());
+        mAdapter = new MeetingFriendsAdapter(list, this.getContext());
         recyclerView.setAdapter(mAdapter);
 
 
