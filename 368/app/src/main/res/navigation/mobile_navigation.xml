@@ -21,11 +21,11 @@
         android:id="@+id/nav_appointment_meeting"
         android:name="com.example.a368.ui.appointment_meeting.AppointmentMeetingFragment"
         android:label="Appointment/Meeting"
-        tools:layout="@layout/fragment_tools" />
+        tools:layout="@layout/fragment_appointment" />
 
     <fragment
         android:id="@+id/nav_friends"
-        android:name="com.example.a368.ui.friends.FriendsFragment"
+        android:name="com.example.a368.ui.friends.FriendsViewPager"
         android:label="Friends"
         tools:layout="@layout/monthly_schedule_list" />
 

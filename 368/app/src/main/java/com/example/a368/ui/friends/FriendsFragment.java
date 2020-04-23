@@ -13,9 +13,7 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -50,12 +48,21 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     public FriendSearchAdapter mAdapter;
     private SearchView searchView;
 
-    private String friend_id;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    public static FriendsFragment newInstance(String text) {
+
+        FriendsFragment f = new FriendsFragment();
+        Bundle b = new Bundle();
+        b.putString("msg", text);
+
+        f.setArguments(b);
+
+        return f;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
