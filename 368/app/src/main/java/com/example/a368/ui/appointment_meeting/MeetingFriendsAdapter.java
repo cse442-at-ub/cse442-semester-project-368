@@ -13,15 +13,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.a368.R;
 import com.example.a368.ui.friends.Friend;
-import com.example.a368.ui.friends.FriendProfileActivity;
 
 import java.util.ArrayList;
 
-public class AppointmentFriendsAdapter extends RecyclerView.Adapter<AppointmentFriendsAdapter.ViewHolder> {
+public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAdapter.ViewHolder> {
 
     ArrayList<Friend> list;
     Context mContext;
-    public AppointmentFriendsAdapter(ArrayList<Friend> friends, Context context) {
+    public MeetingFriendsAdapter(ArrayList<Friend> friends, Context context) {
         list = friends;
         mContext = context;
     }

@@ -4,11 +4,11 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-public class AppointmentMeetingViewModel extends ViewModel {
+public class MeetingViewModel extends ViewModel {
 
     private MutableLiveData<String> mText;
 
-    public AppointmentMeetingViewModel() {
+    public MeetingViewModel() {
         mText = new MutableLiveData<>();
         mText.setValue("This is appointment_meeting fragment \nPlease add Doodle features to set up a group meeting schedule.");
     }
