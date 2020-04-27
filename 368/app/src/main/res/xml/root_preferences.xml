@@ -1,11 +1,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory app:title="Profile">
+    <PreferenceCategory app:title="Account"
+        app:iconSpaceReserved="false">
 
         <com.example.a368.ui.settings.PasswordDialogPreference
             app:key="password"
-            app:title="Change your password"
+            app:title="Edit Password"
+            app:iconSpaceReserved="false"
            />
 
 
@@ -19,7 +21,15 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="Preferences">
+    <PreferenceCategory app:title="Session"
+        app:iconSpaceReserved="false">
+
+        <Preference
+            android:id="@+id/logout"
+            app:key="logout"
+            app:title="Logout"
+            app:iconSpaceReserved="false"
+            />
 
 <!--        <SwitchPreferenceCompat-->
 <!--            app:key="sync"-->

@@ -2,6 +2,8 @@ package com.example.a368.ui.settings;
 
 import android.os.Bundle;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import androidx.fragment.app.DialogFragment;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
@@ -17,6 +19,15 @@ public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         setPreferencesFromResource(R.xml.root_preferences, rootKey);
+
+        Preference preference = findPreference("logout");
+        preference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+            @Override
+            public boolean onPreferenceClick(Preference preference) {
+                Toast.makeText(getContext(), "logout clicked", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override
@@ -28,4 +39,5 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         } else super.onDisplayPreferenceDialog(preference);
 
     }
+
 }
