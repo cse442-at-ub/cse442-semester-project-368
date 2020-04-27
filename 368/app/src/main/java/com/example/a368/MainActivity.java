@@ -98,37 +98,5 @@ public class MainActivity extends AppCompatActivity {
                 || super.onSupportNavigateUp();
     }
 
-    //my schedule pop up function
-    public void showpop(View v){
-        Button cancel;
-        Button EditSchedule;
-        Button RemoveSchedule;
-        today_schedule_pop.setContentView(R.layout.today_schedule_pop_up);
 
-        //function to close the pop-up
-        cancel = today_schedule_pop.findViewById(R.id.X);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                today_schedule_pop.dismiss();
-            }
-        });
-        //function to edit schedule
-        EditSchedule=today_schedule_pop.findViewById(R.id.editbutton);
-        EditSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        //function to remove schedule
-        RemoveSchedule=today_schedule_pop.findViewById(R.id.Removebutton);
-        RemoveSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        today_schedule_pop.show();
-    }
 }
