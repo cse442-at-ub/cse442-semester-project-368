@@ -58,10 +58,10 @@ public class DialogPrefFragCompat extends PreferenceDialogFragmentCompat {
             @Override
             public void onClick(View v) {
                 if(newPassword.getText().toString().length() < 6) {
-                    Toast.makeText(getContext(), "Password is not long enough", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "New password is not long enough.", Toast.LENGTH_LONG).show();
                 }
                 else if(!newPassword.getText().toString().equals(confirmPassword.getText().toString())) {
-                    Toast.makeText(getContext(), "New passwords must match", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getContext(), "New passwords must match.", Toast.LENGTH_LONG).show();
                 }
                 else {
                     changePassword(User.getInstance().getEmail(), oldPassword.getText().toString(), newPassword.getText().toString());
