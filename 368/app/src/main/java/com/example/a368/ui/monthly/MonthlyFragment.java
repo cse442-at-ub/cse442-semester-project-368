@@ -170,7 +170,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                 try {
                                     date = formatter.parse(str_date);
                                     long milliTime = date.getTime();
-                                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                                    calendarList.add(new Event(Color.parseColor("#337CC6"), milliTime));
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
@@ -206,7 +206,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 for(int j = 0; j < dates.size(); j++) {
                     Date lDate = (Date) dates.get(j);
                     long milliTime = lDate.getTime();
-                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                    calendarList.add(new Event(Color.parseColor("#337CC6"), milliTime));
                 }
 
                 for (int i = 0; i < calendarList.size(); i++) {
@@ -330,9 +330,9 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
                 /**
                  * Toast msg prints out option ID and SQL column id:
-                Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
-                        " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
-                */
+                 Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
+                 " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
+                 */
 
                 switch (menuID) {
                     case 0:
