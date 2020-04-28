@@ -27,7 +27,6 @@
             android:label="@string/title_activity_create_appointment"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:theme="@style/AppTheme.NoActionBar"
             android:name=".ui.login.LoginActivity"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
