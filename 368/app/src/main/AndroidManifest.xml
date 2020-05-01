@@ -25,10 +25,11 @@
         <activity
             android:name=".ui.appointment_meeting.createAppointment"
             android:label="@string/title_activity_create_appointment"
-            android:theme="@style/AppTheme.NoActionBar" />
+            />
         <activity
             android:name=".ui.login.LoginActivity"
             android:noHistory="true"
+            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

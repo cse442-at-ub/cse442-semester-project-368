@@ -16,7 +16,7 @@ import com.example.a368.R;
 import java.util.ArrayList;
 
 public class MeetingTimesAdapter extends RecyclerView.Adapter<MeetingTimesAdapter.ViewHolder> {
-    ArrayList<String> list = new ArrayList<String>();
+    ArrayList<String> list;
     private Context mContext;
 
     public MeetingTimesAdapter(ArrayList<String> times, Context context) {
@@ -34,7 +34,7 @@ public class MeetingTimesAdapter extends RecyclerView.Adapter<MeetingTimesAdapte
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {
-        holder.tvAvailable.setText(list.get(position));
+        holder.tvAvailable.setText(""+list.get(position));
         holder.layout.setOnClickListener(new View.OnClickListener(){
 
             @Override

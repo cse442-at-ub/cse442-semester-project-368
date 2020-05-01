@@ -21,6 +21,8 @@
     <string name="invalid_password">Password must be >5 characters</string>
     <string name="login_failed">"Login failed"</string>
 
+
+
     <string name="title_activity_add_friend">AddFriendActivity</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
