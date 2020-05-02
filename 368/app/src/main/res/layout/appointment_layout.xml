@@ -5,8 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp"
-    android:elevation="0dp">
+    android:padding="@dimen/fab_margin">
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -19,8 +18,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="right|bottom"
-        android:src="@drawable/ic_add_friend"
-        android:elevation="0dp"/>
-    <!--        android:layout_margin="16dp" -->
+        android:clickable="true"
+        android:src="@drawable/ic_add_meeting"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        app:maxImageSize="30dp"/>
 
 </FrameLayout>

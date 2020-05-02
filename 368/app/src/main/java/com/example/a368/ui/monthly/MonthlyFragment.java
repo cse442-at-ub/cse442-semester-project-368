@@ -87,12 +87,11 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         Date today = new Date(currentTime);
         passDate = today;
 
-        // Add Schedule Floating Button
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab_add_monthly);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MonthlyFragment.this.getContext(), AddMonthlySchedule.class);
+                Intent intent = new Intent(v.getContext(), AddMonthlySchedule.class);
                 intent.putExtra("date", passDate);
                 startActivity(intent);
             }
