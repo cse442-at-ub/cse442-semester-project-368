@@ -16,7 +16,8 @@
         android:clickable="true"
         android:src="@drawable/ic_add_friend"
         android:elevation="0dp"
-        app:maxImageSize="35dp"/>
+        app:elevation="0dp"
+        app:maxImageSize="30dp"/>
 
     <LinearLayout
         android:orientation="vertical"
