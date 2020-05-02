@@ -4,19 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:layout_margin="@dimen/fab_margin"
-    android:clipChildren="false">
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddAppointment"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:clickable="true"
-        android:elevation="0dp"
-        app:elevation="0dp"
-        app:srcCompat="@drawable/ic_add_daily"
-        app:maxImageSize="30dp" />
+    android:layout_margin="@dimen/fab_margin">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -56,5 +44,16 @@
             android:layout_height="fill_parent" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddAppointment"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:clickable="true"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        app:srcCompat="@drawable/ic_add_daily"
+        app:maxImageSize="30dp" />
 
 </FrameLayout>
