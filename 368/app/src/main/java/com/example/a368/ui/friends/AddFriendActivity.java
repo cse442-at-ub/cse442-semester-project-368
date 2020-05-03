@@ -181,7 +181,9 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 getRequest();
                                 getFriend();
                                 getData();
-//                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
+                                add_both(userList.get(position).getName(), userList.get(position).getEmail(),
+                                        User.getInstance().getName(), User.getInstance().getEmail());
+                                finish();
 
                             }
                         },
@@ -207,7 +209,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         params.put("sender_email", User.getInstance().getEmail());
                         params.put("receiver_name", userList.get(position).getName());
                         params.put("receiver_email", userList.get(position).getEmail());
-                        params.put("status", "Requested");
+                        params.put("status", "Pending");
 
                         return params;
                     }
@@ -219,8 +221,6 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
                 // Adding the StringRequest object into requestQueue.
                 requestQueue.add(stringRequest);
-
-                finish();
             }
 
         });
@@ -374,9 +374,8 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         requestQueue.add(jsonArrayRequest);
     }
 
-    /*
-    private void add_both(String email_a, String name_b, String email_b) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+    private void add_both(String sender_name, String sender_email, String receiver_name, String receiver_email) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
@@ -385,6 +384,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         progressDialog.dismiss();
 
                         // update adapter list
+                        getRequest();
                         getFriend();
                         getData();
                     }
@@ -407,9 +407,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                 Map<String, String> params = new HashMap<String, String>();
 
                 // Adding All values to Params.
-                params.put("email_a", email_a);
-                params.put("name_b", name_b);
-                params.put("email_b", email_b);
+                params.put("sender_name", sender_name);
+                params.put("sender_email", sender_email);
+                params.put("receiver_name", receiver_name);
+                params.put("receiver_email", receiver_email);
+                params.put("status", "Confirm");
 
                 return params;
             }
@@ -422,5 +424,5 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
     }
-     */
+
 }
