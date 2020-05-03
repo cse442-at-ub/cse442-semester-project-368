@@ -50,7 +50,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/user/fetch_user.php";
     private static String url_friend = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_friend.php";
-    private static String url_add_friend = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/insert_friend.php";
+    private static String url_friend_request = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/insert_friend_request.php";
     private RecyclerView uList;
     private ArrayList<String> friendList;
     private ArrayList<Friend> userList;
@@ -129,7 +129,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
             public void onClick(DialogInterface dialog, int which) {
                 // Creating string request with post method.
                 if(getIntent().hasExtra("id")) {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String ServerResponse) {
@@ -159,7 +159,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                     // Adding the StringRequest object into requestQueue.
                     requestQueue.add(stringRequest);
                 }
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String ServerResponse) {
@@ -172,10 +172,10 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                         " is added to your friend list", Toast.LENGTH_LONG).show();
 
                                 // update adapter list
-                                getFriend();
-                                getData();
-                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
-                                finish();
+//                                getFriend();
+//                                getData();
+//                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
+
                             }
                         },
                         new Response.ErrorListener() {
@@ -196,9 +196,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         Map<String, String> params = new HashMap<String, String>();
 
                         // Adding All values to Params.
-                        params.put("email_a", User.getInstance().getEmail());
-                        params.put("name_b", userList.get(position).getName());
-                        params.put("email_b", userList.get(position).getEmail());
+                        params.put("sender_name", User.getInstance().getName());
+                        params.put("sender_email", User.getInstance().getEmail());
+                        params.put("receiver_name", userList.get(position).getName());
+                        params.put("receiver_email", userList.get(position).getEmail());
+                        params.put("status", "Requested");
 
                         return params;
                     }
@@ -210,6 +212,8 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
                 // Adding the StringRequest object into requestQueue.
                 requestQueue.add(stringRequest);
+
+                finish();
             }
 
         });
@@ -318,6 +322,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         requestQueue.add(jsonArrayRequest);
     }
 
+    /*
     private void add_both(String email_a, String name_b, String email_b) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
                 new Response.Listener<String>() {
@@ -365,4 +370,5 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
     }
+     */
 }
