@@ -50,9 +50,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/user/fetch_user.php";
     private static String url_friend = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_friend.php";
+    private static String url_request = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/fetch_friend_request.php";
     private static String url_friend_request = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/insert_friend_request.php";
     private RecyclerView uList;
     private ArrayList<String> friendList;
+    private ArrayList<String> requestList;
     private ArrayList<Friend> userList;
     private FriendSearchAdapter mAdapter;
     private SearchView searchView;
@@ -94,8 +96,12 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
             }
         });
 
+        requestList = new ArrayList<>();
+        getRequest();
+
         friendList = new ArrayList<>();
         getFriend();
+
         uList = (RecyclerView) findViewById(R.id.friendsRecyclerView);
         userList = new ArrayList<>();
         mAdapter = new FriendSearchAdapter(this, userList, this);
@@ -172,8 +178,9 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                         " is added to your friend list", Toast.LENGTH_LONG).show();
 
                                 // update adapter list
-//                                getFriend();
-//                                getData();
+                                getRequest();
+                                getFriend();
+                                getData();
 //                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
 
                             }
@@ -231,8 +238,53 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
     @Override
     public void onResume() {
         super.onResume();
+        getRequest();
         getFriend();
         getData();
+    }
+
+    // Fetch JSON data to display existing friend list
+    private void getRequest() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url_request, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                requestList.clear();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        // check if the user sent the request already
+                        if (jsonObject.getString("sender_email").equals(User.getInstance().getEmail())) {
+                            requestList.add(jsonObject.getString("receiver_email"));
+                        }
+                        // check if the user received friend request
+                        else if (jsonObject.getString("receiver_email").equals(User.getInstance().getEmail())) {
+                            requestList.add(jsonObject.getString("sender_email"));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+
+                mAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+                progressDialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
     }
 
     // Fetch JSON data to display existing friend list
@@ -288,15 +340,15 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
-                        // check to display the logged-in user's schedule only && display today's schedule only
+                        // filter out existing friends & requests
                         if (!(jsonObject.getString("email").equals(User.getInstance().getEmail())) &&
-                            !(friendList.contains(jsonObject.getString("email")))) {
+                            !(friendList.contains(jsonObject.getString("email"))) &&
+                            !(requestList.contains(jsonObject.getString("email")))) {
 
                             Friend friend = new Friend();
                             friend.setName(jsonObject.getString("name"));
                             friend.setEmail(jsonObject.getString("email"));
                             userList.add(friend);
-
                         }
 
                     } catch (JSONException e) {
