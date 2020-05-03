@@ -14,6 +14,7 @@ public class MeetingRequest {
     private String end_date;
     private String end_time;
     private String description;
+    private String participants;
 
     // NULL Constructor
     public MeetingRequest() {
@@ -59,6 +60,11 @@ public class MeetingRequest {
     public int getId() {
         return id;
     }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
 
     public String getSender_name() {
         return sender_name;
@@ -147,5 +153,9 @@ public class MeetingRequest {
     public void setDescription(String description) {
         this.description = description;
     }
+
+    public String getParticipants() { return participants; }
+
+    public void setParticipants(String participants) { this.participants = participants; }
     // End of getters and setters
 }

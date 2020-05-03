@@ -24,6 +24,7 @@ public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAd
     ArrayList<Friend> list;
     Context mContext;
     ArrayList<Friend> selectedList;
+
     public MeetingFriendsAdapter(ArrayList<Friend> friends, Context context) {
         list = friends;
         Log.d("sizeIN: ", ""+list.size());
@@ -34,6 +35,7 @@ public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAd
     public void update() {
         selected = new boolean[list.size()];
     }
+
     public ArrayList<Friend> getSelectedList() {
         selectedList.clear();
         for(int i = 0; i < list.size(); i++) {

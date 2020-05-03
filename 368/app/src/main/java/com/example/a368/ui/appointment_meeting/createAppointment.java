@@ -2,6 +2,7 @@ package com.example.a368.ui.appointment_meeting;
 
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.format.DateUtils;
@@ -64,9 +65,12 @@ public class createAppointment extends AppCompatActivity {
     ArrayList<String> listEmail;
     ArrayList<TimePair> times;
     ArrayList<String> stringTimes;
+    String tomorrow = "";
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,7 +91,14 @@ public class createAppointment extends AppCompatActivity {
         mAdapter = new MeetingTimesAdapter(stringTimes, createAppointment.this, new MeetingTimesAdapter.onClickListener() {
             @Override
             public void onClickSchedule(int position) {
-                Toast.makeText(createAppointment.this, "Yeeet", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(createAppointment.this, MeetingDetailsActivity.class);
+                intent.putExtra("StartDate", startDate.getText().toString());
+                intent.putExtra("tomorrow", tomorrow);
+                intent.putExtra("length", ""+(Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString())));
+                intent.putExtra("TimeSlot", stringTimes.get(position));
+                intent.putExtra("time", times.get(position));
+                intent.putParcelableArrayListExtra("listParticipants", list);
+                startActivity(intent);
             }
         });
 
@@ -220,7 +231,7 @@ public class createAppointment extends AppCompatActivity {
                         calendar.add(Calendar.DATE, 1);
                         String formatted_appointment = appointmentDate;
                         String formatted_tomorrow = dateFormat.format(calendar.getTime());
-
+                        tomorrow = formatted_tomorrow;
                         Log.d("Dates", formatted_appointment +" | "+formatted_tomorrow);
                         // Get current time
                         Date now = Calendar.getInstance().getTime();
@@ -381,7 +392,8 @@ public class createAppointment extends AppCompatActivity {
         }
 
         if(DateUtils.isToday(appointmentDate.getTime())) {
-            String time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) +":" +Calendar.getInstance().get(Calendar.MINUTE);
+            String time = String.format("%02d:%02d",Calendar.getInstance().get(Calendar.HOUR_OF_DAY), Calendar.getInstance().get(Calendar.MINUTE));
+
             start = parseTimeToMinute(time, false)+1;
         }
         for(int i = start; i < (1440+length); i++) {
@@ -431,7 +443,7 @@ public class createAppointment extends AppCompatActivity {
             }
             eHours = time.getEndTime()/60;
             eMinutes = time.getEndTime() % 60;
-            if(eHours > 12) {
+            if(eHours >= 12) {
                 eHours = eHours - 12;
                 eAM = "PM";
             }
