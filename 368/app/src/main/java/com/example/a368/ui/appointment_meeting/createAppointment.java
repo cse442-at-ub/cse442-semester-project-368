@@ -4,6 +4,7 @@ import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.format.DateUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -12,6 +13,7 @@ import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.Schedule;
+import com.example.a368.User;
 import com.example.a368.ui.friends.Friend;
 import com.example.a368.ui.today.ScheduleAdapter;
 
@@ -77,10 +80,17 @@ public class createAppointment extends AppCompatActivity {
             listEmail.add(""+f.getEmail());
             Log.d("id", ""+f.getEmail());
         }
+        listEmail.add(User.getInstance().getEmail());
         times = new ArrayList<>();
         scheduleList = new ArrayList<>();
         stringTimes = new ArrayList<>();
-        mAdapter = new MeetingTimesAdapter(stringTimes, createAppointment.this);
+        mAdapter = new MeetingTimesAdapter(stringTimes, createAppointment.this, new MeetingTimesAdapter.onClickListener() {
+            @Override
+            public void onClickSchedule(int position) {
+                Toast.makeText(createAppointment.this, "Yeeet", Toast.LENGTH_SHORT).show();
+            }
+        });
+
 
         layoutManager = new LinearLayoutManager(this);
 
@@ -88,11 +98,12 @@ public class createAppointment extends AppCompatActivity {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         dividerItemDecoration = new DividerItemDecoration(availableTimes.getContext(), linearLayoutManager.getOrientation());
         availableTimes.addItemDecoration(dividerItemDecoration);
-        unFreeTime = new boolean[1440];
+        unFreeTime = new boolean[2880];
         availableTimes.setLayoutManager(layoutManager);
 
         tvParticipants = findViewById(R.id.tvParticipants);
         StringBuilder sb = new StringBuilder();
+        sb.append("You, ");
         for (Friend f : list) {
             sb.append(f.getName());
             if (!f.getName().equals(list.get(list.size() - 1).getName())) {
@@ -123,8 +134,16 @@ public class createAppointment extends AppCompatActivity {
         btAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
-                getData(startDate.getText().toString());
+                if(startDate.getText().toString().equals("MM/DD/YYYY")) {
+                    Toast.makeText(createAppointment.this, "Please select an appointment date.", Toast.LENGTH_SHORT).show();
+                }
+                else if(spHours.getSelectedItem().toString().equals("00") && spMinutes.getSelectedItem().toString().equals("00")) {
+                    Toast.makeText(createAppointment.this, "Please select a meeting length.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    unFreeTime = new boolean[2880];
+                    getData(startDate.getText().toString());
+                }
             }
         });
 
@@ -178,8 +197,6 @@ public class createAppointment extends AppCompatActivity {
         }
     };
 
-    private void getSchedules(ArrayList<Friend> participants) {
-    }
 
     private void getData(String appointmentDate) {
         final ProgressDialog progressDialog = new ProgressDialog(createAppointment.this);
@@ -198,19 +215,24 @@ public class createAppointment extends AppCompatActivity {
                         // Get today
                         Date today = Calendar.getInstance().getTime();
                         SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
-                        String formatted_today = appointmentDate;
+                        Calendar calendar = Calendar.getInstance();
+                        calendar.setTime(dateFormat.parse(appointmentDate));
+                        calendar.add(Calendar.DATE, 1);
+                        String formatted_appointment = appointmentDate;
+                        String formatted_tomorrow = dateFormat.format(calendar.getTime());
 
+                        Log.d("Dates", formatted_appointment +" | "+formatted_tomorrow);
                         // Get current time
                         Date now = Calendar.getInstance().getTime();
                         SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm");
                         String formatted_time = timeFormat.format(now);
 
                         // check to display the logged-in user's schedule only && display today's schedule only
+                        Log.d("TEST", ""+jsonObject.getString("start_date").equals(formatted_appointment));
                         if (listEmail.contains(jsonObject.getString("email")) &&
-                                jsonObject.getString("start_date").equals(formatted_today)) {
-                            if ((jsonObject.getString("end_date").equals(formatted_today) &&
-                                    check_timings(formatted_time, jsonObject.getString("end_time"))) ||
-                                    (!(jsonObject.getString("end_date").equals(formatted_today)))) {
+                                (jsonObject.getString("start_date").equals(formatted_appointment) || jsonObject.getString("start_date").equals(formatted_tomorrow))) {
+                            if (((jsonObject.getString("end_date").equals(formatted_appointment) || jsonObject.getString("end_date").equals(formatted_tomorrow))) ||
+                                    (!(jsonObject.getString("end_date").equals(formatted_appointment)))) {
 
                                 Schedule schedule = new Schedule();
 
@@ -239,21 +261,22 @@ public class createAppointment extends AppCompatActivity {
                                     schedule.setDescription("");
                                 }
 
-                                parseTimeToMinute(schedule.getStart_time());
+                                Log.d("INFO", ""+schedule.getStart_date() + " | " +date_parsing(formatted_tomorrow, "MM/dd", "MMM d") +" | " +schedule.getStart_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d")));
 
-                                for(int j = parseTimeToMinute(schedule.getStart_time()); j < parseTimeToMinute(schedule.getEnd_time()); j++) {
+                                for(int j = parseTimeToMinute(schedule.getStart_time(), schedule.getStart_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))); j < parseTimeToMinute(schedule.getEnd_time(), schedule.getEnd_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))); j++) {
                                     unFreeTime[j] = true;
                                 }
                                 scheduleList.add(schedule);
                             }
                         }
 
-                    } catch (JSONException e) {
+                    } catch (JSONException | ParseException e) {
                         e.printStackTrace();
                         progressDialog.dismiss();
                     }
                 }
-                findFreeTime();
+
+                findFreeTime(appointmentDate);
                 // Sort by start time
                 sortArray(scheduleList);
 
@@ -330,41 +353,65 @@ public class createAppointment extends AppCompatActivity {
         }
     }
 
-    private int parseTimeToMinute(String time) {
+    private int parseTimeToMinute(String time, boolean tomorrow) {
         int hours = Integer.parseInt(time.substring(0,2));
         int minutes = Integer.parseInt(time.substring(3,5));
-        return (hours*60)+minutes;
+        if(tomorrow) {
+            return (hours*60)+minutes+1440;
+        }
+        else {
+            return (hours*60)+minutes;
+        }
     }
 
-    private void findFreeTime() {
-        int length = (Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString()));
+    private void findFreeTime(String date) {
+        int length = (Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString()))+1;
         int start = 0;
-
+        times.clear();
+        String today = "";
+        Date appointmentDate = Calendar.getInstance().getTime();
         int r = 0;
+        int s = 0;
         boolean add = false;
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+        try {
+            appointmentDate = dateFormat.parse(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
-        for(int i = 0; i < unFreeTime.length; i++) {
-            if(i > 1280) {
-
-                Log.d("i", ""+r +" | " +unFreeTime[i] +" | " +i );
-            }
-            if(!unFreeTime[i] && i != 1439) {
+        if(DateUtils.isToday(appointmentDate.getTime())) {
+            String time = Calendar.getInstance().get(Calendar.HOUR_OF_DAY) +":" +Calendar.getInstance().get(Calendar.MINUTE);
+            start = parseTimeToMinute(time, false)+1;
+        }
+        for(int i = start; i < (1440+length); i++) {
+            if(!unFreeTime[i] && i != 1439+length) {
                 r++;
                 if(r >= length) {
                     add = true;
+                }
+                if(i < 1050) {
+//                    Log.d("1050", "i: "+i +" | " +"r: " +r +" | " +"Length: " +length +" | " +"add: " +add);
                 }
             }
             else {
                 r = 0;
                 if(add) {
-                    times.add(new TimePair(start, i));
+                    if(i > 1439) {
+                        times.add(new TimePair(start, i-length));
+                    }
+                    else {
+                        times.add(new TimePair(start, i-length));
+                    }
                     add = false;
                 }
-                start = i;
+                start = i+2;
             }
 
         }
-
+        for(TimePair t : times) {
+            Log.d("Times" , ""+t.getStartTime() +" | " +t.getEndTime());
+        }
         //convert back to normal time string
         stringTimes.clear();
         int sHours, sMinutes, eHours, eMinutes = 0;
@@ -372,7 +419,10 @@ public class createAppointment extends AppCompatActivity {
         for(TimePair time : times) {
             sHours = time.getStartTime()/60;
             sMinutes = time.getStartTime()%60;
-            if(sHours > 12) {
+            if(sHours == 12) {
+                sAM = "PM";
+            }
+            else if(sHours > 12) {
                 sHours = sHours - 12;
                 sAM = "PM";
             }
