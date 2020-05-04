@@ -5,4 +5,9 @@
     <color name="colorAccent">#ECA63C</color>
     <color name="colorText">#A9A9A9</color>
     <color name="colorTextBlack">#000000</color>
+
+    <color name="colorStatusGreen">#BA008000</color>
+    <color name="colorStatusBlue">#BA1A4A8C</color>
+    <color name="colorStatusYellow">#BAECA63C</color>
+    <color name="colorStatusRed">#BAFF0000</color>
 </resources>

@@ -1,6 +1,8 @@
 package com.example.a368.ui.friends;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +42,20 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
 
         // Set button text differently based on the current request status
         if (list.get(position).getStatus().equals("Accepted")) {
+            holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
+                    getColor(R.color.colorStatusGreen), PorterDuff.Mode.MULTIPLY);
             holder.btnAction.setText("Delete");
         } else if (list.get(position).getStatus().equals("Pending")) {
+            holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
+                    getColor(R.color.colorStatusYellow), PorterDuff.Mode.MULTIPLY);
             holder.btnAction.setText("Cancel");
         } else if (list.get(position).getStatus().equals("Confirm")) {
+            holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
+                    getColor(R.color.colorStatusBlue), PorterDuff.Mode.MULTIPLY);
             holder.btnAction.setText("Reject");
         } else if (list.get(position).getStatus().equals("Rejected")) {
+            holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
+                    getColor(R.color.colorStatusRed), PorterDuff.Mode.MULTIPLY);
             holder.btnAction.setText("Delete");
         }
     }
