@@ -22,9 +22,17 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
     private List<FriendRequest> list;
     Context context;
 
-    public FriendRequestAdapter(Context context, List<FriendRequest> requests) {
+    public FriendRequestAdapterListener onClickListener;
+
+    public interface FriendRequestAdapterListener {
+        void statusOnClick(View v, int position);
+        void actionOnClick(View v, int position);
+    }
+
+    public FriendRequestAdapter(Context context, List<FriendRequest> requests, FriendRequestAdapterListener listener) {
         this.list = requests;
         this.context = context;
+        onClickListener = listener;
         notifyDataSetChanged();
     }
 
@@ -44,10 +52,12 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         if (list.get(position).getStatus().equals("Accepted")) {
             holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
                     getColor(R.color.colorStatusGreen), PorterDuff.Mode.MULTIPLY);
+            holder.btnStatus.setEnabled(false);
             holder.btnAction.setText("Delete");
         } else if (list.get(position).getStatus().equals("Pending")) {
             holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
                     getColor(R.color.colorStatusYellow), PorterDuff.Mode.MULTIPLY);
+            holder.btnStatus.setEnabled(false);
             holder.btnAction.setText("Cancel");
         } else if (list.get(position).getStatus().equals("Confirm")) {
             holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
@@ -56,6 +66,7 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         } else if (list.get(position).getStatus().equals("Rejected")) {
             holder.btnStatus.getBackground().setColorFilter(holder.btnStatus.getContext().getResources().
                     getColor(R.color.colorStatusRed), PorterDuff.Mode.MULTIPLY);
+            holder.btnStatus.setEnabled(false);
             holder.btnAction.setText("Delete");
         }
     }
@@ -81,6 +92,20 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
             btnStatus = itemView.findViewById(R.id.status);
             btnAction = itemView.findViewById(R.id.status_action);
             layout = itemView.findViewById(R.id.friend_request_item_layout);
+
+            btnStatus.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.statusOnClick(v, getAdapterPosition());
+                }
+            });
+
+            btnAction.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    onClickListener.actionOnClick(v, getAdapterPosition());
+                }
+            });
         }
 
     }

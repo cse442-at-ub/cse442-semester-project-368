@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
@@ -49,7 +50,18 @@ public class FriendRequestFragment extends Fragment {
 
         rList = (RecyclerView)root.findViewById(R.id.friend_request_recycler);
         requestList = new ArrayList<>();
-        requestAdapter = new FriendRequestAdapter(getContext(), requestList);
+        requestAdapter = new FriendRequestAdapter(getContext(), requestList, new FriendRequestAdapter.FriendRequestAdapterListener() {
+            @Override
+            public void statusOnClick(View v, int position) {
+                Toast.makeText(getContext(), "Name: " + requestList.get(position).getReceiver_name() +
+                        "Status: " + requestList.get(position).getStatus(), Toast.LENGTH_LONG).show();
+            }
+
+            @Override
+            public void actionOnClick(View v, int position) {
+
+            }
+        });
 
         linearLayoutManager = new LinearLayoutManager(this.getContext());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

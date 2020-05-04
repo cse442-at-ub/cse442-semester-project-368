@@ -15,13 +15,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:weightSum="1">
+            android:weightSum="20">
 
             <TextView
                 android:id="@+id/request_name"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.99"
+                android:layout_weight="18"
                 android:text="Name"
                 android:textSize="18dp"/>
 
@@ -29,7 +29,7 @@
                 android:id="@+id/status"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_weight="0.005"
+                android:layout_weight="1"
                 android:textAlignment="center"
                 android:clickable="true"
                 android:text="Status"
@@ -41,7 +41,7 @@
                 android:id="@+id/status_action"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:layout_weight="0.005"
+                android:layout_weight="1"
                 android:textAlignment="center"
                 android:clickable="true"
                 android:text="Action"

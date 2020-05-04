@@ -128,8 +128,8 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
     public void onClickFriend(int position) {
         AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(this);
         confirmBuilder.setTitle("Add Friend");
-        confirmBuilder.setMessage("Are you sure to add:\n" + userList.get(position).getName() +
-                " (" + userList.get(position).getEmail() + ") ?\n\nYou may be visible to your friend's list.");
+        confirmBuilder.setMessage("Are you sure to send a friend request to:\n" + userList.get(position).getName() +
+                " (" + userList.get(position).getEmail() + ") ?");
         confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
