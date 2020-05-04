@@ -42,9 +42,9 @@ public class FriendRequestAdapter extends RecyclerView.Adapter<FriendRequestAdap
         if (list.get(position).getStatus().equals("Accepted")) {
             holder.btnAction.setText("Delete");
         } else if (list.get(position).getStatus().equals("Pending")) {
-            holder.btnAction.setText("Cancel Request");
+            holder.btnAction.setText("Cancel");
         } else if (list.get(position).getStatus().equals("Confirm")) {
-            holder.btnAction.setText("Reject Request");
+            holder.btnAction.setText("Reject");
         } else if (list.get(position).getStatus().equals("Rejected")) {
             holder.btnAction.setText("Delete");
         }

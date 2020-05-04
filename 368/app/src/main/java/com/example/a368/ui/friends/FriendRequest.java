@@ -34,8 +34,12 @@ public class FriendRequest {
     }
 
     // Getters and setters
-    public int getId() {
+    public int getID() {
         return id;
+    }
+
+    public void setID(int id) {
+        this.id = id;
     }
 
     public String getSender_name() {
