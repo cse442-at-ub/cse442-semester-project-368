@@ -1,5 +1,6 @@
 package com.example.a368.ui.friends;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,10 +17,12 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.User;
@@ -29,10 +32,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class FriendRequestFragment extends Fragment {
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/fetch_friend_request.php";
+    private static String url_delete = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/delete_friend_request.php";
     private RecyclerView rList;
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
@@ -59,6 +65,63 @@ public class FriendRequestFragment extends Fragment {
 
             @Override
             public void actionOnClick(View v, int position) {
+                /***
+                 * In case where friend request gets deleted from request DB
+                 * Status: Accepted; Rejected; Pending
+                 * Action: Delete; Delete; Cancel
+                ***/
+                if (requestList.get(position).getStatus().equals("Accepted") ||
+                        requestList.get(position).getStatus().equals("Rejected") ||
+                        requestList.get(position).getStatus().equals("Pending")) {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String ServerResponse) {
+                                    getData();
+                                    // Showing response message:
+                                    if (requestList.get(position).getStatus().equals("Pending")) {
+                                        // TODO: delete both
+                                        Toast.makeText(FriendRequestFragment.this.getContext(),
+                                                "Canceled friend request", Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(FriendRequestFragment.this.getContext(),
+                                                "The selected request status deleted from the request list.",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError volleyError) {
+                                    // Showing error message if something goes wrong.
+                                    Toast.makeText(FriendRequestFragment.this.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            // Creating Map String Params.
+                            Map<String, String> params = new HashMap<String, String>();
+                            // Adding All values to Params.
+                            params.put("id", "" + requestList.get(position).getID());
+                            return params;
+                        }
+
+                    };
+                    // Creating RequestQueue.
+                    RequestQueue requestQueue = Volley.newRequestQueue(FriendRequestFragment.this.getContext());
+
+                    // Adding the StringRequest object into requestQueue.
+                    requestQueue.add(stringRequest);
+
+                }
+                /***
+                 * In case where we still need to show in the request DB (request rejected)
+                 * Status: Confirm
+                 * Action: Reject
+                 */
+                else {
+
+                }
 
             }
         });
