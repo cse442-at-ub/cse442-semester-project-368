@@ -50,7 +50,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private TimePair timePair;
     ArrayList<Friend> listParticipants;
     private String participants;
-    private TextView meetingTime;
+    private TextView tvParticipantDetails;
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.custom_action_menu_bar, menu);
@@ -71,13 +72,15 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         timeSlot = getIntent().getStringExtra("TimeSlot");
         listParticipants = getIntent().getParcelableArrayListExtra("listParticipants");
         StringBuilder sb = new StringBuilder();
-        sb.append(User.getInstance().getName()+", ");
+        sb.append("You, ");
         for (Friend f : listParticipants) {
             sb.append(f.getName());
             if (!f.getName().equals(listParticipants.get(listParticipants.size() - 1).getName())) {
                 sb.append(", ");
             }
         }
+        tvParticipantDetails = findViewById(R.id.participants_details);
+        tvParticipantDetails.setText(sb.toString());
         participants = UUID.randomUUID().toString();
         title = findViewById(R.id.meeting_title);
         startTime = (TextView) findViewById(R.id.meeting_start_time);
@@ -87,7 +90,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         startTime.setText(getIntent().getStringExtra("TimeSlot").substring(0,8));
 
         length = Integer.parseInt(getIntent().getStringExtra("length"));
-        Log.d("LENGTH2", ""+length);
+
         setEndTimes(timePair.getStartTime(), getIntent().getStringExtra("TimeSlot").substring(0,8));
 
         startTime.setOnClickListener(new View.OnClickListener() {
@@ -110,7 +113,13 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     public void setEndTimes(int time, String msg) {
         time = time + length;
         int eHours, eMinutes;
+        boolean isTomorrow = false;
         String eAM = "AM";
+
+        if(time >= 1440) {
+            time = time - 1440;
+            isTomorrow = true;
+        }
 
         eHours = time / 60;
         eMinutes = time % 60;
@@ -129,8 +138,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         if(eHours == 0) {
             eHours = 12;
         }
-        Log.d("END", ""+eHours +" | " +time +" | " +(time-length));
-        if(time >= 1440) {
+
+        if(isTomorrow) {
             strEndDate = tomorrow;
             strEndTime = String.format("%02d:%02d %s", eHours, eMinutes, eAM);
             from_meeting_time.setText(String.format("%s %s", start, msg));

@@ -96,14 +96,19 @@ public class createAppointment extends AppCompatActivity {
         mAdapter = new MeetingTimesAdapter(stringTimes, createAppointment.this, new MeetingTimesAdapter.onClickListener() {
             @Override
             public void onClickSchedule(int position) {
-                Intent intent = new Intent(createAppointment.this, MeetingDetailsActivity.class);
-                intent.putExtra("StartDate", startDate.getText().toString());
-                intent.putExtra("tomorrow", tomorrow);
-                intent.putExtra("length", ""+(length-1));
-                intent.putExtra("TimeSlot", stringTimes.get(position));
-                intent.putExtra("time", times.get(position));
-                intent.putParcelableArrayListExtra("listParticipants", list);
-                startActivity(intent);
+                if(stringTimes.get(position).equals("No Times Slots Available.")) {
+                    return;
+                }
+                else {
+                    Intent intent = new Intent(createAppointment.this, MeetingDetailsActivity.class);
+                    intent.putExtra("StartDate", startDate.getText().toString());
+                    intent.putExtra("tomorrow", tomorrow);
+                    intent.putExtra("length", ""+(length-1));
+                    intent.putExtra("TimeSlot", stringTimes.get(position));
+                    intent.putExtra("time", times.get(position));
+                    intent.putParcelableArrayListExtra("listParticipants", list);
+                    startActivity(intent);
+                }
             }
         });
 
@@ -488,6 +493,7 @@ public class createAppointment extends AppCompatActivity {
         }
         if(stringTimes.size() == 0) {
             stringTimes.add("No Times Slots Available.");
+
         }
         mAdapter.notifyDataSetChanged();
     }
