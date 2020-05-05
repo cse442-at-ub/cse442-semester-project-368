@@ -72,7 +72,7 @@ public class createAppointment extends AppCompatActivity {
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/fetch_schedule.php";
     private LinearLayoutManager linearLayoutManager;
     private DividerItemDecoration dividerItemDecoration;
-
+    private int length;
 
 
     @Override
@@ -99,7 +99,7 @@ public class createAppointment extends AppCompatActivity {
                 Intent intent = new Intent(createAppointment.this, MeetingDetailsActivity.class);
                 intent.putExtra("StartDate", startDate.getText().toString());
                 intent.putExtra("tomorrow", tomorrow);
-                intent.putExtra("length", ""+(Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString())));
+                intent.putExtra("length", ""+(length-1));
                 intent.putExtra("TimeSlot", stringTimes.get(position));
                 intent.putExtra("time", times.get(position));
                 intent.putParcelableArrayListExtra("listParticipants", list);
@@ -126,6 +126,7 @@ public class createAppointment extends AppCompatActivity {
                 sb.append(", ");
             }
         }
+        Log.d("LIST", ""+list.size() +" | " +sb.toString());
         tvParticipants.setText(sb.toString());
 
         spMinutes = findViewById(R.id.spMinutes);
@@ -403,11 +404,11 @@ public class createAppointment extends AppCompatActivity {
     }
 
     private void findFreeTime(String date) {
-        int length = (Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString()))+1;
+        length = (Integer.parseInt(spHours.getSelectedItem().toString())*60)+(Integer.parseInt(spMinutes.getSelectedItem().toString()))+1;
+        Log.d("LENGTH", ""+length);
         int start = 0;
         times.clear();
         String today = "";
-        Log.d("unFREETIME", ""+unFreeTime[1438]);
         Date appointmentDate = Calendar.getInstance().getTime();
         int r = 0;
         int s = 0;
