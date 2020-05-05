@@ -76,7 +76,6 @@ public class FriendRequestFragment extends Fragment {
                         requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email());
                 add_friend(requestList.get(position).getReceiver_email(),
                         requestList.get(position).getSender_name(), requestList.get(position).getSender_email());
-                getData();
 
                 // Update request status
                 delete_request(requestList.get(position).getID());
@@ -88,6 +87,7 @@ public class FriendRequestFragment extends Fragment {
                 request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
                         requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Accepted");
 
+                getData();
                 progressDialog.dismiss();
 
                 // show message
@@ -106,6 +106,7 @@ public class FriendRequestFragment extends Fragment {
                 if (requestList.get(position).getStatus().equals("Accepted") ||
                         requestList.get(position).getStatus().equals("Rejected") ||
                         requestList.get(position).getStatus().equals("Pending")) {
+
                     StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete_request,
                             new Response.Listener<String>() {
                                 @Override
@@ -114,11 +115,14 @@ public class FriendRequestFragment extends Fragment {
                                     // Showing response message:
                                     if (requestList.get(position).getStatus().equals("Pending")) {
                                         // TODO: delete both
+                                        search_pair(requestList.get(position).getReceiver_email(),
+                                                requestList.get(position).getSender_email());
+
                                         Toast.makeText(FriendRequestFragment.this.getContext(),
                                                 "Canceled friend request", Toast.LENGTH_LONG).show();
                                     } else {
                                         Toast.makeText(FriendRequestFragment.this.getContext(),
-                                                "The selected request status deleted from the request list.",
+                                                "The selected status deleted from the request list.",
                                                 Toast.LENGTH_LONG).show();
                                     }
                                 }
@@ -153,7 +157,24 @@ public class FriendRequestFragment extends Fragment {
                  * Action: Reject
                  */
                 else {
+                    ProgressDialog progressDialog = new ProgressDialog(getContext());
+                    progressDialog.setMessage("Loading...");
+                    progressDialog.show();
 
+                    delete_request(requestList.get(position).getID());
+                    request_update(requestList.get(position).getSender_name(), requestList.get(position).getSender_email(),
+                            requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+                            "Rejected");
+                    search_pair(requestList.get(position).getReceiver_email(),
+                            requestList.get(position).getSender_email());
+                    request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+                            requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Rejected");
+
+                    getData();
+                    progressDialog.dismiss();
+
+                    Toast.makeText(getContext(), "Rejected a friend request from "
+                            + requestList.get(position).getReceiver_name() + ".", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -274,7 +295,7 @@ public class FriendRequestFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
-                        // Showing response message coming from server.
+                        getData();
                     }
                 },
                 new Response.ErrorListener() {
@@ -308,11 +329,6 @@ public class FriendRequestFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
-
-                        // Showing response message:
-//                        Toast.makeText(AddFriendActivity.this, "Friend request sent to " +
-//                                userList.get(position).getName() + ".", Toast.LENGTH_LONG).show();
-
                         // update adapter list
                         getData();
 
