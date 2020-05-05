@@ -22,11 +22,29 @@ public class FriendsViewPager extends Fragment {
         ViewPager pager = (ViewPager)root.findViewById(R.id.view_pager);
         pager.setAdapter(new MyPagerAdapter(getChildFragmentManager()));
 
+        pager.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+
+                if (position == 0) { // 0 = the first fragment in the ViewPager, in this case, the fragment i want to refresh its UI
+                    FriendsFragment fragment = (FriendsFragment) pager.getAdapter().instantiateItem(pager, position);
+                    fragment.onResume(); // here i call the onResume of the fragment, where i have the method updateUI() to update its UI
+                    pager.getAdapter().notifyDataSetChanged();
+                } else if (position == 1) {
+                    FriendRequestFragment fragment = (FriendRequestFragment) pager.getAdapter().instantiateItem(pager, position);
+                    fragment.onResume();
+                    pager.getAdapter().notifyDataSetChanged();
+                }
+            }
+        });
+
         TabLayout tabLayout = (TabLayout) root.findViewById(R.id.tab_layout);
         tabLayout.setupWithViewPager(pager);
 
         return root;
     }
+
 
     private class MyPagerAdapter extends FragmentPagerAdapter {
 
@@ -58,6 +76,7 @@ public class FriendsViewPager extends Fragment {
         public int getCount() {
             return 2;
         }
+
     }
 
 }
