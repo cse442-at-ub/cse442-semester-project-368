@@ -50,6 +50,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private TimePair timePair;
     ArrayList<Friend> listParticipants;
     private String participants;
+    private TextView meetingTime;
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.custom_action_menu_bar, menu);
@@ -86,7 +87,9 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         startTime.setText(getIntent().getStringExtra("TimeSlot").substring(0,8));
 
         length = Integer.parseInt(getIntent().getStringExtra("length"));
+        Log.d("LENGTH2", ""+length);
         setEndTimes(timePair.getStartTime(), getIntent().getStringExtra("TimeSlot").substring(0,8));
+
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -126,6 +129,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         if(eHours == 0) {
             eHours = 12;
         }
+        Log.d("END", ""+eHours +" | " +time +" | " +(time-length));
         if(time >= 1440) {
             strEndDate = tomorrow;
             strEndTime = String.format("%02d:%02d %s", eHours, eMinutes, eAM);
