@@ -84,6 +84,14 @@ public class MeetingFragment extends Fragment {
 
         return root;
     }
+
+    // Update
+    @Override
+    public void onResume() {
+        super.onResume();
+        getData();
+    }
+
     private void getData() {
         final ProgressDialog progressDialog = new ProgressDialog(getContext());
         progressDialog.setMessage("Loading...");
