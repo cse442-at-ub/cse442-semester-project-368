@@ -58,6 +58,7 @@ public class MeetingRequestFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        getData();
         mAdapter.notifyDataSetChanged();
     }
 
@@ -91,7 +92,6 @@ public class MeetingRequestFragment extends Fragment {
                         statusList = new ArrayList<>();
                         emailList = new ArrayList<>();
 
-                        Toast.makeText(getContext(), ""+reqList.get(position).getId(), Toast.LENGTH_SHORT).show();
                         StringRequest stringRequest = new StringRequest(Request.Method.POST, updateUrl,
                                 new Response.Listener<String>() {
                                     @Override
@@ -100,7 +100,6 @@ public class MeetingRequestFragment extends Fragment {
                                         // Hiding the progress dialog after all task complete.
                                         progressDialog.dismiss();
                                         UpdateRequest(position, reqList.get(position));
-                                        Toast.makeText(getContext(), "updated", Toast.LENGTH_SHORT).show();
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -397,7 +396,7 @@ public class MeetingRequestFragment extends Fragment {
                         progressDialog.dismiss();
                     }
                 }
-                Toast.makeText(getContext(), ""+reqList.size(), Toast.LENGTH_SHORT).show();
+
                 // Sort by alphabetical order
 
                 mAdapter.notifyDataSetChanged();

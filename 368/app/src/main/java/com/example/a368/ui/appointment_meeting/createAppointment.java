@@ -54,6 +54,7 @@ public class createAppointment extends AppCompatActivity {
     MeetingTimesAdapter mAdapter;
     ArrayList<Friend> list;
     TextView tvParticipants;
+    TextView tvAvailableLabel;
     Spinner spHours;
     Spinner spMinutes;
     private TextView startDate;
@@ -141,6 +142,8 @@ public class createAppointment extends AppCompatActivity {
         day = calendar.get(Calendar.DAY_OF_MONTH);
         hour = calendar.get(Calendar.HOUR_OF_DAY);
         minute = calendar.get(Calendar.MINUTE);
+
+        tvAvailableLabel = findViewById(R.id.tvAvailableLabel);
         btAppointment = findViewById(R.id.btAppointment);
         btAppointment.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,6 +156,7 @@ public class createAppointment extends AppCompatActivity {
                 }
                 else {
                     unFreeTime = new boolean[2880];
+                    tvAvailableLabel.setVisibility(View.VISIBLE);
                     getData(startDate.getText().toString());
                 }
             }
@@ -202,8 +206,13 @@ public class createAppointment extends AppCompatActivity {
             }
 
             if (startDateClicked) {
-                startDate.setText(msg);
-                startDateClicked = false;
+                if((monthOfYear ==(Calendar.getInstance().get(Calendar.MONTH)) && year <= (Calendar.getInstance().get(Calendar.YEAR))) && dayOfMonth < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
+                    Toast.makeText(createAppointment.this, "Date can not be earlier than today.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    startDate.setText(msg);
+                    startDateClicked = false;
+                }
             }
         }
     };
@@ -273,7 +282,8 @@ public class createAppointment extends AppCompatActivity {
                                 }
 
                                 Log.d("INFO", ""+schedule.getStart_date() + " | " +date_parsing(formatted_tomorrow, "MM/dd", "MMM d") +" | " +schedule.getStart_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d")));
-
+                                Log.d("START", ""+parseTimeToMinute(schedule.getStart_time(), schedule.getStart_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))));
+                                Log.d("END", ""+parseTimeToMinute(schedule.getEnd_time(), schedule.getEnd_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))));
                                 for(int j = parseTimeToMinute(schedule.getStart_time(), schedule.getStart_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))); j < parseTimeToMinute(schedule.getEnd_time(), schedule.getEnd_date().equals(date_parsing(formatted_tomorrow, "MM/dd", "MMM d"))); j++) {
                                     unFreeTime[j] = true;
                                 }
@@ -380,6 +390,7 @@ public class createAppointment extends AppCompatActivity {
         int start = 0;
         times.clear();
         String today = "";
+        Log.d("unFREETIME", ""+unFreeTime[1438]);
         Date appointmentDate = Calendar.getInstance().getTime();
         int r = 0;
         int s = 0;
@@ -410,10 +421,14 @@ public class createAppointment extends AppCompatActivity {
                 r = 0;
                 if(add) {
                     if(i > 1439) {
-                        times.add(new TimePair(start, i-length));
+                        if(start < i-length) {
+                            times.add(new TimePair(start, i-length));
+                        }
                     }
                     else {
-                        times.add(new TimePair(start, i-length));
+                        if(start < i-length) {
+                            times.add(new TimePair(start, i-length));
+                        }
                     }
                     add = false;
                 }
@@ -452,6 +467,9 @@ public class createAppointment extends AppCompatActivity {
             }
 
             stringTimes.add(String.format("%02d:%02d %s- %02d:%02d %s", sHours, sMinutes, sAM, eHours, eMinutes, eAM));
+        }
+        if(stringTimes.size() == 0) {
+            stringTimes.add("No Times Slots Available.");
         }
         mAdapter.notifyDataSetChanged();
     }

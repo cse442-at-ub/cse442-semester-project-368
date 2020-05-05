@@ -37,7 +37,7 @@ public class MeetingRequestAdapter extends RecyclerView.Adapter<MeetingRequestAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tvMeetingTitle.setText(list.get(position).getTitle());
         holder.tvMeetingTime.setText(String.format("%s %s - %s %s", list.get(position).getStart_date(), list.get(position).getStart_time(), list.get(position).getEnd_date(), list.get(position).getEnd_time()));
-        holder.tvMeetingParticipants.setText(list.get(position).getSender_name());
+        holder.tvMeetingParticipants.setText(list.get(position).getDescription());
     }
 
     @Override

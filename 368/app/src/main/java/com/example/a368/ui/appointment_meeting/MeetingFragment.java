@@ -65,9 +65,14 @@ public class MeetingFragment extends Fragment {
         fabAddFriend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getContext(), createAppointment.class);
-                intent.putParcelableArrayListExtra("List", mAdapter.getSelectedList());
-                startActivity(intent);
+                if(mAdapter.getSelectedList().size() == 0) {
+                    Toast.makeText(getContext(), "You must select at least one friend.", Toast.LENGTH_SHORT).show();
+                }
+                else {
+                    Intent intent = new Intent(getContext(), createAppointment.class);
+                    intent.putParcelableArrayListExtra("List", mAdapter.getSelectedList());
+                    startActivity(intent);
+                }
             }
         });
 

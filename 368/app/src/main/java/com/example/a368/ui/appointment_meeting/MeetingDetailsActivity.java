@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -82,14 +83,16 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         meetingTime = (TextView) findViewById(R.id.meeting_time);
         description = findViewById(R.id.meeting_description);
         startTime.setText(getIntent().getStringExtra("TimeSlot").substring(0,8));
+
         length = Integer.parseInt(getIntent().getStringExtra("length"));
+        setEndTimes(timePair.getStartTime(), getIntent().getStringExtra("TimeSlot").substring(0,8));
         startTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startTimeClicked = true;
                 TimePickerDialog picker = new TimePickerDialog(MeetingDetailsActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,timeSetListener, hour, minute, false);
                 hour = Integer.parseInt(timeSlot.substring(0,2));
-                if(timePair.getStartTime() > 720) {
+                if(timePair.getStartTime() > 780) {
                     hour = hour + 12;
                 }
                 picker.updateTime(hour, Integer.parseInt(timeSlot.substring(3,5)));

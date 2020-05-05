@@ -16,6 +16,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
             android:layout_marginBottom="18dp"
             android:orientation="horizontal">
 
@@ -109,12 +110,12 @@
             android:text="Find Times" />
 
         <TextView
-            android:id="@+id/instruction2"
+            android:id="@+id/tvAvailableLabel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-
             android:layout_marginTop="10dp"
             android:text="Available Times:"
+            android:visibility="invisible"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@color/colorPrimary" />
 
