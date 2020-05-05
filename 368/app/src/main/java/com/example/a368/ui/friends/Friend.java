@@ -1,6 +1,9 @@
 package com.example.a368.ui.friends;
 
-public class Friend {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Friend implements Parcelable {
 
     private int id;
     private String name;
@@ -21,6 +24,24 @@ public class Friend {
         this.name = name;
         this.email = email;
     }
+
+    protected Friend(Parcel in) {
+        id = in.readInt();
+        name = in.readString();
+        email = in.readString();
+    }
+
+    public static final Creator<Friend> CREATOR = new Creator<Friend>() {
+        @Override
+        public Friend createFromParcel(Parcel in) {
+            return new Friend(in);
+        }
+
+        @Override
+        public Friend[] newArray(int size) {
+            return new Friend[size];
+        }
+    };
 
     public int getID() {
         return id;
@@ -44,5 +65,17 @@ public class Friend {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(id);
+        dest.writeString(name);
+        dest.writeString(email);
     }
 }
