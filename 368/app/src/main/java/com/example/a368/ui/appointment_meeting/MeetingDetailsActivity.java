@@ -39,7 +39,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
     private static String HttpUrl = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/meeting/insert_meeting_request.php";
     ProgressDialog progressDialog;
     RequestQueue requestQueue;
-    private TextView startDate, startTime, endDate, meetingTime;
+    private TextView startTime, from_meeting_time, to_meeting_time;
     private EditText title, description;
     private int year, month, day, hour, minute;
     private Boolean startDateClicked = false, startTimeClicked = false, endDateClicked = false, endTimeClicked = false;
@@ -80,7 +80,8 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         participants = UUID.randomUUID().toString();
         title = findViewById(R.id.meeting_title);
         startTime = (TextView) findViewById(R.id.meeting_start_time);
-        meetingTime = (TextView) findViewById(R.id.meeting_time);
+        from_meeting_time = (TextView) findViewById(R.id.from_meeting_time);
+        to_meeting_time = (TextView) findViewById(R.id.to_meeting_time);
         description = findViewById(R.id.meeting_description);
         startTime.setText(getIntent().getStringExtra("TimeSlot").substring(0,8));
 
@@ -128,12 +129,14 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         if(time >= 1440) {
             strEndDate = tomorrow;
             strEndTime = String.format("%02d:%02d %s", eHours, eMinutes, eAM);
-            meetingTime.setText(String.format("%s %s - %s - %02d:%02d %s", start, msg, tomorrow, eHours, eMinutes, eAM));
+            from_meeting_time.setText(String.format("%s %s", start, msg));
+            to_meeting_time.setText(String.format("%s %02d:%02d %s", tomorrow, eHours, eMinutes, eAM));
         }
         else {
             strEndDate = start;
             strEndTime = String.format("%02d:%02d %s", eHours, eMinutes, eAM);
-            meetingTime.setText(String.format("%s %s - %s - %02d:%02d %s", start, msg, start, eHours, eMinutes, eAM));
+            from_meeting_time.setText(String.format("%s %s", start, msg));
+            to_meeting_time.setText(String.format("%s %02d:%02d %s", start, eHours, eMinutes, eAM));
         }
 
     }

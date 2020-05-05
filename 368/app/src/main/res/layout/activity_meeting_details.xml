@@ -17,12 +17,19 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:paddingTop="@dimen/fab_margin">
+            android:orientation="vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:text="Participants"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
                 android:text="Title"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorPrimary" />
@@ -30,18 +37,46 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="24dp"
                 android:text="Start Time"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimary"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginLeft="45dp"
+                android:text="From"
+                android:textAlignment="textStart"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorPrimary" />
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:layout_marginLeft="45dp"
+                android:text="To"
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:textColor="@color/colorPrimary"/>
 
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="30dp"
             android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/participants_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="You,"
+                android:textAlignment="viewStart"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorText" />
 
             <EditText
                 android:id="@+id/meeting_title"
@@ -49,42 +84,44 @@
                 android:layout_height="wrap_content"
                 android:hint="Title"
                 android:lines="1"
+                android:layout_marginTop="3dp"
                 android:maxLength="20"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColor="@color/colorText" />
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/meeting_start_time"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
-                android:layout_marginTop="24dp"
-                android:orientation="horizontal">
+                android:text="8:00 AM"
+                android:textAlignment="viewStart"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorText" />
 
-                <TextView
-                    android:id="@+id/meeting_start_time"
-                    android:layout_width="100dp"
-                    android:layout_height="wrap_content"
-                    android:text="8:00 AM"
-                    android:textAlignment="viewEnd"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="@color/colorText" />
+            <TextView
+                android:id="@+id/from_meeting_time"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:text="Set the meeting start time."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorText" />
 
-            </LinearLayout>
-
-
+            <TextView
+                android:id="@+id/to_meeting_time"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_marginTop="@dimen/fab_margin"
+                android:text="This will be shown after you set."
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/colorText" />
 
         </LinearLayout>
 
     </LinearLayout>
-    <TextView
-        android:id="@+id/meeting_time"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"
-        android:layout_marginTop="35dp"
-        android:gravity="center"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="@color/colorText" />
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
