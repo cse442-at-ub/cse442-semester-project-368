@@ -23,7 +23,7 @@
         <activity android:name=".ui.friends.AddFriendActivity" />
         <activity android:name=".ui.friends.FriendProfileActivity" />
         <activity
-            android:name=".ui.appointment_meeting.createAppointment"
+            android:name=".ui.appointment_meeting.CreateAppointmentActivity"
             android:label="Create Appointment" />
         <activity
             android:name=".ui.login.LoginActivity"

@@ -1,5 +1,6 @@
 package com.example.a368.ui.appointment_meeting;
 
+import android.app.Activity;
 import android.app.DatePickerDialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
@@ -17,8 +18,8 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +34,6 @@ import com.example.a368.R;
 import com.example.a368.Schedule;
 import com.example.a368.User;
 import com.example.a368.ui.friends.Friend;
-import com.example.a368.ui.today.ScheduleAdapter;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -49,7 +49,7 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-public class createAppointment extends AppCompatActivity {
+public class CreateAppointmentActivity extends AppCompatActivity {
 
     RecyclerView availableTimes;
     RecyclerView.LayoutManager layoutManager;
@@ -74,6 +74,15 @@ public class createAppointment extends AppCompatActivity {
     private DividerItemDecoration dividerItemDecoration;
     private int length;
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                finish();
+            }
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,21 +102,21 @@ public class createAppointment extends AppCompatActivity {
         times = new ArrayList<>();
         scheduleList = new ArrayList<>();
         stringTimes = new ArrayList<>();
-        mAdapter = new MeetingTimesAdapter(stringTimes, createAppointment.this, new MeetingTimesAdapter.onClickListener() {
+        mAdapter = new MeetingTimesAdapter(stringTimes, CreateAppointmentActivity.this, new MeetingTimesAdapter.onClickListener() {
             @Override
             public void onClickSchedule(int position) {
                 if(stringTimes.get(position).equals("No Times Slots Available.")) {
                     return;
                 }
                 else {
-                    Intent intent = new Intent(createAppointment.this, MeetingDetailsActivity.class);
+                    Intent intent = new Intent(CreateAppointmentActivity.this, MeetingDetailsActivity.class);
                     intent.putExtra("StartDate", startDate.getText().toString());
                     intent.putExtra("tomorrow", tomorrow);
                     intent.putExtra("length", ""+(length-1));
                     intent.putExtra("TimeSlot", stringTimes.get(position));
                     intent.putExtra("time", times.get(position));
                     intent.putParcelableArrayListExtra("listParticipants", list);
-                    startActivity(intent);
+                    startActivityForResult(intent, 1);
                 }
             }
         });
@@ -115,7 +124,7 @@ public class createAppointment extends AppCompatActivity {
 
         layoutManager = new LinearLayoutManager(this);
 
-        linearLayoutManager = new LinearLayoutManager(createAppointment.this);
+        linearLayoutManager = new LinearLayoutManager(CreateAppointmentActivity.this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         dividerItemDecoration = new DividerItemDecoration(availableTimes.getContext(), linearLayoutManager.getOrientation());
         availableTimes.addItemDecoration(dividerItemDecoration);
@@ -159,10 +168,10 @@ public class createAppointment extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if(startDate.getText().toString().equals("MM/DD/YYYY")) {
-                    Toast.makeText(createAppointment.this, "Please select an appointment date.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateAppointmentActivity.this, "Please select an appointment date.", Toast.LENGTH_SHORT).show();
                 }
                 else if(spHours.getSelectedItem().toString().equals("00") && spMinutes.getSelectedItem().toString().equals("00")) {
-                    Toast.makeText(createAppointment.this, "Please select a meeting length.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateAppointmentActivity.this, "Please select a meeting length.", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     unFreeTime = new boolean[2880];
@@ -178,7 +187,7 @@ public class createAppointment extends AppCompatActivity {
             public void onClick(View v) {
                 hide_keyboard(v);
                 startDateClicked = true;
-                new DatePickerDialog(createAppointment.this, dateSetListener, year, month, day).show();
+                new DatePickerDialog(CreateAppointmentActivity.this, dateSetListener, year, month, day).show();
             }
         });
 
@@ -230,7 +239,7 @@ public class createAppointment extends AppCompatActivity {
 
             if (startDateClicked) {
                 if((monthOfYear ==(Calendar.getInstance().get(Calendar.MONTH)) && year <= (Calendar.getInstance().get(Calendar.YEAR))) && dayOfMonth < Calendar.getInstance().get(Calendar.DAY_OF_MONTH)) {
-                    Toast.makeText(createAppointment.this, "Date can not be earlier than today.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(CreateAppointmentActivity.this, "Date can not be earlier than today.", Toast.LENGTH_SHORT).show();
                 }
                 else {
                     startDate.setText(msg);
@@ -242,7 +251,7 @@ public class createAppointment extends AppCompatActivity {
 
 
     private void getData(String appointmentDate) {
-        final ProgressDialog progressDialog = new ProgressDialog(createAppointment.this);
+        final ProgressDialog progressDialog = new ProgressDialog(CreateAppointmentActivity.this);
         progressDialog.setMessage("Loading...");
         progressDialog.show();
 
@@ -345,7 +354,7 @@ public class createAppointment extends AppCompatActivity {
                 progressDialog.dismiss();
             }
         });
-        RequestQueue requestQueue = Volley.newRequestQueue(createAppointment.this);
+        RequestQueue requestQueue = Volley.newRequestQueue(CreateAppointmentActivity.this);
         requestQueue.add(jsonArrayRequest);
     }
     // Check for passed time

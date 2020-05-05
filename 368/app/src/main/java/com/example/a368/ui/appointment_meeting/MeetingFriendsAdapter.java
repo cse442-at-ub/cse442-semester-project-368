@@ -18,18 +18,22 @@ import com.example.a368.R;
 import com.example.a368.ui.friends.Friend;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAdapter.ViewHolder> {
+
     boolean[] selected;
     ArrayList<Friend> list;
     Context mContext;
     ArrayList<Friend> selectedList;
+    ArrayList<Friend> listCopy;
 
     public MeetingFriendsAdapter(ArrayList<Friend> friends, Context context) {
-        list = friends;
+        this.list = friends;
+        this.listCopy = friends;
         Log.d("sizeIN: ", ""+list.size());
-        mContext = context;
-        selectedList = new ArrayList<>();
+        this.mContext = context;
+        this.selectedList = new ArrayList<>();
     }
 
     public void update() {
@@ -53,6 +57,23 @@ public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAd
 
         return holder;
     }
+
+    public void filter(String text) {
+        ArrayList<Friend> temp_list = new ArrayList<>();
+        if(text.isEmpty()) {
+            temp_list.addAll(listCopy);
+        } else {
+            text = text.toLowerCase();
+            for(Friend f : listCopy) {
+                if(f.getName().toLowerCase().contains(text) || f.getEmail().toLowerCase().contains(text)) {
+                    temp_list.add(f);
+                }
+            }
+        }
+        this.list = temp_list;
+        notifyDataSetChanged();
+    }
+
     int row_index = -1;
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, final int position) {

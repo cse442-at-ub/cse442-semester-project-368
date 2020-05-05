@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -36,6 +37,7 @@ import java.util.ArrayList;
 
 public class MeetingFragment extends Fragment {
 
+    private SearchView searchView;
     private LinearLayoutManager linearLayoutManager;
     private MeetingViewModel meetingViewModel;
     RecyclerView.LayoutManager layoutManager;
@@ -69,7 +71,7 @@ public class MeetingFragment extends Fragment {
                     Toast.makeText(getContext(), "You must select at least one friend.", Toast.LENGTH_SHORT).show();
                 }
                 else {
-                    Intent intent = new Intent(getContext(), createAppointment.class);
+                    Intent intent = new Intent(getContext(), CreateAppointmentActivity.class);
                     intent.putParcelableArrayListExtra("List", mAdapter.getSelectedList());
                     startActivity(intent);
                 }
@@ -86,6 +88,21 @@ public class MeetingFragment extends Fragment {
         recyclerView.addItemDecoration(dividerItemDecoration);
         mAdapter = new MeetingFriendsAdapter(friendList, this.getContext());
         recyclerView.setAdapter(mAdapter);
+
+        searchView = (SearchView) root.findViewById(R.id.meeting_friend_search);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String query) {
+                mAdapter.filter(query);
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText) {
+                mAdapter.filter(newText);
+                return true;
+            }
+        });
 
         return root;
     }

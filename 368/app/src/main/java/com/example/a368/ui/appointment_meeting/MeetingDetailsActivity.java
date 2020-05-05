@@ -3,8 +3,10 @@ package com.example.a368.ui.appointment_meeting;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -25,6 +27,7 @@ import com.android.volley.toolbox.Volley;
 import com.example.a368.R;
 import com.example.a368.User;
 import com.example.a368.ui.friends.Friend;
+import com.example.a368.ui.friends.FriendRequestFragment;
 import com.example.a368.ui.monthly.AddMonthlySchedule;
 
 import java.text.ParseException;
@@ -97,13 +100,12 @@ public class MeetingDetailsActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startTimeClicked = true;
-                TimePickerDialog picker = new TimePickerDialog(MeetingDetailsActivity.this, android.R.style.Theme_Holo_Light_Dialog_NoActionBar,timeSetListener, hour, minute, false);
+                TimePickerDialog picker = new TimePickerDialog(MeetingDetailsActivity.this, timeSetListener, hour, minute, false);
                 hour = Integer.parseInt(timeSlot.substring(0,2));
                 if(timePair.getStartTime() > 780) {
                     hour = hour + 12;
                 }
                 picker.updateTime(hour, Integer.parseInt(timeSlot.substring(3,5)));
-                picker.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
                 picker.show();
             }
         });
@@ -203,7 +205,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                                         // Hiding the progress dialog after all task complete.
                                         progressDialog.dismiss();
 
-                                        Toast.makeText(MeetingDetailsActivity.this, "Meeting request sent", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(MeetingDetailsActivity.this, "Meeting request sent.", Toast.LENGTH_SHORT).show();
                                     }
                                 },
                                 new Response.ErrorListener() {
@@ -252,7 +254,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                                             // Hiding the progress dialog after all task complete.
                                             progressDialog.dismiss();
 
-                                            Toast.makeText(MeetingDetailsActivity.this, "Meeting request sent", Toast.LENGTH_SHORT).show();
+                                            Toast.makeText(MeetingDetailsActivity.this, "Meeting request sent.", Toast.LENGTH_SHORT).show();
                                         }
                                     },
                                     new Response.ErrorListener() {
@@ -292,7 +294,11 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                             requestQueue = Volley.newRequestQueue(MeetingDetailsActivity.this);
                             // Adding the StringRequest object into requestQueue.
                             requestQueue.add(stringRequest);
+
+                            // To exit Create Appointment activity
+                            setResult(Activity.RESULT_OK);
                             finish();
+
                         }
                     }
                 }
