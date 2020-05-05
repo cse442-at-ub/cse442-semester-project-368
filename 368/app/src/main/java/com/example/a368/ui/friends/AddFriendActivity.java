@@ -42,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -292,6 +294,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                             friend.setName(jsonObject.getString("name"));
                             friend.setEmail(jsonObject.getString("email"));
                             userList.add(friend);
+                            Collections.sort(userList, new user_sort());
 
                         }
 
@@ -364,5 +367,16 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
+    }
+
+    class user_sort implements Comparator<Friend> {
+        @Override
+        public int compare(Friend o1, Friend o2) {
+            if(!(o1.getName().equals(o2.getName()))){
+                return o1.getName().compareTo(o2.getName());}
+            else {
+                return o1.getEmail().compareTo((o2.getEmail()));
+            }
+        }
     }
 }
