@@ -379,7 +379,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                     setEndTimes(time, msg);
                 }
             } else if (endTimeClicked) {
-                meetingTime.setText(msg);
+//                meetingTime.setText(msg);
                 endTimeClicked = false;
             }
 

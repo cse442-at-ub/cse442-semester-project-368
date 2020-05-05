@@ -67,14 +67,14 @@ public class MeetingFriendsAdapter extends RecyclerView.Adapter<MeetingFriendsAd
             }
         });
         if(selected[position]) {
-            holder.layout.setBackgroundColor(mContext.getColor(R.color.colorPrimary));
+            holder.layout.setBackgroundColor(Color.parseColor("#BAECA63C"));
             holder.tvName.setTextColor(Color.parseColor("#ffffffff"));
             holder.tvEmail.setTextColor(Color.parseColor("#ffffffff"));
         }
         else {
             holder.layout.setBackgroundColor(Color.parseColor("#fafafafa"));
-            holder.tvName.setTextColor(mContext.getColor(R.color.colorText));
-            holder.tvEmail.setTextColor(mContext.getColor(R.color.colorText));
+            holder.tvName.setTextColor(Color.parseColor("#8a000000"));
+            holder.tvEmail.setTextColor(Color.parseColor("#8a000000"));
         }
     }
 
