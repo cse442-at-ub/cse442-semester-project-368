@@ -35,8 +35,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             @Override
             public boolean onPreferenceClick(Preference preference) {
                 AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
-                confirmBuilder.setTitle("Add Friend");
-                confirmBuilder.setMessage("Are you sure you want to log out?");
+                confirmBuilder.setTitle("Sign Out");
+                confirmBuilder.setMessage("Are you sure you want to sign out?");
                 confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
