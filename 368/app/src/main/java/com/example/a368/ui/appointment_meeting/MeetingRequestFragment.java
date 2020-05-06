@@ -37,7 +37,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MeetingRequestFragment extends Fragment {
@@ -77,117 +80,195 @@ public class MeetingRequestFragment extends Fragment {
         mAdapter = new MeetingRequestAdapter(reqList, this.getContext(), new MeetingRequestAdapter.onClickListener() {
             @Override
             public void onClickRequest(int position) {
-                AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
-                confirmBuilder.setTitle("Meeting Request");
-                confirmBuilder.setMessage("Do you want to accept this meeting?");
-                confirmBuilder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                        progressDialog.setMessage("Loading...");
-                        progressDialog.show();
+                if (reqList.get(position).getStatus().equals("pending")) {
+                    AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                    confirmBuilder.setTitle("Cancel Meeting Request");
+                    confirmBuilder.setMessage("Do you want to cancel this meeting?");
+                    confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
 
-                        idList = new ArrayList<>();
-                        statusList = new ArrayList<>();
-                        emailList = new ArrayList<>();
+                            idList = new ArrayList<>();
+                            statusList = new ArrayList<>();
+                            emailList = new ArrayList<>();
 
-                        StringRequest stringRequest = new StringRequest(Request.Method.POST, updateUrl,
-                                new Response.Listener<String>() {
-                                    @Override
-                                    public void onResponse(String ServerResponse) {
+                            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onResponse(JSONArray response) {
 
-                                        // Hiding the progress dialog after all task complete.
-                                        progressDialog.dismiss();
-                                        UpdateRequest(position, reqList.get(position));
-                                    }
-                                },
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError volleyError) {
-
-                                        // Hiding the progress dialog after all task complete.
-                                        progressDialog.dismiss();
-
-                                        // Showing error message if something goes wrong.
-                                        Toast.makeText(getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
-                                    }
-                                }) {
-                            @Override
-                            protected Map<String, String> getParams() {
-
-                                // Creating Map String Params.
-                                Map<String, String> params = new HashMap<String, String>();
-                                String s = ""+reqList.get(position).getId();
-                                // Adding All values to Params.
-                                params.put("id", s);
-                                params.put("status", "pending");
-
-                                return params;
-                            }
-                        };
-                        // Creating RequestQueue.
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        // Adding the StringRequest object into requestQueue.
-                        requestQueue.add(stringRequest);
-
-
-                    }
-                });
-                confirmBuilder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        final ProgressDialog progressDialog = new ProgressDialog(getContext());
-                        progressDialog.setMessage("Loading...");
-                        progressDialog.show();
-
-                        idList = new ArrayList<>();
-                        statusList = new ArrayList<>();
-                        emailList = new ArrayList<>();
-
-                        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
-                            @RequiresApi(api = Build.VERSION_CODES.O)
-                            @Override
-                            public void onResponse(JSONArray response) {
-
-                                for (int i = 0; i < response.length(); i++) {
-                                    try {
-                                        JSONObject jsonObject = response.getJSONObject(i);
-//                                        req.setTitle(jsonObject.getString("title"));
-                                        // check to display the logged-in user's schedule only && display today's schedule only
-                                        if (jsonObject.getString("participant").equals(reqList.get(position).getParticipants())) {
-                                            idList.add(Integer.parseInt(jsonObject.getString("id")));
-                                            statusList.add(jsonObject.getString("status"));
-                                            if(!emailList.contains(jsonObject.getString("receiver_email"))) {
-                                                emailList.add(jsonObject.getString("receiver_email"));
+                                    for (int i = 0; i < response.length(); i++) {
+                                        try {
+                                            JSONObject jsonObject = response.getJSONObject(i);
+                                            //                                        req.setTitle(jsonObject.getString("title"));
+                                            // check to display the logged-in user's schedule only && display today's schedule only
+                                            if (jsonObject.getString("participant").equals(reqList.get(position).getParticipants())) {
+                                                idList.add(Integer.parseInt(jsonObject.getString("id")));
+                                                statusList.add(jsonObject.getString("status"));
+                                                if (!emailList.contains(jsonObject.getString("receiver_email"))) {
+                                                    emailList.add(jsonObject.getString("receiver_email"));
+                                                }
                                             }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            progressDialog.dismiss();
                                         }
-
-                                    } catch (JSONException e) {
-                                        e.printStackTrace();
-                                        progressDialog.dismiss();
                                     }
-                                }
 
-                                for(Integer id : idList) {
-                                    DeleteRequest(id);
-                                }
-                                reqList.remove(position);
-                                mAdapter.notifyDataSetChanged();
-                                progressDialog.dismiss();
-                            }
-                        }, new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Log.e("Volley", error.toString());
-                                progressDialog.dismiss();
-                            }
-                        });
-                        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-                        requestQueue.add(jsonArrayRequest);
+                                    for (Integer id : idList) {
+                                        DeleteRequest(id);
+                                    }
+                                    reqList.remove(position);
+                                    getData();
+                                    mAdapter.notifyDataSetChanged();
+                                    progressDialog.dismiss();
 
-                    }
-                });
-                confirmBuilder.show();
+                                    Toast.makeText(getContext(), "Canceled meeting request.", Toast.LENGTH_LONG).show();
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("Volley", error.toString());
+                                    progressDialog.dismiss();
+                                }
+                            });
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            requestQueue.add(jsonArrayRequest);
+                        }
+
+                    });
+                    confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+
+                    });
+                    confirmBuilder.show();
+
+                } else {
+                    AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                    confirmBuilder.setTitle("Confirm Meeting Request");
+                    confirmBuilder.setMessage("Do you want to accept this meeting?");
+                    confirmBuilder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
+
+                            idList = new ArrayList<>();
+                            statusList = new ArrayList<>();
+                            emailList = new ArrayList<>();
+
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, updateUrl,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String ServerResponse) {
+
+                                            // Hiding the progress dialog after all task complete.
+                                            getData();
+                                            progressDialog.dismiss();
+                                            UpdateRequest(position, reqList.get(position));
+
+                                            Toast.makeText(getContext(), "Meeting request accepted.", Toast.LENGTH_LONG).show();
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError volleyError) {
+
+                                            // Hiding the progress dialog after all task complete.
+                                            progressDialog.dismiss();
+
+                                            // Showing error message if something goes wrong.
+                                            Toast.makeText(getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+
+                                    // Creating Map String Params.
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    String s = ""+reqList.get(position).getId();
+                                    // Adding All values to Params.
+                                    params.put("id", s);
+                                    params.put("status", "pending");
+
+                                    return params;
+                                }
+                            };
+                            // Creating RequestQueue.
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            // Adding the StringRequest object into requestQueue.
+                            requestQueue.add(stringRequest);
+
+
+                        }
+                    });
+                    confirmBuilder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                            progressDialog.setMessage("Loading...");
+                            progressDialog.show();
+
+                            idList = new ArrayList<>();
+                            statusList = new ArrayList<>();
+                            emailList = new ArrayList<>();
+
+                            JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+                                @RequiresApi(api = Build.VERSION_CODES.O)
+                                @Override
+                                public void onResponse(JSONArray response) {
+
+                                    for (int i = 0; i < response.length(); i++) {
+                                        try {
+                                            JSONObject jsonObject = response.getJSONObject(i);
+    //                                        req.setTitle(jsonObject.getString("title"));
+                                            // check to display the logged-in user's schedule only && display today's schedule only
+                                            if (jsonObject.getString("participant").equals(reqList.get(position).getParticipants())) {
+                                                idList.add(Integer.parseInt(jsonObject.getString("id")));
+                                                statusList.add(jsonObject.getString("status"));
+                                                if(!emailList.contains(jsonObject.getString("receiver_email"))) {
+                                                    emailList.add(jsonObject.getString("receiver_email"));
+                                                }
+                                            }
+
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                            progressDialog.dismiss();
+                                        }
+                                    }
+
+                                    for(Integer id : idList) {
+                                        DeleteRequest(id);
+                                    }
+                                    reqList.remove(position);
+                                    getData();
+                                    mAdapter.notifyDataSetChanged();
+                                    progressDialog.dismiss();
+
+                                    Toast.makeText(getContext(), "Rejected meeting request.", Toast.LENGTH_LONG).show();
+                                }
+                            }, new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    Log.e("Volley", error.toString());
+                                    progressDialog.dismiss();
+                                }
+                            });
+                            RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                            requestQueue.add(jsonArrayRequest);
+
+                        }
+                    });
+                    confirmBuilder.show();
+                }
             }
         });
         recyclerView.setAdapter(mAdapter);
@@ -261,7 +342,7 @@ public class MeetingRequestFragment extends Fragment {
                     @Override
                     public void onResponse(String ServerResponse) {
 
-                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -305,7 +386,7 @@ public class MeetingRequestFragment extends Fragment {
 
                         mAdapter.notifyDataSetChanged();
 
-                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -389,7 +470,7 @@ public class MeetingRequestFragment extends Fragment {
 
                             if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("pending")) {
                                 pendingList.add(req.getParticipants());
-                                req.setTitle(req.getTitle() +" (Pending)");
+                                req.setTitle(req.getTitle());
                                 reqList.add(req);
                             }
                             else if(req.getStatus().equals("confirm")) {
@@ -403,7 +484,7 @@ public class MeetingRequestFragment extends Fragment {
                     }
                 }
 
-                // Sort by alphabetical order
+                sortArray(reqList);
 
                 mAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
@@ -417,6 +498,21 @@ public class MeetingRequestFragment extends Fragment {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
+    }
+
+    private void sortArray(List<MeetingRequest> arrayList) {
+        if (arrayList != null) {
+            Collections.sort(arrayList, new Comparator<MeetingRequest>() {
+                @Override
+                public int compare(MeetingRequest o1, MeetingRequest o2) {
+                    if (!(o1.getStart_date().equals(o2.getStart_date()))) {
+                        return o1.getStart_date().compareTo(o2.getStart_date());
+                    } else {
+                        return o1.getStart_time().compareTo(o2.getStart_time());
+                    }
+                }
+            });
+        }
     }
 
 }
