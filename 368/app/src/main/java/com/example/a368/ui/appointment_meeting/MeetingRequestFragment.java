@@ -37,7 +37,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MeetingRequestFragment extends Fragment {
@@ -481,7 +484,7 @@ public class MeetingRequestFragment extends Fragment {
                     }
                 }
 
-                // Sort by alphabetical order
+                sortArray(reqList);
 
                 mAdapter.notifyDataSetChanged();
                 progressDialog.dismiss();
@@ -495,6 +498,21 @@ public class MeetingRequestFragment extends Fragment {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
+    }
+
+    private void sortArray(List<MeetingRequest> arrayList) {
+        if (arrayList != null) {
+            Collections.sort(arrayList, new Comparator<MeetingRequest>() {
+                @Override
+                public int compare(MeetingRequest o1, MeetingRequest o2) {
+                    if (!(o1.getStart_date().equals(o2.getStart_date()))) {
+                        return o1.getStart_date().compareTo(o2.getStart_date());
+                    } else {
+                        return o1.getStart_time().compareTo(o2.getStart_time());
+                    }
+                }
+            });
+        }
     }
 
 }
