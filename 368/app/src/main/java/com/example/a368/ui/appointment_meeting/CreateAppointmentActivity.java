@@ -494,7 +494,7 @@ public class CreateAppointmentActivity extends AppCompatActivity {
                 eHours = eHours - 12;
                 eAM = "PM";
             }
-            else if (eHours == 0) {
+            if (eHours == 0) {
                 eHours = 12;
             }
 
