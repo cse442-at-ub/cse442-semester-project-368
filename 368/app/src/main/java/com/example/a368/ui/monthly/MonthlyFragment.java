@@ -425,14 +425,16 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         return false;
     }
 
+    // Date gets priority, time the next
     private void sortArray(List<Schedule> arrayList) {
         if (arrayList != null) {
             Collections.sort(arrayList, new Comparator<Schedule>() {
                 @Override
                 public int compare(Schedule o1, Schedule o2) {
+                    // if start dates are different, sort by date
                     if (!(o1.getStart_date().equals(o2.getStart_date()))) {
                         return o1.getStart_date().compareTo(o2.getStart_date());
-                    } else {
+                    } else { // if they are same, sort by time
                         return o1.getStart_time().compareTo(o2.getStart_time());
                     }
                 }
