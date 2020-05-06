@@ -35,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     Dialog today_schedule_pop;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,67 +68,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle item selection
-        switch (item.getItemId()) {
-            case R.id.action_settings:
-                return true;
-            case R.id.action_logout:
-                editor.putString("User", null);
-                editor.commit();
-                User user = User.getInstance();
-                user.setEmail("");
-                user.setName("");
-                startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    @Override
     public boolean onSupportNavigateUp() {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
-    }
-
-    //my schedule pop up function
-    public void showpop(View v){
-        Button cancel;
-        Button EditSchedule;
-        Button RemoveSchedule;
-        today_schedule_pop.setContentView(R.layout.today_schedule_pop_up);
-
-        //function to close the pop-up
-        cancel = today_schedule_pop.findViewById(R.id.X);
-        cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                today_schedule_pop.dismiss();
-            }
-        });
-        //function to edit schedule
-        EditSchedule=today_schedule_pop.findViewById(R.id.editbutton);
-        EditSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        //function to remove schedule
-        RemoveSchedule=today_schedule_pop.findViewById(R.id.Removebutton);
-        RemoveSchedule.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-        today_schedule_pop.show();
     }
 }

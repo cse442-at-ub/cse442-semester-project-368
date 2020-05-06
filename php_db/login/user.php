@@ -8,6 +8,8 @@
         
         private $db_table = "users";
         
+        private $name = "something2";
+
         public function __construct(){
             $this->db = new DbConnect();
         }
@@ -19,9 +21,8 @@
             $result = mysqli_query($this->db->getDb(), $query);
             
             if(mysqli_num_rows($result) > 0){
-                
-                mysqli_close($this->db->getDb());
-                
+                $row = $result->fetch_assoc();
+                $this->name = $row['name'];
                 
                 return true;
                 
@@ -55,7 +56,7 @@
             return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
         }
         
-        public function createNewRegisterUser($email, $password){
+        public function createNewRegisterUser($email, $password, $name){
               
             $isExisting = $this->isEmailUsernameExist($email);
             
@@ -71,13 +72,14 @@
                 
                 if($isValid)
                 {
-                $query = "insert into ".$this->db_table." (email, password, created_at, updated_at) values ('$email', '$password', NOW(), NOW())";
+                $query = "insert into ".$this->db_table." (email, password, created_at, updated_at, name) values ('$email', '$password', NOW(), NOW(), '$name')";
                 
                 $inserted = mysqli_query($this->db->getDb(), $query);
                 
                 if($inserted == 1){
                     
                     $json['success'] = 1;
+                    $json['name'] = $name;
                     $json['message'] = "Successfully registered";
                     
                 }else{
@@ -105,11 +107,12 @@
             $json = array();
             
             $canUserLogin = $this->isLoginExist($email, $password);
-            
+          
+
             if($canUserLogin){
-                
                 $json['success'] = 1;
                 $json['message'] = "Successfully logged in";
+                $json['name'] = $this->name;
                 
             }else{
                 $json['success'] = 0;
@@ -117,5 +120,28 @@
             }
             return $json;
         }
+
+
+        public function changePassword($email, $password, $newPassword) {
+            
+            $json = array();
+            
+            $canUserLogin = $this->isLoginExist($email, $password);
+          
+
+            if($canUserLogin){
+                $query = "update `users` set `password` = '$newPassword' where `email` = '$email'";
+                mysqli_query($this->db->getDb(), $query);
+                $json['success'] = 1;
+                $json['message'] = "Password changed successfully";
+                
+            }else{
+                $json['success'] = 0;
+                $json['message'] = "Incorrect details";
+            }
+            return $json;
+
+
+        }
     }
-    ?>
+?>

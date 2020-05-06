@@ -132,12 +132,18 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                         String formatted_time = timeFormat.format(now);
 
                         // check to display the logged-in user's schedule only && display today's schedule only
-                        if (jsonObject.getString("email").equals(User.getInstance().getEmail()) &&
-                                jsonObject.getString("start_date").equals(formatted_today)) {
-
-                            if ((jsonObject.getString("end_date").equals(formatted_today) &&
+                        if (jsonObject.getString("email").equals(User.getInstance().getEmail())) {
+                            if ((jsonObject.getString("start_date").equals(formatted_today) &&
                                     check_timings(formatted_time, jsonObject.getString("end_time"))) ||
-                                (!(jsonObject.getString("end_date").equals(formatted_today)))) {
+
+                                    ((jsonObject.getString("end_date").equals(formatted_today))) &&
+                                            check_timings(formatted_time, jsonObject.getString("end_time")) ||
+
+                                    (!jsonObject.getString("start_date").equals(jsonObject.getString("end_date")) &&
+                                            jsonObject.getString("start_date").equals(formatted_today)) ||
+
+                                    (check_date_passed(formatted_today, jsonObject.getString("end_date")) &&
+                                        check_date_passed(jsonObject.getString("start_date"), formatted_today))) {
 
                                 Schedule schedule = new Schedule();
 
@@ -166,6 +172,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                                     schedule.setDescription("");
                                 }
                                 scheduleList.add(schedule);
+
                             }
                         }
 
@@ -253,7 +260,7 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
                                             public void onResponse(String ServerResponse) {
                                                 getData();
                                                 // Showing response message coming from server.
-                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getContext(), "Your schedule is successfully deleted.", Toast.LENGTH_LONG).show();
                                             }
                                         },
                                         new Response.ErrorListener() {
@@ -312,14 +319,42 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         return str;
     }
 
+    // Date gets priority, time the next
     private void sortArray(List<Schedule> arrayList) {
         if (arrayList != null) {
             Collections.sort(arrayList, new Comparator<Schedule>() {
                 @Override
                 public int compare(Schedule o1, Schedule o2) {
-                    return o1.getStart_time().compareTo(o2.getStart_time()); }
+                    // if start dates are different, sort by date
+                    if (!(o1.getStart_date().equals(o2.getStart_date()))) {
+                        return o1.getStart_date().compareTo(o2.getStart_date());
+                    } else { // if they are same, sort by time
+                        return o1.getStart_time().compareTo(o2.getStart_time());
+                    }
+                }
             });
         }
+    }
+
+    private boolean check_date_passed(String time, String endtime) {
+        String pattern = "MM/dd/yyyy";
+        SimpleDateFormat sdf = new SimpleDateFormat(pattern);
+
+        try {
+            Date date1 = sdf.parse(time);
+            Date date2 = sdf.parse(endtime);
+
+            if(date1.before(date2)) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (ParseException e){
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     // Check for passed time

@@ -87,12 +87,11 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         Date today = new Date(currentTime);
         passDate = today;
 
-        // Add Schedule Floating Button
         FloatingActionButton fab = (FloatingActionButton)root.findViewById(R.id.fab_add_monthly);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MonthlyFragment.this.getContext(), AddMonthlySchedule.class);
+                Intent intent = new Intent(v.getContext(), AddMonthlySchedule.class);
                 intent.putExtra("date", passDate);
                 startActivity(intent);
             }
@@ -170,7 +169,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                 try {
                                     date = formatter.parse(str_date);
                                     long milliTime = date.getTime();
-                                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                                    calendarList.add(new Event(Color.parseColor("#337CC6"), milliTime));
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
@@ -206,7 +205,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                 for(int j = 0; j < dates.size(); j++) {
                     Date lDate = (Date) dates.get(j);
                     long milliTime = lDate.getTime();
-                    calendarList.add(new Event(Color.parseColor("#257a76"), milliTime));
+                    calendarList.add(new Event(Color.parseColor("#337CC6"), milliTime));
                 }
 
                 for (int i = 0; i < calendarList.size(); i++) {
@@ -330,9 +329,9 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
 
                 /**
                  * Toast msg prints out option ID and SQL column id:
-                Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
-                        " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
-                */
+                 Toast.makeText(getContext(), "MySQL ID: " + scheduleList.get(pos).getID() +
+                 " | Menu ID:" + String.valueOf(menuID) , Toast.LENGTH_LONG).show();
+                 */
 
                 switch (menuID) {
                     case 0:
@@ -361,7 +360,7 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
                                             public void onResponse(String ServerResponse) {
                                                 refresh();
                                                 // Showing response message coming from server.
-                                                Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(getContext(), "Your schedule is successfully deleted.", Toast.LENGTH_LONG).show();
                                             }
                                         },
                                         new Response.ErrorListener() {
@@ -426,14 +425,16 @@ public class MonthlyFragment extends Fragment implements MonthlyAdapter.onClickL
         return false;
     }
 
+    // Date gets priority, time the next
     private void sortArray(List<Schedule> arrayList) {
         if (arrayList != null) {
             Collections.sort(arrayList, new Comparator<Schedule>() {
                 @Override
                 public int compare(Schedule o1, Schedule o2) {
+                    // if start dates are different, sort by date
                     if (!(o1.getStart_date().equals(o2.getStart_date()))) {
                         return o1.getStart_date().compareTo(o2.getStart_date());
-                    } else {
+                    } else { // if they are same, sort by time
                         return o1.getStart_time().compareTo(o2.getStart_time());
                     }
                 }

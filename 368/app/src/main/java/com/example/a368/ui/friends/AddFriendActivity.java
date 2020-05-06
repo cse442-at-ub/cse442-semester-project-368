@@ -42,6 +42,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,9 +52,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
     private static String url = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/user/fetch_user.php";
     private static String url_friend = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/fetch_friend.php";
-    private static String url_add_friend = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend/insert_friend.php";
+    private static String url_request = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/fetch_friend_request.php";
+    private static String url_friend_request = "https://www-student.cse.buffalo.edu/CSE442-542/2020-spring/cse-442w/friend_request/insert_friend_request.php";
     private RecyclerView uList;
     private ArrayList<String> friendList;
+    private ArrayList<String> requestList;
     private ArrayList<Friend> userList;
     private FriendSearchAdapter mAdapter;
     private SearchView searchView;
@@ -94,8 +98,12 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
             }
         });
 
+        requestList = new ArrayList<>();
+        getRequest();
+
         friendList = new ArrayList<>();
         getFriend();
+
         uList = (RecyclerView) findViewById(R.id.friendsRecyclerView);
         userList = new ArrayList<>();
         mAdapter = new FriendSearchAdapter(this, userList, this);
@@ -122,14 +130,14 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
     public void onClickFriend(int position) {
         AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(this);
         confirmBuilder.setTitle("Add Friend");
-        confirmBuilder.setMessage("Are you sure to add:\n" + userList.get(position).getName() +
-                " (" + userList.get(position).getEmail() + ") ?\n\nYou may be visible to your friend's list.");
+        confirmBuilder.setMessage("Are you sure to send a friend request to:\n" + userList.get(position).getName() +
+                " (" + userList.get(position).getEmail() + ") ?");
         confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // Creating string request with post method.
                 if(getIntent().hasExtra("id")) {
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String ServerResponse) {
@@ -159,7 +167,7 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                     // Adding the StringRequest object into requestQueue.
                     requestQueue.add(stringRequest);
                 }
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                         new Response.Listener<String>() {
                             @Override
                             public void onResponse(String ServerResponse) {
@@ -167,14 +175,18 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                                 // Hiding the progress dialog after all task complete.
                                 progressDialog.dismiss();
 
-                                // Showing response message coming from server.
-//                                Toast.makeText(AddFriendActivity.this, ServerResponse, Toast.LENGTH_LONG).show();
+                                // Showing response message:
+                                Toast.makeText(AddFriendActivity.this, "Friend request sent to " +
+                                        userList.get(position).getName() + ".", Toast.LENGTH_LONG).show();
 
                                 // update adapter list
+                                getRequest();
                                 getFriend();
                                 getData();
-                                add_both(userList.get(position).getEmail(), User.getInstance().getName(), User.getInstance().getEmail());
-                                finish();
+                                add_both(userList.get(position).getName(), userList.get(position).getEmail(),
+                                        User.getInstance().getName(), User.getInstance().getEmail());
+//                                finish();
+
                             }
                         },
                         new Response.ErrorListener() {
@@ -195,9 +207,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         Map<String, String> params = new HashMap<String, String>();
 
                         // Adding All values to Params.
-                        params.put("email_a", User.getInstance().getEmail());
-                        params.put("name_b", userList.get(position).getName());
-                        params.put("email_b", userList.get(position).getEmail());
+                        params.put("sender_name", User.getInstance().getName());
+                        params.put("sender_email", User.getInstance().getEmail());
+                        params.put("receiver_name", userList.get(position).getName());
+                        params.put("receiver_email", userList.get(position).getEmail());
+                        params.put("status", "Pending");
 
                         return params;
                     }
@@ -226,8 +240,53 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
     @Override
     public void onResume() {
         super.onResume();
+        getRequest();
         getFriend();
         getData();
+    }
+
+    // Fetch JSON data to display existing friend list
+    private void getRequest() {
+        final ProgressDialog progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Loading...");
+        progressDialog.show();
+
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url_request, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+                requestList.clear();
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        // check if the user sent the request already
+                        if (jsonObject.getString("sender_email").equals(User.getInstance().getEmail())) {
+                            requestList.add(jsonObject.getString("receiver_email"));
+                        }
+                        // check if the user received friend request
+                        else if (jsonObject.getString("receiver_email").equals(User.getInstance().getEmail())) {
+                            requestList.add(jsonObject.getString("sender_email"));
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        progressDialog.dismiss();
+                    }
+                }
+
+                mAdapter.notifyDataSetChanged();
+                progressDialog.dismiss();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+                progressDialog.dismiss();
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(this);
+        requestQueue.add(jsonArrayRequest);
     }
 
     // Fetch JSON data to display existing friend list
@@ -283,15 +342,16 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
 
-                        // check to display the logged-in user's schedule only && display today's schedule only
+                        // filter out existing friends & requests
                         if (!(jsonObject.getString("email").equals(User.getInstance().getEmail())) &&
-                            !(friendList.contains(jsonObject.getString("email")))) {
+                            !(friendList.contains(jsonObject.getString("email"))) &&
+                            !(requestList.contains(jsonObject.getString("email")))) {
 
                             Friend friend = new Friend();
                             friend.setName(jsonObject.getString("name"));
                             friend.setEmail(jsonObject.getString("email"));
                             userList.add(friend);
-
+                            Collections.sort(userList, new user_sort());
                         }
 
                     } catch (JSONException e) {
@@ -317,8 +377,8 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
         requestQueue.add(jsonArrayRequest);
     }
 
-    private void add_both(String email_a, String name_b, String email_b) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_add_friend,
+    private void add_both(String sender_name, String sender_email, String receiver_name, String receiver_email) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url_friend_request,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
@@ -326,10 +386,8 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                         // Hiding the progress dialog after all task complete.
                         progressDialog.dismiss();
 
-                        // Showing response message coming from server.
-                        Toast.makeText(AddFriendActivity.this, "Friend added Successfully", Toast.LENGTH_LONG).show();
-
                         // update adapter list
+                        getRequest();
                         getFriend();
                         getData();
                     }
@@ -352,9 +410,11 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
                 Map<String, String> params = new HashMap<String, String>();
 
                 // Adding All values to Params.
-                params.put("email_a", email_a);
-                params.put("name_b", name_b);
-                params.put("email_b", email_b);
+                params.put("sender_name", sender_name);
+                params.put("sender_email", sender_email);
+                params.put("receiver_name", receiver_name);
+                params.put("receiver_email", receiver_email);
+                params.put("status", "Confirm");
 
                 return params;
             }
@@ -366,5 +426,16 @@ public class AddFriendActivity extends AppCompatActivity implements FriendSearch
 
         // Adding the StringRequest object into requestQueue.
         requestQueue.add(stringRequest);
+    }
+
+    class user_sort implements Comparator<Friend> {
+        @Override
+        public int compare(Friend o1, Friend o2) {
+            if(!(o1.getName().equals(o2.getName()))){
+                return o1.getName().compareTo(o2.getName());}
+            else {
+                return o1.getEmail().compareTo((o2.getEmail()));
+            }
+        }
     }
 }

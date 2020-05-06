@@ -13,9 +13,7 @@ import android.widget.SearchView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -35,6 +33,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class FriendsFragment extends Fragment implements FriendSearchAdapter.onClickListener, FriendsListAdapter.onClickListener {
@@ -50,12 +50,21 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
     public FriendSearchAdapter mAdapter;
     private SearchView searchView;
 
-    private String friend_id;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    public static FriendsFragment newInstance(String text) {
+
+        FriendsFragment f = new FriendsFragment();
+        Bundle b = new Bundle();
+        b.putString("msg", text);
+
+        f.setArguments(b);
+
+        return f;
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -206,6 +215,16 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
         super.onResume();
         getData();
     }
+    class friend_sort implements Comparator<Friend> {
+        @Override
+        public int compare(Friend o1, Friend o2) {
+            if(!(o1.getName().equals(o2.getName()))){
+                return o1.getName().compareTo(o2.getName());}
+            else {
+                return o1.getEmail().compareTo((o2.getEmail()));
+            }
+        }
+    }
 
     // Fetch JSON data to display existing friends list
     private void getData() {
@@ -231,7 +250,7 @@ public class FriendsFragment extends Fragment implements FriendSearchAdapter.onC
                             friend.setName(jsonObject.getString("name_b"));
                             friend.setEmail(jsonObject.getString("email_b"));
                             friendList.add(friend);
-
+                            Collections.sort(friendList, new friend_sort());
                         }
 
                     } catch (JSONException e) {

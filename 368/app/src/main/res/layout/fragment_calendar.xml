@@ -1,19 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_margin="@dimen/fab_margin"
-    android:orientation="vertical">
-
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fab_add_monthly"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
-        android:clickable="true"
-        app:srcCompat="@drawable/ic_monthly"
-        app:maxImageSize="35dp" />
+    android:padding="@dimen/fab_margin"
+    android:orientation="vertical"
+    android:elevation="0dp">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -38,9 +31,9 @@
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
             app:compactCalendarBackgroundColor="#F9F9F9"
-            app:compactCalendarCurrentDayBackgroundColor="@color/colorPrimary"
+            app:compactCalendarCurrentDayBackgroundColor="@color/colorAccent"
             app:compactCalendarCurrentDayTextColor="#FFFFFF"
-            app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorAccent"
+            app:compactCalendarCurrentSelectedDayBackgroundColor="#F4D48F"
             app:compactCalendarCurrentSelectedDayTextColor="#FFFFFF"
             app:compactCalendarMultiEventIndicatorColor="#3d3d3d"
             app:compactCalendarTargetHeight="250dp"
@@ -54,5 +47,16 @@
             android:layout_height="fill_parent" />
 
     </LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fab_add_monthly"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:clickable="true"
+        android:elevation="0dp"
+        app:elevation="0dp"
+        app:srcCompat="@drawable/ic_monthly"
+        app:maxImageSize="30dp" />
 
 </FrameLayout>
