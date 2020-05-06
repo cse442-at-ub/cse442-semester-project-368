@@ -5,6 +5,8 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import com.example.a368.ui.login.LoginActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import android.view.MenuItem;
 import android.view.View;
@@ -29,7 +31,8 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private AppBarConfiguration mAppBarConfiguration;
-
+    //pop
+    Dialog today_schedule_pop;
     SharedPreferences pref;
     SharedPreferences.Editor editor;
 
@@ -54,6 +57,8 @@ public class MainActivity extends AppCompatActivity {
         NavigationUI.setupActionBarWithNavController(this, navController, mAppBarConfiguration);
         NavigationUI.setupWithNavController(navigationView, navController);
 
+        //pop
+        today_schedule_pop = new Dialog(this);
         View headerView = navigationView.getHeaderView(0);
         TextView navName = headerView.findViewById(R.id.navName);
         TextView navEmail = headerView.findViewById(R.id.navEmail);
@@ -68,5 +73,4 @@ public class MainActivity extends AppCompatActivity {
         return NavigationUI.navigateUp(navController, mAppBarConfiguration)
                 || super.onSupportNavigateUp();
     }
-
 }

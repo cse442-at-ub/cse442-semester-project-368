@@ -381,12 +381,12 @@ public class MeetingRequestFragment extends Fragment {
                             req.setDescription(jsonObject.getString("description"));
                             req.setParticipants(jsonObject.getString("participant"));
 
-                            if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("pending")) {
+                            if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("Pending")) {
                                 pendingList.add(req.getParticipants());
                                 req.setTitle(req.getTitle() +" (Pending)");
                                 reqList.add(req);
                             }
-                            else if(req.getStatus().equals("confirm")) {
+                            else if(req.getStatus().equals("Confirm")) {
                                 reqList.add(req);
                             }
                         }
