@@ -74,21 +74,17 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         timePair = getIntent().getParcelableExtra("time");
         timeSlot = getIntent().getStringExtra("TimeSlot");
         listParticipants = getIntent().getParcelableArrayListExtra("listParticipants");
-
         StringBuilder sb = new StringBuilder();
         sb.append("You, ");
-
         for (Friend f : listParticipants) {
             sb.append(f.getName());
-
             if (!f.getName().equals(listParticipants.get(listParticipants.size() - 1).getName())) {
                 sb.append(", ");
             }
         }
-
         tvParticipantDetails = findViewById(R.id.participants_details);
         tvParticipantDetails.setText(sb.toString());
-        participants = (sb.toString());
+        participants = UUID.randomUUID().toString();
         title = findViewById(R.id.meeting_title);
         startTime = (TextView) findViewById(R.id.meeting_start_time);
         from_meeting_time = (TextView) findViewById(R.id.from_meeting_time);
@@ -234,7 +230,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                                 params.put("sender_email", f.getEmail());
                                 params.put("receiver_name", User.getInstance().getName());
                                 params.put("receiver_email", User.getInstance().getEmail());
-                                params.put("status", "Confirm");
+                                params.put("status", "pending");
                                 params.put("title", title.getText().toString());
                                 params.put("start_date", strStartDate);
                                 params.put("start_time", strStartTime);
@@ -283,7 +279,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
                                     params.put("sender_email", User.getInstance().getEmail());
                                     params.put("receiver_name", f.getName());
                                     params.put("receiver_email", f.getEmail());
-                                    params.put("status", "Pending");
+                                    params.put("status", "confirm");
                                     params.put("title", title.getText().toString());
                                     params.put("start_date", strStartDate);
                                     params.put("start_time", strStartTime);
