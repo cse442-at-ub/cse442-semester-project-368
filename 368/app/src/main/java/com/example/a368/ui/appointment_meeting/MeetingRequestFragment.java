@@ -362,6 +362,7 @@ public class MeetingRequestFragment extends Fragment {
                         JSONObject jsonObject = response.getJSONObject(i);
 
                         // check to display the logged-in user's schedule only && display today's schedule only
+
                         if (jsonObject.getString("receiver_email").equals(User.getInstance().getEmail())) {
 
                             MeetingRequest req = new MeetingRequest();
@@ -381,12 +382,12 @@ public class MeetingRequestFragment extends Fragment {
                             req.setDescription(jsonObject.getString("description"));
                             req.setParticipants(jsonObject.getString("participant"));
 
-                            if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("Pending")) {
+                            if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("pending")) {
                                 pendingList.add(req.getParticipants());
                                 req.setTitle(req.getTitle() +" (Pending)");
                                 reqList.add(req);
                             }
-                            else if(req.getStatus().equals("Confirm")) {
+                            else if(req.getStatus().equals("confirm")) {
                                 reqList.add(req);
                             }
                         }
