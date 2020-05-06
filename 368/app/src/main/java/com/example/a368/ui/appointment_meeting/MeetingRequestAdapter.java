@@ -37,7 +37,14 @@ public class MeetingRequestAdapter extends RecyclerView.Adapter<MeetingRequestAd
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.tvMeetingTitle.setText(list.get(position).getTitle());
         holder.tvMeetingTime.setText(String.format("%s %s - %s %s", list.get(position).getStart_date(), list.get(position).getStart_time(), list.get(position).getEnd_date(), list.get(position).getEnd_time()));
-        holder.tvMeetingParticipants.setText(list.get(position).getDescription());
+        holder.tvMeetingParticipants.setText(list.get(position).getParticipants());
+
+        if (list.get(position).getDescription().equals("")) {
+            holder.tvMeetingReqDescription.setVisibility(View.GONE);
+        } else {
+            holder.tvMeetingReqDescription.setText(list.get(position).getDescription());
+        }
+
     }
 
     @Override
@@ -48,6 +55,7 @@ public class MeetingRequestAdapter extends RecyclerView.Adapter<MeetingRequestAd
         TextView tvMeetingTitle;
         TextView tvMeetingTime;
         TextView tvMeetingParticipants;
+        TextView tvMeetingReqDescription;
         LinearLayout layout;
         onClickListener onClickListener;
 
@@ -57,6 +65,7 @@ public class MeetingRequestAdapter extends RecyclerView.Adapter<MeetingRequestAd
             tvMeetingTitle = itemView.findViewById(R.id.tvMeetingReqTitle);
             tvMeetingTime = itemView.findViewById(R.id.tvMeetingReqTime);
             tvMeetingParticipants = itemView.findViewById(R.id.tvMeetingReqParticipants);
+            tvMeetingReqDescription = itemView.findViewById(R.id.tvMeetingReqDescription);
             layout = itemView.findViewById(R.id.meetingReqLayout);
             this.onClickListener = onClickListener;
             itemView.setOnClickListener(this);

@@ -84,7 +84,7 @@ public class MeetingDetailsActivity extends AppCompatActivity {
         }
         tvParticipantDetails = findViewById(R.id.participants_details);
         tvParticipantDetails.setText(sb.toString());
-        participants = UUID.randomUUID().toString();
+        participants = sb.toString();
         title = findViewById(R.id.meeting_title);
         startTime = (TextView) findViewById(R.id.meeting_start_time);
         from_meeting_time = (TextView) findViewById(R.id.from_meeting_time);

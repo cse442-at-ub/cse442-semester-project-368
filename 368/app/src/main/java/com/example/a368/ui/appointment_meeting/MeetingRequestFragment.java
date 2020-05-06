@@ -59,7 +59,6 @@ public class MeetingRequestFragment extends Fragment {
     public void onResume() {
         super.onResume();
         getData();
-        mAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -379,7 +378,13 @@ public class MeetingRequestFragment extends Fragment {
                             req.setStart_time(jsonObject.getString("start_time"));
                             req.setEnd_date(jsonObject.getString("end_date"));
                             req.setEnd_time(jsonObject.getString("end_time"));
-                            req.setDescription(jsonObject.getString("description"));
+
+                            if (jsonObject.getString("description").equals("Exception: No Text Applied")) {
+                                req.setDescription("");
+                            } else {
+                                req.setDescription(jsonObject.getString("description"));
+                            }
+
                             req.setParticipants(jsonObject.getString("participant"));
 
                             if(!pendingList.contains(req.getParticipants()) && req.getStatus().equals("pending")) {
