@@ -319,12 +319,19 @@ public class TodayFragment extends Fragment implements ScheduleAdapter.onClickLi
         return str;
     }
 
+    // Date gets priority, time the next
     private void sortArray(List<Schedule> arrayList) {
         if (arrayList != null) {
             Collections.sort(arrayList, new Comparator<Schedule>() {
                 @Override
                 public int compare(Schedule o1, Schedule o2) {
-                    return o1.getStart_time().compareTo(o2.getStart_time()); }
+                    // if start dates are different, sort by date
+                    if (!(o1.getStart_date().equals(o2.getStart_date()))) {
+                        return o1.getStart_date().compareTo(o2.getStart_date());
+                    } else { // if they are same, sort by time
+                        return o1.getStart_time().compareTo(o2.getStart_time());
+                    }
+                }
             });
         }
     }
