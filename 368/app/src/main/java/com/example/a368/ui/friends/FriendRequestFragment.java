@@ -1,6 +1,8 @@
 package com.example.a368.ui.friends;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,113 +61,169 @@ public class FriendRequestFragment extends Fragment {
 
         rList = (RecyclerView)root.findViewById(R.id.friend_request_recycler);
         requestList = new ArrayList<>();
-        requestAdapter = new FriendRequestAdapter(getContext(), requestList, new FriendRequestAdapter.FriendRequestAdapterListener() {
+        requestAdapter = new FriendRequestAdapter(getContext(), requestList, new FriendRequestAdapter.onClickListener() {
             @Override
-            public void statusOnClick(View v, int position) {
-                /***
-                 * In case where we need to add friend to the both sides
-                 * Status: Confirm
-                 */
-
-                // Add to the friend list
-                add_friend(requestList.get(position).getSender_email(),
-                        requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email());
-                add_friend(requestList.get(position).getReceiver_email(),
-                        requestList.get(position).getSender_name(), requestList.get(position).getSender_email());
-
-                // Update request status
-                delete_request(requestList.get(position).getID());
-                request_update(requestList.get(position).getSender_name(), requestList.get(position).getSender_email(),
-                        requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
-                        "Accepted");
-                search_pair(requestList.get(position).getReceiver_email(),
-                        requestList.get(position).getSender_email());
-                request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
-                        requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Accepted");
-
-                getData();
-
-                // show message
-                Toast.makeText(getContext(), requestList.get(position).getReceiver_name() +
-                        " is added to your friend list", Toast.LENGTH_LONG).show();
-
-            }
-
-            @Override
-            public void actionOnClick(View v, int position) {
-                /***
-                 * In case where friend request gets deleted from request DB
-                 * Status: Accepted; Rejected; Pending
-                 * Action: Delete; Delete; Cancel
-                ***/
-                if (requestList.get(position).getStatus().equals("Accepted") ||
-                        requestList.get(position).getStatus().equals("Rejected") ||
-                        requestList.get(position).getStatus().equals("Pending")) {
-
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete_request,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String ServerResponse) {
-                                    getData();
-                                    // Showing response message:
-                                    if (requestList.get(position).getStatus().equals("Pending")) {
-                                        // TODO: delete both
-                                        search_pair(requestList.get(position).getReceiver_email(),
-                                                requestList.get(position).getSender_email());
-
-                                        Toast.makeText(FriendRequestFragment.this.getContext(),
-                                                "Canceled friend request sent to " +
-                                                        requestList.get(position).getReceiver_name(), Toast.LENGTH_LONG).show();
-                                    } else {
-                                        Toast.makeText(FriendRequestFragment.this.getContext(),
-                                                "The selected status deleted from the request list.",
-                                                Toast.LENGTH_LONG).show();
-                                    }
-                                }
-                            },
-                            new Response.ErrorListener() {
-                                @Override
-                                public void onErrorResponse(VolleyError volleyError) {
-                                    // Showing error message if something goes wrong.
-                                    Toast.makeText(FriendRequestFragment.this.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
-                                }
-                            }) {
+            public void onClickRequest(int position) {
+                if (requestList.get(position).getStatus().equals("Pending")) {
+                    AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                    confirmBuilder.setTitle("Pending Friend Request");
+                    confirmBuilder.setMessage("Do you want to undo this friend request sent to " +
+                            requestList.get(position).getReceiver_name() + " (" +
+                            requestList.get(position).getReceiver_email() + ")" +  "?");
+                    confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         @Override
-                        protected Map<String, String> getParams() {
-                            // Creating Map String Params.
-                            Map<String, String> params = new HashMap<String, String>();
-                            // Adding All values to Params.
-                            params.put("id", "" + requestList.get(position).getID());
-                            return params;
+                        public void onClick(DialogInterface dialog, int which) {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete_request,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String ServerResponse) {
+                                            getData();
+                                            // Showing response message:
+                                            search_pair(requestList.get(position).getReceiver_email(),
+                                                    requestList.get(position).getSender_email());
+
+                                            Toast.makeText(FriendRequestFragment.this.getContext(),
+                                                    "Canceled friend request sent to " +
+                                                            requestList.get(position).getReceiver_name(), Toast.LENGTH_LONG).show();
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError volleyError) {
+                                            // Showing error message if something goes wrong.
+                                            Toast.makeText(FriendRequestFragment.this.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    // Creating Map String Params.
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    // Adding All values to Params.
+                                    params.put("id", "" + requestList.get(position).getID());
+                                    return params;
+                                }
+
+                            };
+                            // Creating RequestQueue.
+                            RequestQueue requestQueue = Volley.newRequestQueue(FriendRequestFragment.this.getContext());
+
+                            // Adding the StringRequest object into requestQueue.
+                            requestQueue.add(stringRequest);
+                        }
+                    });
+                    confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
                         }
 
-                    };
-                    // Creating RequestQueue.
-                    RequestQueue requestQueue = Volley.newRequestQueue(FriendRequestFragment.this.getContext());
+                    });
+                    confirmBuilder.show();
 
-                    // Adding the StringRequest object into requestQueue.
-                    requestQueue.add(stringRequest);
+                } else if (requestList.get(position).getStatus().equals("Confirm")) {
+                    AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                    confirmBuilder.setTitle("Accept Friend Request");
+                    confirmBuilder.setMessage("Do you want to accept the friend request from " +
+                            requestList.get(position).getReceiver_name() + " (" + requestList.get(position).getReceiver_email() + ")"
+                            + "?");
+                    confirmBuilder.setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            // Add to the friend list
+                            add_friend(requestList.get(position).getSender_email(),
+                                    requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email());
+                            add_friend(requestList.get(position).getReceiver_email(),
+                                    requestList.get(position).getSender_name(), requestList.get(position).getSender_email());
 
-                }
-                /***
-                 * In case where we still need to show in the request DB (request rejected)
-                 * Status: Confirm
-                 * Action: Reject
-                 */
-                else {
-                    delete_request(requestList.get(position).getID());
-                    request_update(requestList.get(position).getSender_name(), requestList.get(position).getSender_email(),
-                            requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
-                            "Rejected");
-                    search_pair(requestList.get(position).getReceiver_email(),
-                            requestList.get(position).getSender_email());
-                    request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
-                            requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Rejected");
+                            // Update request status
+                            delete_request(requestList.get(position).getID());
+//                            request_update(requestList.get(position).getSender_name(), requestList.get(position).getSender_email(),
+//                                    requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+//                                    "Accepted");
+                            search_pair(requestList.get(position).getReceiver_email(),
+                                    requestList.get(position).getSender_email());
+//                            request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+//                                    requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Accepted");
 
-                    getData();
+                            getData();
 
-                    Toast.makeText(getContext(), "Rejected a friend request from "
-                            + requestList.get(position).getReceiver_name() + ".", Toast.LENGTH_LONG).show();
+                            // show message
+                            Toast.makeText(getContext(), requestList.get(position).getReceiver_name() +
+                                    " is added to your friend list", Toast.LENGTH_LONG).show();
+                        }
+                    });
+                    confirmBuilder.setNegativeButton("Decline", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            delete_request(requestList.get(position).getID());
+                            request_update(requestList.get(position).getSender_name(), requestList.get(position).getSender_email(),
+                                    requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+                                    "Rejected");
+                            search_pair(requestList.get(position).getReceiver_email(),
+                                    requestList.get(position).getSender_email());
+                            request_update(requestList.get(position).getReceiver_name(), requestList.get(position).getReceiver_email(),
+                                    requestList.get(position).getSender_name(), requestList.get(position).getSender_email(), "Rejected");
+
+                            getData();
+
+                            Toast.makeText(getContext(), "Rejected a friend request from "
+                                    + requestList.get(position).getReceiver_name() + ".", Toast.LENGTH_LONG).show();
+                        }
+
+                    });
+                    confirmBuilder.show();
+
+                } else if (requestList.get(position).getStatus().equals("Rejected")) {
+                    AlertDialog.Builder confirmBuilder = new AlertDialog.Builder(getContext());
+                    confirmBuilder.setTitle("Rejected Friend Request");
+                    confirmBuilder.setMessage("Do you want to delete this request from your feed?");
+                    confirmBuilder.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            StringRequest stringRequest = new StringRequest(Request.Method.POST, url_delete_request,
+                                    new Response.Listener<String>() {
+                                        @Override
+                                        public void onResponse(String ServerResponse) {
+                                            getData();
+                                            // Showing response message:
+                                            Toast.makeText(FriendRequestFragment.this.getContext(),
+                                                        "The selected status deleted from the friend request feed.",
+                                                        Toast.LENGTH_LONG).show();
+                                        }
+                                    },
+                                    new Response.ErrorListener() {
+                                        @Override
+                                        public void onErrorResponse(VolleyError volleyError) {
+                                            // Showing error message if something goes wrong.
+                                            Toast.makeText(FriendRequestFragment.this.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                        }
+                                    }) {
+                                @Override
+                                protected Map<String, String> getParams() {
+                                    // Creating Map String Params.
+                                    Map<String, String> params = new HashMap<String, String>();
+                                    // Adding All values to Params.
+                                    params.put("id", "" + requestList.get(position).getID());
+                                    return params;
+                                }
+
+                            };
+                            // Creating RequestQueue.
+                            RequestQueue requestQueue = Volley.newRequestQueue(FriendRequestFragment.this.getContext());
+
+                            // Adding the StringRequest object into requestQueue.
+                            requestQueue.add(stringRequest);
+                        }
+                    });
+                    confirmBuilder.setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+
+                    });
+                    confirmBuilder.show();
+
                 }
 
             }
