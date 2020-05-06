@@ -79,11 +79,106 @@ public class MeetingRequestFragment extends Fragment {
         mAdapter = new MeetingRequestAdapter (reqList, getContext(), new MeetingRequestAdapter.MeetingRequestAdapterListener() {
             @Override
             public void statusOnClick(View v, int position) {
+                final ProgressDialog progressDialog = new ProgressDialog(getContext());
+                progressDialog.setMessage("Loading...");
+                progressDialog.show();
+
+                idList = new ArrayList<>();
+                statusList = new ArrayList<>();
+                emailList = new ArrayList<>();
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, updateUrl,
+                        new Response.Listener<String>() {
+                            @Override
+                            public void onResponse(String ServerResponse) {
+
+                                // Hiding the progress dialog after all task complete.
+                                progressDialog.dismiss();
+                                UpdateRequest(position, reqList.get(position));
+                            }
+                        },
+                        new Response.ErrorListener() {
+                            @Override
+                            public void onErrorResponse(VolleyError volleyError) {
+
+                                // Hiding the progress dialog after all task complete.
+                                progressDialog.dismiss();
+
+                                // Showing error message if something goes wrong.
+                                Toast.makeText(getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                            }
+                        }) {
+                    @Override
+                    protected Map<String, String> getParams() {
+
+                        // Creating Map String Params.
+                        Map<String, String> params = new HashMap<String, String>();
+                        String s = ""+reqList.get(position).getId();
+                        // Adding All values to Params.
+                        params.put("id", s);
+                        params.put("status", "pending");
+
+                        return params;
+                    }
+                };
+                // Creating RequestQueue.
+                RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+                // Adding the StringRequest object into requestQueue.
+                requestQueue.add(stringRequest);
 
             }
 
             @Override
             public void actionOnClick(View v, int position) {
+                if (reqList.get(position).getStatus().equals("Accepted") ||
+                        reqList.get(position).getStatus().equals("Rejected") ||
+                        reqList.get(position).getStatus().equals("Pending")) {
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, deleteUrl,
+                            new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String ServerResponse) {
+                                    getData();
+                                    // Showing response message:
+                                    if (reqList.get(position).getStatus().equals("Pending")) {
+                                        int people = count_participant(reqList.get(position).getParticipants());
+
+                                        // TODO: delete both
+                                        search_pair(reqList.get(position));
+
+                                        Toast.makeText(MeetingRequestFragment.this.getContext(),
+                                                "Canceled meeting request sent to " +
+                                                        reqList.get(position).getReceiver_name(), Toast.LENGTH_LONG).show();
+                                    } else {
+                                        Toast.makeText(MeetingRequestFragment.this.getContext(),
+                                                "The selected status deleted from the request list.",
+                                                Toast.LENGTH_LONG).show();
+                                    }
+                                }
+                            },
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError volleyError) {
+                                    // Showing error message if something goes wrong.
+                                    Toast.makeText(MeetingRequestFragment.this.getContext(), volleyError.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            }) {
+                        @Override
+                        protected Map<String, String> getParams() {
+                            // Creating Map String Params.
+                            Map<String, String> params = new HashMap<String, String>();
+                            // Adding All values to Params.
+                            params.put("id", "" + reqList.get(position).getId());
+                            return params;
+                        }
+
+                    };
+                    // Creating RequestQueue.
+                    RequestQueue requestQueue = Volley.newRequestQueue(MeetingRequestFragment.this.getContext());
+
+                    // Adding the StringRequest object into requestQueue.
+                    requestQueue.add(stringRequest);
+
+                }
 
             }
 
@@ -220,8 +315,7 @@ public class MeetingRequestFragment extends Fragment {
                 for (int i = 0; i < response.length(); i++) {
                     try {
                         JSONObject jsonObject = response.getJSONObject(i);
-//                                        req.setTitle(jsonObject.getString("title"));
-                        // check to display the logged-in user's schedule only && display today's schedule only
+
                         if (jsonObject.getString("participant").equals(reqList.get(position).getParticipants())) {
                             idList.add(Integer.parseInt(jsonObject.getString("id")));
                             statusList.add(jsonObject.getString("status"));
@@ -237,7 +331,7 @@ public class MeetingRequestFragment extends Fragment {
                 }
                 boolean isComplete = true;
                 for(String s : statusList) {
-                    if(s.equals("confirm")) {
+                    if(s.equals("Confirm")) {
                         isComplete = false;
                     }
                 }
@@ -249,7 +343,7 @@ public class MeetingRequestFragment extends Fragment {
                     }
 
                     for(Integer id : idList) {
-                        DeleteRequest(id);
+//                        DeleteRequest(id);
                     }
                     reqList.remove(position);
                 }
@@ -274,8 +368,8 @@ public class MeetingRequestFragment extends Fragment {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String ServerResponse) {
-
-                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+//                        Toast.makeText(getContext(), ServerResponse, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), "Meeting request accepted.", Toast.LENGTH_LONG).show();
                     }
                 },
                 new Response.ErrorListener() {
@@ -379,7 +473,6 @@ public class MeetingRequestFragment extends Fragment {
 
                             MeetingRequest req = new MeetingRequest();
 
-                            req.setTitle(jsonObject.getString("title"));
                             req.setId(Integer.parseInt(jsonObject.getString("id")));
                             req.setSender_name(jsonObject.getString("sender_name"));
                             req.setSender_email(jsonObject.getString("sender_email"));
@@ -429,6 +522,59 @@ public class MeetingRequestFragment extends Fragment {
         });
         RequestQueue requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(jsonArrayRequest);
+    }
+
+    private void search_pair (MeetingRequest request) {
+        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(url, new Response.Listener<JSONArray>() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
+            @Override
+            public void onResponse(JSONArray response) {
+
+                for (int i = 0; i < response.length(); i++) {
+                    try {
+                        JSONObject jsonObject = response.getJSONObject(i);
+
+                        if (jsonObject.getString("sender_email").equals(request.getReceiver_email()) &&
+                                jsonObject.getString("receiver_email").equals(request.getSender_email()) &&
+                                jsonObject.getString("status").equals("Confirm") &&
+                                jsonObject.getString("start_date").equals(request.getStart_date()) &&
+                                jsonObject.getString("start_time").equals(request.getStart_time()) &&
+                                jsonObject.getString("end_date").equals(request.getEnd_date()) &&
+                                jsonObject.getString("end_time").equals(request.getEnd_time()) &&
+                                jsonObject.getString("title").equals(request.getTitle()) &&
+                                jsonObject.getString("description").equals(request.getDescription())) {
+
+//                            delete_request(jsonObject.getInt("id"));
+
+                        }
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("Volley", error.toString());
+            }
+        });
+        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+        requestQueue.add(jsonArrayRequest);
+    }
+
+    // num of participants except for you
+    private int count_participant (String participants) {
+        int number = 0;
+
+        for (int i = 0; i < participants.length(); i++) {
+            if (participants.charAt(i) == ',') {
+                number++;
+            }
+        }
+
+        return number;
     }
 
 }

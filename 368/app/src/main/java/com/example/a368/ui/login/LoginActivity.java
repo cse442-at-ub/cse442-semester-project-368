@@ -77,7 +77,10 @@ public class LoginActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-
+        // Customize action bar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setTitle("Sign in to 368");
+        actionBar.setDisplayHomeAsUpEnabled(false);
 
         setContentView(R.layout.activity_login);
         loginViewModel = ViewModelProviders.of(this, new LoginViewModelFactory())
